@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 
 class Flight(models.Model):
     departure_airport = models.CharField(max_length=100)
@@ -16,6 +17,11 @@ class Aircraft(models.Model):
     class Meta:
         db_table = "aviation_aircraft"
 
+class AircraftAdmin(admin.ModelAdmin):
+    list_display = ['id', 'model', 'capacity']
+    search_fields = ['id', 'model', 'capacity']
+    list_filter = ['model', 'capacity']
+
 
 class Passenger(models.Model):
     name = models.CharField(max_length=100)
@@ -23,6 +29,12 @@ class Passenger(models.Model):
     phone = models.CharField(max_length=20)
     class Meta:
         db_table = "aviation_passenger"
+
+class PassengerAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'email', 'phone']
+    search_fields =  ['id', 'name', 'email', 'phone']
+    list_filter = ['name', 'email', 'phone']
+
 
 class Booking(models.Model):
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
