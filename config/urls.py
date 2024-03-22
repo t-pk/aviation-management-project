@@ -17,7 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from aviation.views.aircraft import aircraft_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('aircraft_view/', aircraft_view, name='aircraft_view'),
 ]
