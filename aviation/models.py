@@ -10,6 +10,20 @@ class Flight(models.Model):
     class Meta:
         db_table = "aviation_flight"
 
+class FlightAdmin(admin.ModelAdmin):
+    list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_model', 'duration_time']
+    search_fields =  ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
+    list_filter = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
+
+    def aircraft_model(self, obj):
+        return obj.aircraft.model if obj.aircraft else ''  # Assuming model is a field in the Aircraft model
+
+    def duration_time(self, obj):
+        if obj.departure_time and obj.arrival_time:
+            duration = obj.arrival_time - obj.departure_time
+            return duration
+        else:
+            return None
 
 class Aircraft(models.Model):
     model = models.CharField(max_length=100)
