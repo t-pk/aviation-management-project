@@ -61,7 +61,7 @@ class ItemInformation(models.Model):
         db_table = "aviation_item_information"
 
 
-class CarryOnItems(models.Model):
+class CarryOnItem(models.Model):
     item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
     item = models.ForeignKey("ItemInformation", on_delete=models.CASCADE)
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
@@ -69,4 +69,4 @@ class CarryOnItems(models.Model):
     item_quantity = models.IntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     class Meta:
-        db_table = "aviation_carry_on_items"
+        db_table = "aviation_carry_on_item"
