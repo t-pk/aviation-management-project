@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django.contrib import admin
 
@@ -58,6 +59,28 @@ class Booking(models.Model):
     class Meta:
         db_table = "aviation_booking"
 
+class BookingForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.fields['passenger'].widget = forms.Select(choices=self.passenger_choices())
+
+    departure = forms.CharField(label="departure")
+    arrival = forms.CharField(label="arrival")
+    departure_time = forms.DateField(label="departure time")
+
+    # def passenger_choices(self):
+    #     return [(passenger.id, passenger.name) for passenger in Passenger.objects.all()]
+
+    class Meta:
+        model = Booking
+        exclude = ['flight'] # the flight with search from departure, arrival, time then get result.
+        fields = ['departure', 'arrival', 'departure_time', 'passenger', 'seat_number']  # Include all other model fields
+        
+
+class BookingAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['passenger']  # Enable autocomplete
+    # exclude= ['flight']
+    form = BookingForm
 
 class PaymentInformation(models.Model):
     item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
