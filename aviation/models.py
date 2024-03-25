@@ -1,3 +1,4 @@
+import json
 from django import forms
 from django.db import models
 from django.contrib import admin
@@ -44,43 +45,49 @@ class Passenger(models.Model):
     phone = models.CharField(max_length=20)
     class Meta:
         db_table = "aviation_passenger"
+    def __str__(self):
+        return f"{self.name} ({self.phone})"
 
 class PassengerAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'email', 'phone']
     search_fields =  ['id', 'name', 'email', 'phone']
     list_filter = ['name', 'email', 'phone']
 
-
 class Booking(models.Model):
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
-    passenger = models.ForeignKey("Passenger", on_delete=models.CASCADE)
+    passengers = models.ManyToManyField(Passenger)
     booking_date = models.DateField()
     seat_number = models.CharField(max_length=10)
     class Meta:
         db_table = "aviation_booking"
 
+
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.fields['passenger'].widget = forms.Select(choices=self.passenger_choices())
 
-    departure = forms.CharField(label="departure")
-    arrival = forms.CharField(label="arrival")
+    # Load airport data from JSON file
+    with open('./mock/airports.json') as airports_file:
+        airport_data = json.load(airports_file)
+
+    # Extract airport codes and names
+    airport_choices = [(airport['code'], f"{airport['code']} - {airport['name']}") for airport in airport_data]
+
+    # Set choices for departure and arrival fields
+    departure = forms.ChoiceField(label="Departure", choices=airport_choices)
+    arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
     departure_time = forms.DateField(label="departure time")
-
-    # def passenger_choices(self):
-    #     return [(passenger.id, passenger.name) for passenger in Passenger.objects.all()]
 
     class Meta:
         model = Booking
-        exclude = ['flight'] # the flight with search from departure, arrival, time then get result.
-        fields = ['departure', 'arrival', 'departure_time', 'passenger', 'seat_number']  # Include all other model fields
-        
+        exclude = ['flight']
+        fields = ['departure', 'arrival', 'departure_time', 'passengers', 'seat_number']
 
 class BookingAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['passenger']  # Enable autocomplete
-    # exclude= ['flight']
+    exclude= ['flight']
     form = BookingForm
+    filter_horizontal = ['passengers']
+
 
 class PaymentInformation(models.Model):
     item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
