@@ -65,7 +65,7 @@ class Booking(models.Model):
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+    
     # Load airport data from JSON file
     with open('./mock/airports.json') as airports_file:
         airport_data = json.load(airports_file)
@@ -76,7 +76,7 @@ class BookingForm(forms.ModelForm):
     # Set choices for departure and arrival fields
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
-    departure_time = forms.DateField(label="departure time")
+    departure_time = forms.DateTimeField(label="Departure Time", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
 
     class Meta:
         model = Booking
