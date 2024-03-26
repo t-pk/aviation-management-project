@@ -16,10 +16,15 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-# from aviation.views.aircraft import aircraft_view
-
+from django.urls import include, path
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path('aircraft_view/', aircraft_view, name='aircraft_view'),
-]
+    path("aviation/", include('aviation.urls'))
+] 
+
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

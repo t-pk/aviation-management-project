@@ -87,6 +87,8 @@ class BookingAdmin(admin.ModelAdmin):
     exclude= ['flight']
     form = BookingForm
     filter_horizontal = ['passengers']
+    class Media:
+        js=("aviation/booking.js",)
 
 
 class PaymentInformation(models.Model):
