@@ -15,43 +15,37 @@ function getCookie(name) {
 
 jQuery(function ($) {
   const airports = [];
-  $(document).ready(function () {
+  var arrivalSelect = $('#id_arrival');
 
-    var selectElement = $('#id_departure');
-    var options = selectElement.find('option');
-
-    options.each(function () {
-      airports.push({ code: $(this).val(), name: $(this).text() });
-    });
-
-    var clonedArray = $.extend(true, [], airports);
-
-    clonedArray.splice(0, 1);
-    var arrivalSelect = $('#id_arrival');
-
-    arrivalSelect.empty();
+  function filterAndPopulateOptions(arrayToClone, filterValue, selectElement) {
+    var clonedArray = $.extend(true, [], arrayToClone);
+    clonedArray = clonedArray.filter((item) => item.code !== filterValue);
+  
+    selectElement.empty();
     $.each(clonedArray, function (index, option) {
       var newOption = $('<option>', {
         value: option.code,
         text: option.name
       });
-      arrivalSelect.append(newOption);
+      selectElement.append(newOption);
     });
+  }
+  $(document).ready(function () {
+
+    var selectElement = $('#id_departure');
+    var options = selectElement.find('option');
+    options.each(function () {
+      airports.push({ code: $(this).val(), name: $(this).text() });
+    });
+  
+    filterAndPopulateOptions(airports, airports[0].code, arrivalSelect);
+
+    $("#id_arrival").change(function () {
+      selectElement.val() === arrivalSelect.val() && filterAndPopulateOptions(airports, $(this).val(), selectElement)
+    })
 
     $("#id_departure").change(function () {
-      var clonedArray = $.extend(true, [], airports);
-      clonedArray = clonedArray.filter((item) => item.code !== $(this).val());
-
-      var arrivalSelect = $('#id_arrival');
-
-      arrivalSelect.empty();
-      $.each(clonedArray, function (index, option) {
-        var newOption = $('<option>', {
-          value: option.code,
-          text: option.name
-        });
-        arrivalSelect.append(newOption);
-      });
+      selectElement.val() === arrivalSelect.val() && filterAndPopulateOptions(airports, $(this).val(), arrivalSelect)
       //   $.ajax({
       //       url:"/aviation/departure/",
       //       type:"POST",
