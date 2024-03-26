@@ -2,6 +2,8 @@ import json
 from django import forms
 from django.db import models
 from django.contrib import admin
+from datetime import datetime
+
 
 class Flight(models.Model):
     departure_airport = models.CharField(max_length=100)
@@ -11,6 +13,8 @@ class Flight(models.Model):
     aircraft = models.ForeignKey("Aircraft", on_delete=models.CASCADE)
     class Meta:
         db_table = "aviation_flight"
+    def __str__(self):
+        return f"{self.aircraft.model} | {self.departure_time.time().strftime("%H:%M")} -> {self.arrival_time.time().strftime("%H:%M")}"
 
 class FlightAdmin(admin.ModelAdmin):
     list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_model', 'duration_time']
@@ -65,6 +69,8 @@ class Booking(models.Model):
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        flights = Flight.objects.all()[:10]
+        self.fields['flight'].queryset = flights
     
     # Load airport data from JSON file
     with open('./mock/airports.json') as airports_file:
@@ -76,15 +82,15 @@ class BookingForm(forms.ModelForm):
     # Set choices for departure and arrival fields
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
-    departure_time = forms.DateTimeField(label="Departure Time", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-
+    departure_time = forms.DateField(label="Departure Date", widget=forms.DateInput(attrs={'type': 'date'}))
     class Meta:
         model = Booking
-        exclude = ['flight']
-        fields = ['departure', 'arrival', 'departure_time', 'passengers', 'seat_number']
+        # exclude = ['flight']
+        fields = ['departure', 'arrival', 'departure_time','flight', 'passengers', 'seat_number']
 
 class BookingAdmin(admin.ModelAdmin):
-    exclude= ['flight']
+
+    # exclude= ['flight']
     form = BookingForm
     filter_horizontal = ['passengers']
     class Media:
