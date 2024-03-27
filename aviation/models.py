@@ -1,8 +1,10 @@
+
 import json
 from django import forms
 from django.db import models
 from django.contrib import admin
 from django.utils import timezone
+from datetime import timedelta, datetime
 
 
 class Flight(models.Model):
@@ -105,17 +107,18 @@ class BookingAdmin(admin.ModelAdmin):
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
 
     def get_departure_time(self, obj):
-        return obj.flight.departure_time
-    
+        departure_time = obj.flight.departure_time + timedelta(hours=7)
+        return departure_time.strftime('%Y-%m-%d %H:%M')
+
     def get_arrival_time(self, obj):
-        return obj.flight.arrival_time
+        arrival_time = obj.flight.arrival_time + timedelta(hours=7)
+        return arrival_time.strftime('%Y-%m-%d %H:%M')
 
     get_departure_airport.short_description = 'Departure Airport'
     get_arrival_airport.short_description = 'Arrival Airport'
     get_passenger_names.short_description = 'Passenger Names'
     get_arrival_time.short_description = 'Arrival Time'
     get_passenger_names.short_description = 'Passenger Names'
-
 
     class Media:
         js=("aviation/booking.js",)
