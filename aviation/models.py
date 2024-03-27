@@ -2,7 +2,7 @@ import json
 from django import forms
 from django.db import models
 from django.contrib import admin
-from datetime import datetime
+from django.utils import timezone
 
 
 class Flight(models.Model):
@@ -69,7 +69,7 @@ class Booking(models.Model):
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        flights = Flight.objects.all()[:10]
+        flights = Flight.objects.all()[:0]
         self.fields['flight'].queryset = flights
     
     # Load airport data from JSON file
@@ -82,7 +82,11 @@ class BookingForm(forms.ModelForm):
     # Set choices for departure and arrival fields
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
-    departure_time = forms.DateField(label="Departure Date", widget=forms.DateInput(attrs={'type': 'date'}))
+    departure_time = forms.DateField(
+            label="Departure Date", 
+            widget=forms.DateInput(attrs={'type': 'date'}),
+            initial=timezone.now().date()
+        )
     class Meta:
         model = Booking
         # exclude = ['flight']

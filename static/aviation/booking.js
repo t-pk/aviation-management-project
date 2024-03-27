@@ -13,59 +13,68 @@ function getCookie(name) {
   return cookieValue;
 }
 
-jQuery(function ($) {
+jQuery(function($) {
   const airports = [];
-  var arrivalSelect = $('#id_arrival');
+  const selectElement = $('#id_departure');
+  const arrivalSelect = $('#id_arrival');
+
+  selectElement.find('option').each(function() {
+    airports.push({ code: $(this).val(), name: $(this).text() });
+  });
 
   function filterAndPopulateOptions(arrayToClone, filterValue, selectElement) {
-    var clonedArray = $.extend(true, [], arrayToClone);
-    clonedArray = clonedArray.filter((item) => item.code !== filterValue);
-  
+    const clonedArray = arrayToClone.filter(item => item.code !== filterValue);
     selectElement.empty();
-    $.each(clonedArray, function (index, option) {
-      var newOption = $('<option>', {
+    clonedArray.forEach(option => {
+      const newOption = $('<option>', {
         value: option.code,
         text: option.name
       });
       selectElement.append(newOption);
     });
   }
-  $(document).ready(function () {
 
-    var selectElement = $('#id_departure');
-    var options = selectElement.find('option');
-    options.each(function () {
-      airports.push({ code: $(this).val(), name: $(this).text() });
+  function fetchFlight() {
+    $.ajax({
+      url: "/aviation/flights/",
+      type: "POST",
+      data: {
+        departure_airport: selectElement.val(),
+        arrival_airport: arrivalSelect.val(),
+        departure_time: $('#id_departure_time').val()
+      },
+      success: function(result) {
+        $('#id_flight').empty();
+        result.flights.forEach(option => {
+          const departure_time = new Date(option.departure_time).toLocaleTimeString();
+          const arrival_time = new Date(option.arrival_time).toLocaleTimeString();
+          const newOption = $('<option>', {
+            value: option.id,
+            text: `${option.aircraft_model} | ${departure_time} | ${arrival_time}`
+          });
+          $('#id_flight').append(newOption);
+        });
+      },
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      error: function(e) {
+        console.error(JSON.stringify(e));
+      },
     });
-  
-    filterAndPopulateOptions(airports, airports[0].code, arrivalSelect);
+  }
 
-    $("#id_arrival").change(function () {
-      selectElement.val() === arrivalSelect.val() && filterAndPopulateOptions(airports, $(this).val(), selectElement)
-    })
-
-    $("#id_departure").change(function () {
-      selectElement.val() === arrivalSelect.val() && filterAndPopulateOptions(airports, $(this).val(), arrivalSelect)
-      //   $.ajax({
-      //       url:"/aviation/departure/",
-      //       type:"POST",
-      //       data:{departure_airport: $(this).val(),},
-      //       success: function(result) {
-      //           console.log(result);
-      //           cols = document.getElementById("id_division");
-      //           cols.options.length = 0;
-      //           cols.options.add(new Option("Division", "Division"));
-      //           for(var k in result){
-      //               cols.options.add(new Option(k, result[k]));
-      //           }
-      //       },
-      //       headers: {
-      //           "X-CSRFToken": getCookie("csrftoken")
-      //       },
-      //       error: function(e){
-      //           console.error(JSON.stringify(e));
-      //       },
-      //   });
-    });
+  arrivalSelect.add(selectElement).change(function() {
+    const isDepartureSelected = selectElement.val() === arrivalSelect.val();
+    if (isDepartureSelected) {
+      filterAndPopulateOptions(airports, $(this).val(), isDepartureSelected ? arrivalSelect : selectElement);
+    }
+    fetchFlight();
   });
+
+  $('#id_departure_time').change(fetchFlight);
+
+  // Initial population and fetching
+  filterAndPopulateOptions(airports, airports[0].code, arrivalSelect);
+  fetchFlight();
 });
