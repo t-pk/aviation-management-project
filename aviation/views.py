@@ -5,7 +5,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from aviation.models import Flight
+from aviation.models import Booking, Flight
 
 class BookingView(APIView):
   permission_classes =[IsAuthenticated]
@@ -45,3 +45,20 @@ class BookingFlightView(APIView):
 
         # Return JSON response
         return JsonResponse({'flights': flights_data})
+    
+def get_booking_data(self, booking_id):
+    try:
+        booking = Booking.objects.get(pk=booking_id)
+        print(booking)
+        data = {
+            'departure_airport': booking.flight.departure_airport,
+            'arrival_airport': booking.flight.arrival_airport,
+            'departure_time': booking.flight.departure_time.strftime('%Y-%m-%d'),
+            'flight_id': booking.flight.id
+        }
+        return JsonResponse(data)
+    except Booking.DoesNotExist:
+        return JsonResponse({'error': 'Booking not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
