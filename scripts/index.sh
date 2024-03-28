@@ -1,4 +1,4 @@
-
+mkdir ./aviation/fixtures
 python ./scripts/aircraft.py
 python ./scripts/passenger.py
 python ./scripts/flight.py
