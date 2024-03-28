@@ -10,6 +10,8 @@ psycopg = "*"
 psycopg2-binary = "*"
 faker = "*"
 vn-fullname-generator = "*"
+python-dotenv = "*"
+django-environ = "*"
 
 [dev-packages]
 
