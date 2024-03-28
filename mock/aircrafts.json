@@ -2,31 +2,31 @@
   {
     "model": "Boeing 747",
     "id": "1",
-    "capacity": 416,
-    "code": "VN 101"
+    "capacity": 300,
+    "code": "VNA-101"
   },
   {
     "model": "Airbus A380",
     "id": "2",
-    "capacity": 555,
-    "code": "VN 201"
+    "capacity": 250,
+    "code": "VNA-201"
   },
   {
     "model": "Boeing 737",
     "id": "3",
-    "capacity": 189,
-    "code": "VN 301"
+    "capacity": 170,
+    "code": "VNA-301"
   },
   {
     "model": "Airbus A320",
     "id": "4",
     "capacity": 150,
-    "code": "VN 401"
+    "code": "VNA-401"
   },
   {
     "model": "Embraer E195",
     "id": "5",
-    "capacity": 124,
-    "code": "VN 501"
+    "capacity": 130,
+    "code": "VNA-501"
   }
 ]

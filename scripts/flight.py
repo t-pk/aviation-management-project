@@ -41,7 +41,7 @@ for idx, item in enumerate(original_data):
                 "arrival_airport":  airport["code"],
                 "departure_time": format_datetime_with_utc_offset(current_date_utc),
                 "arrival_time": format_datetime_with_utc_offset(arrival_time),
-                "aircraft_id":  random.randint(1, 10),
+                "aircraft_id":  random.randint(1, 5),
             }
         }
         transformed_data.append(transformed_item)

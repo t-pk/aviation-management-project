@@ -36,13 +36,14 @@ class FlightAdmin(admin.ModelAdmin):
 class Aircraft(models.Model):
     model = models.CharField(max_length=100)
     capacity = models.IntegerField()
+    code = models.CharField(max_length=100)
     class Meta:
         db_table = "aviation_aircraft"
 
 class AircraftAdmin(admin.ModelAdmin):
-    list_display = ['id', 'model', 'capacity']
-    search_fields = ['id', 'model', 'capacity']
-    list_filter = ['model', 'capacity']
+    list_display = ['id', 'model', 'code','capacity']
+    search_fields = ['id', 'model', 'code' ,'capacity']
+    list_filter = ['code', 'capacity']
 
 
 class Passenger(models.Model):

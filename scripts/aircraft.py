@@ -20,7 +20,7 @@ for item in original_data:
     transformed_data.append(transformed_item)
 
 # Save transformed data to a JSON file
-output_file_path = "./aviation/fixtures/0002_Aircraft.json"
+output_file_path = "./aviation/fixtures/0001_Aircraft.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)
 
