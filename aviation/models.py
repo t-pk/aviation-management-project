@@ -2,6 +2,8 @@ import json
 from django import forms
 from django.db import models
 from django.contrib import admin
+from django.utils import timezone
+
 
 class Flight(models.Model):
     departure_airport = models.CharField(max_length=100)
@@ -11,6 +13,8 @@ class Flight(models.Model):
     aircraft = models.ForeignKey("Aircraft", on_delete=models.CASCADE)
     class Meta:
         db_table = "aviation_flight"
+    def __str__(self):
+        return f"{self.aircraft.model} | {self.departure_time.time().strftime("%H:%M")} | {self.arrival_time.time().strftime("%H:%M")}"
 
 class FlightAdmin(admin.ModelAdmin):
     list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_model', 'duration_time']
@@ -56,16 +60,14 @@ class PassengerAdmin(admin.ModelAdmin):
 class Booking(models.Model):
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
     passengers = models.ManyToManyField(Passenger)
-    booking_date = models.DateField()
-    seat_number = models.CharField(max_length=10)
+    booking_date = models.DateField(default=timezone.now)
     class Meta:
         db_table = "aviation_booking"
-
 
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+
     # Load airport data from JSON file
     with open('./mock/airports.json') as airports_file:
         airport_data = json.load(airports_file)
@@ -76,17 +78,47 @@ class BookingForm(forms.ModelForm):
     # Set choices for departure and arrival fields
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
-    departure_time = forms.DateTimeField(label="Departure Time", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-
+    departure_time = forms.DateField(
+            label="Departure Date", 
+            widget=forms.DateInput(attrs={'type': 'date'}),
+            initial=timezone.now().date()
+        )
     class Meta:
         model = Booking
-        exclude = ['flight']
-        fields = ['departure', 'arrival', 'departure_time', 'passengers', 'seat_number']
+        # exclude = ['flight']
+        fields = ['departure', 'arrival', 'departure_time','flight', 'passengers']
 
 class BookingAdmin(admin.ModelAdmin):
-    exclude= ['flight']
+
+    # exclude= ['flight']
     form = BookingForm
     filter_horizontal = ['passengers']
+    list_display = ('id', 'get_departure_airport', 'get_arrival_airport', 'get_departure_time', 'get_arrival_time', 'get_passenger_names', 'booking_date')
+
+    def get_departure_airport(self, obj):
+        return obj.flight.departure_airport
+    
+    def get_arrival_airport(self, obj):
+        return obj.flight.arrival_airport
+
+    def get_passenger_names(self, obj):
+        return ", ".join([passenger.name for passenger in obj.passengers.all()])
+
+    def get_departure_time(self, obj):
+        return obj.flight.departure_time
+    
+    def get_arrival_time(self, obj):
+        return obj.flight.arrival_time
+
+    get_departure_airport.short_description = 'Departure Airport'
+    get_arrival_airport.short_description = 'Arrival Airport'
+    get_passenger_names.short_description = 'Passenger Names'
+    get_arrival_time.short_description = 'Arrival Time'
+    get_passenger_names.short_description = 'Passenger Names'
+
+
+    class Media:
+        js=("aviation/booking.js",)
 
 
 class PaymentInformation(models.Model):
