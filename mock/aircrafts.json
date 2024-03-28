@@ -1,0 +1,302 @@
+[
+  {
+    "model": "Boeing 747",
+    "id": "1",
+    "capacity": 300,
+    "code": "VNA-101"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "2",
+    "capacity": 250,
+    "code": "VNA-201"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "3",
+    "capacity": 170,
+    "code": "VNA-301"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "4",
+    "capacity": 150,
+    "code": "VNA-401"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "5",
+    "capacity": 130,
+    "code": "VNA-501"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "6",
+    "capacity": 300,
+    "code": "VNA-106"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "7",
+    "capacity": 250,
+    "code": "VNA-207"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "8",
+    "capacity": 170,
+    "code": "VNA-308"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "9",
+    "capacity": 150,
+    "code": "VNA-409"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "10",
+    "capacity": 130,
+    "code": "VNA-510"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "11",
+    "capacity": 300,
+    "code": "VNA-611"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "12",
+    "capacity": 250,
+    "code": "VNA-712"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "13",
+    "capacity": 170,
+    "code": "VNA-813"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "14",
+    "capacity": 150,
+    "code": "VNA-914"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "15",
+    "capacity": 130,
+    "code": "VNA-015"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "16",
+    "capacity": 300,
+    "code": "VNA-116"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "17",
+    "capacity": 250,
+    "code": "VNA-217"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "18",
+    "capacity": 170,
+    "code": "VNA-318"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "19",
+    "capacity": 150,
+    "code": "VNA-419"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "20",
+    "capacity": 130,
+    "code": "VNA-520"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "21",
+    "capacity": 300,
+    "code": "VNA-621"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "22",
+    "capacity": 250,
+    "code": "VNA-722"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "23",
+    "capacity": 170,
+    "code": "VNA-823"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "24",
+    "capacity": 150,
+    "code": "VNA-924"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "25",
+    "capacity": 130,
+    "code": "VNA-025"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "26",
+    "capacity": 300,
+    "code": "VNA-126"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "27",
+    "capacity": 250,
+    "code": "VNA-227"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "28",
+    "capacity": 170,
+    "code": "VNA-328"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "29",
+    "capacity": 150,
+    "code": "VNA-429"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "30",
+    "capacity": 130,
+    "code": "VNA-530"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "31",
+    "capacity": 300,
+    "code": "VNA-631"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "32",
+    "capacity": 250,
+    "code": "VNA-732"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "33",
+    "capacity": 170,
+    "code": "VNA-833"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "34",
+    "capacity": 150,
+    "code": "VNA-934"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "35",
+    "capacity": 130,
+    "code": "VNA-035"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "36",
+    "capacity": 300,
+    "code": "VNA-136"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "37",
+    "capacity": 250,
+    "code": "VNA-237"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "38",
+    "capacity": 170,
+    "code": "VNA-338"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "39",
+    "capacity": 150,
+    "code": "VNA-439"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "40",
+    "capacity": 130,
+    "code": "VNA-540"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "41",
+    "capacity": 300,
+    "code": "VNA-641"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "42",
+    "capacity": 250,
+    "code": "VNA-742"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "43",
+    "capacity": 170,
+    "code": "VNA-843"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "44",
+    "capacity": 150,
+    "code": "VNA-944"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "45",
+    "capacity": 130,
+    "code": "VNA-045"
+  },
+  {
+    "model": "Boeing 747",
+    "id": "46",
+    "capacity": 300,
+    "code": "VNA-146"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "47",
+    "capacity": 250,
+    "code": "VNA-247"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "48",
+    "capacity": 170,
+    "code": "VNA-348"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "49",
+    "capacity": 150,
+    "code": "VNA-449"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "50",
+    "capacity": 130,
+    "code": "VNA-550"
+  }
+]

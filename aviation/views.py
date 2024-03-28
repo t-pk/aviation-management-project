@@ -61,4 +61,3 @@ def get_booking_data(self, booking_id):
         return JsonResponse({'error': 'Booking not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-

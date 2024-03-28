@@ -1,8 +1,10 @@
+
 import json
 from django import forms
 from django.db import models
 from django.contrib import admin
 from django.utils import timezone
+from datetime import timedelta, datetime
 
 
 class Flight(models.Model):
@@ -17,12 +19,12 @@ class Flight(models.Model):
         return f"{self.aircraft.model} | {self.departure_time.time().strftime("%H:%M")} | {self.arrival_time.time().strftime("%H:%M")}"
 
 class FlightAdmin(admin.ModelAdmin):
-    list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_model', 'duration_time']
+    list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_code', 'duration_time']
     search_fields =  ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
     list_filter = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
 
-    def aircraft_model(self, obj):
-        return obj.aircraft.model if obj.aircraft else ''  # Assuming model is a field in the Aircraft model
+    def aircraft_code(self, obj):
+        return obj.aircraft.code if obj.aircraft else ''  # Assuming code is a field in the Aircraft model
 
     def duration_time(self, obj):
         if obj.departure_time and obj.arrival_time:
@@ -34,19 +36,24 @@ class FlightAdmin(admin.ModelAdmin):
 class Aircraft(models.Model):
     model = models.CharField(max_length=100)
     capacity = models.IntegerField()
+    code = models.CharField(max_length=100)
     class Meta:
         db_table = "aviation_aircraft"
 
 class AircraftAdmin(admin.ModelAdmin):
-    list_display = ['id', 'model', 'capacity']
-    search_fields = ['id', 'model', 'capacity']
-    list_filter = ['model', 'capacity']
+    list_display = ['id', 'model', 'code','capacity']
+    search_fields = ['id', 'model', 'code' ,'capacity']
+    list_filter = ['code', 'capacity']
 
 
 class Passenger(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    citizen_identify_id = models.CharField(max_length=15, null=True, blank=True)
+    passport_id = models.CharField(max_length=15, null=True, blank=True)
+    relation= models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+
     class Meta:
         db_table = "aviation_passenger"
     def __str__(self):
@@ -105,17 +112,18 @@ class BookingAdmin(admin.ModelAdmin):
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
 
     def get_departure_time(self, obj):
-        return obj.flight.departure_time
-    
+        departure_time = obj.flight.departure_time + timedelta(hours=7)
+        return departure_time.strftime('%Y-%m-%d %H:%M')
+
     def get_arrival_time(self, obj):
-        return obj.flight.arrival_time
+        arrival_time = obj.flight.arrival_time + timedelta(hours=7)
+        return arrival_time.strftime('%Y-%m-%d %H:%M')
 
     get_departure_airport.short_description = 'Departure Airport'
     get_arrival_airport.short_description = 'Arrival Airport'
     get_passenger_names.short_description = 'Passenger Names'
     get_arrival_time.short_description = 'Arrival Time'
     get_passenger_names.short_description = 'Passenger Names'
-
 
     class Media:
         js=("aviation/booking.js",)

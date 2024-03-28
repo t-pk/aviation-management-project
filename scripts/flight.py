@@ -2,51 +2,59 @@ import json
 from datetime import datetime, timedelta, timezone
 import random
 
-current_date = datetime.now()
-current_date_utc = current_date.astimezone(timezone.utc)
-
+# Function to format datetime with UTC offset
 def format_datetime_with_utc_offset(dt):
-    # Round the minutes to the nearest 15-minute interval
     rounded_minute = int(((dt.minute + 7.5) // 15) * 15)
-    
-    # Ensure that rounded_minute does not exceed 59
     if rounded_minute >= 60:
-        dt += timedelta(hours=1)  # Add 1 hour
+        dt += timedelta(hours=1)
         rounded_minute = 0
-    
-    # Construct the formatted string with UTC offset
     formatted_date = dt.strftime('%Y-%m-%d %H:') + '{:02d}'.format(rounded_minute) + ':00 +0000'
-    
     return formatted_date
-id = 0
-# Read original data from JSON file
+
+# Load airports data
 input_file_path = "./mock/airports.json"
 with open(input_file_path, "r") as json_file:
     original_data = json.load(json_file)
 
-# Transform data into desired format
+# Current date in UTC
+current_date_utc = datetime.now(timezone.utc)
+
+# Start and end dates for generating flights
+start_date = current_date_utc - timedelta(days=10)  # 3 months before current date
+end_date = current_date_utc + timedelta(days=10)    # 3 months after current date
+
+# Initialize list to store transformed data
 transformed_data = []
-for idx, item in enumerate(original_data):
-    for index, airport in enumerate(original_data):
-        if(idx == index): continue
-        # departure_time = 
-        id+=1
-        random_hours = random.uniform(0.5, 3)
-        arrival_time = current_date_utc + timedelta(hours=random_hours)
+
+# Generate flights for each day in the period
+while start_date <= end_date:
+    # Generate 3 flights for each day
+    for _ in range(3):
+        departure_airport, arrival_airport = random.sample(original_data, 2)  # Select two random airports for departure and arrival
+        random_hours_departure = random.uniform(0, 24)  # Random departure hour between 0 and 24
+        random_hours_arrival = random_hours_departure + random.uniform(0.5, 3)  # Random arrival hour after departure
+        # Ensure arrival hour remains within 0 to 23
+        if random_hours_arrival >= 24:
+            random_hours_arrival -= 24
+        departure_time = start_date.replace(hour=int(random_hours_departure), minute=0, second=0, microsecond=0)
+        arrival_time = start_date + timedelta(hours=random_hours_arrival)
+
         transformed_item = {
             "model": "aviation.flight",
-            "pk": id,
+            "pk": len(transformed_data) + 1,  # Generate unique primary key
             "fields": {
-                "departure_airport": item["code"], 
-                "arrival_airport":  airport["code"],
-                "departure_time": format_datetime_with_utc_offset(current_date_utc),
+                "departure_airport": departure_airport["code"],
+                "arrival_airport":  arrival_airport["code"],
+                "departure_time": format_datetime_with_utc_offset(departure_time),
                 "arrival_time": format_datetime_with_utc_offset(arrival_time),
-                "aircraft_id":  random.randint(1, 10),
+                "aircraft_id":  random.randint(1, 50),
             }
         }
         transformed_data.append(transformed_item)
+    
+    start_date += timedelta(days=1)  # Move to the next day
 
-# Save transformed data to a JSON file
+# Save transformed data to JSON file
 output_file_path = "./aviation/fixtures/0003_Flight.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)
