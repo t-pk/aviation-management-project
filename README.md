@@ -20,5 +20,22 @@ python manage.py makemigrations
 python manage.py migrate
 
 # create user is super
-python manage.py createsuperuser
+python manage.py create_group_user
+```
+
+
+we have 3 users
+
+```
+#supper admin
+username: admin
+password: 123456
+
+#ticketingstaff
+username: ticketingstaff
+password: ticketingstaff
+
+#flightmanager
+username: flightmanager
+password: flightmanager
 ```
