@@ -1,0 +1,32 @@
+[
+  {
+    "model": "Boeing 747",
+    "id": "1",
+    "capacity": 416,
+    "code": "VN 101"
+  },
+  {
+    "model": "Airbus A380",
+    "id": "2",
+    "capacity": 555,
+    "code": "VN 201"
+  },
+  {
+    "model": "Boeing 737",
+    "id": "3",
+    "capacity": 189,
+    "code": "VN 301"
+  },
+  {
+    "model": "Airbus A320",
+    "id": "4",
+    "capacity": 150,
+    "code": "VN 401"
+  },
+  {
+    "model": "Embraer E195",
+    "id": "5",
+    "capacity": 124,
+    "code": "VN 501"
+  }
+]
