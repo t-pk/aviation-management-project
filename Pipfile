@@ -8,6 +8,8 @@ django = "*"
 djangorestframework = "*"
 psycopg = "*"
 psycopg2-binary = "*"
+faker = "*"
+vn-fullname-generator = "*"
 
 [dev-packages]
 

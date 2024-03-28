@@ -19,12 +19,12 @@ class Flight(models.Model):
         return f"{self.aircraft.model} | {self.departure_time.time().strftime("%H:%M")} | {self.arrival_time.time().strftime("%H:%M")}"
 
 class FlightAdmin(admin.ModelAdmin):
-    list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_model', 'duration_time']
+    list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_code', 'duration_time']
     search_fields =  ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
     list_filter = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_id']
 
-    def aircraft_model(self, obj):
-        return obj.aircraft.model if obj.aircraft else ''  # Assuming model is a field in the Aircraft model
+    def aircraft_code(self, obj):
+        return obj.aircraft.code if obj.aircraft else ''  # Assuming code is a field in the Aircraft model
 
     def duration_time(self, obj):
         if obj.departure_time and obj.arrival_time:
@@ -48,8 +48,12 @@ class AircraftAdmin(admin.ModelAdmin):
 
 class Passenger(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    citizen_identify_id = models.CharField(max_length=15, null=True, blank=True)
+    passport_id = models.CharField(max_length=15, null=True, blank=True)
+    relation= models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+
     class Meta:
         db_table = "aviation_passenger"
     def __str__(self):
