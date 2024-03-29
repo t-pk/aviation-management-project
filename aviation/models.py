@@ -51,7 +51,6 @@ class Passenger(models.Model):
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     citizen_identify_id = models.CharField(max_length=15, null=True, blank=True)
-    passport_id = models.CharField(max_length=15, null=True, blank=True)
     relation= models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -74,6 +73,7 @@ class Booking(models.Model):
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # self.fields['flight'] = forms.ModelChoiceField(queryset=Flight.objects.none())
 
     # Load airport data from JSON file
     with open('./mock/airports.json') as airports_file:
@@ -127,30 +127,3 @@ class BookingAdmin(admin.ModelAdmin):
 
     class Media:
         js=("aviation/booking.js",)
-
-
-class PaymentInformation(models.Model):
-    item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
-    booking = models.OneToOneField("Booking", on_delete=models.CASCADE)
-    payment_method = models.CharField(max_length=100)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    class Meta:
-        db_table = "aviation_payment_information"
-
-
-class ItemInformation(models.Model):
-    item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
-    item_price = models.DecimalField(max_digits=10, decimal_places=2)
-    class Meta:
-        db_table = "aviation_item_information"
-
-
-class CarryOnItem(models.Model):
-    item_description = models.CharField(max_length=100, default='Snack')  # Set default value to 'Snack'
-    item = models.ForeignKey("ItemInformation", on_delete=models.CASCADE)
-    flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
-    passenger = models.ForeignKey("Passenger", on_delete=models.CASCADE)
-    item_quantity = models.IntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    class Meta:
-        db_table = "aviation_carry_on_item"
