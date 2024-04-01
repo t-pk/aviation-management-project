@@ -74,6 +74,7 @@ jQuery(function ($) {
   }
 
   arrivalSelect.add(selectElement).change(function () {
+    calculateDistance();
     const isDepartureSelected = selectElement.val() === arrivalSelect.val();
     if (isDepartureSelected) {
       filterAndPopulateOptions(airports, $(this).val(), isDepartureSelected ? arrivalSelect : selectElement);
@@ -118,4 +119,33 @@ jQuery(function ($) {
       resolve();
     })
   }
+
+  function calculateDistance() {
+    var departureCode = $('#id_departure').val();
+    var arrivalCode = $('#id_arrival').val();
+    var totalPassenger = $('#id_total_passenger').val();
+    // Make AJAX call to the API endpoint
+    $.ajax({
+      url: '/aviation/calculate-distance/',
+      method: 'GET',
+      data: {
+        departure_code: departureCode,
+        arrival_code: arrivalCode,
+        total_passenger: totalPassenger || 0
+      },
+      success: function (response) {
+        $('#id_total_amount').val(formatCurrency(response.total_fare))
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+      }
+    });
+  }
+  $('#id_total_passenger').on('input', function () {
+    calculateDistance();
+  });
+
+  function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
 })

@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib import admin
 from django.utils import timezone
 from datetime import timedelta, datetime
+from django.core.exceptions import ValidationError
 
 
 class Flight(models.Model):
@@ -67,13 +68,16 @@ class Booking(models.Model):
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
     passengers = models.ManyToManyField(Passenger)
     booking_date = models.DateField(default=timezone.now)
+    total_amount = models.DecimalField(default=0, max_digits=10, decimal_places=2)  # Set default value to 0
+
     class Meta:
         db_table = "aviation_booking"
 
 class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.fields['flight'] = forms.ModelChoiceField(queryset=Flight.objects.none())
+        self.fields['flight'] = forms.ModelChoiceField(queryset=Flight.objects.all())
+        self.fields['total_amount'].widget = forms.TextInput(attrs={'readonly': 'readonly'})
 
     # Load airport data from JSON file
     with open('./mock/airports.json') as airports_file:
@@ -86,14 +90,26 @@ class BookingForm(forms.ModelForm):
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)
     departure_time = forms.DateField(
-            label="Departure Date", 
-            widget=forms.DateInput(attrs={'type': 'date'}),
-            initial=timezone.now().date()
-        )
+        label="Departure Date", 
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=timezone.now().date()
+    )
+    total_amount = forms.DecimalField(label="Total Amount", required=False, initial=0)
+    total_passenger = forms.IntegerField(label="Total Passenger",initial=0, min_value=1)
+
     class Meta:
         model = Booking
-        # exclude = ['flight']
-        fields = ['departure', 'arrival', 'departure_time','flight', 'passengers']
+        fields = ['departure', 'arrival', 'departure_time', 'flight','total_passenger', 'passengers', 'total_amount']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        passengers = cleaned_data.get('passengers')
+        total_passenger = cleaned_data.get('total_passenger')
+
+        if passengers and passengers.count() != total_passenger:
+            self.add_error('passengers', ValidationError("please check Total Passenger fields ."))
+
+        return cleaned_data
 
 class BookingAdmin(admin.ModelAdmin):
 
