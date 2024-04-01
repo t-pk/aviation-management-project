@@ -55,7 +55,7 @@ jQuery(function ($) {
             const arrival_time = new Date(option.arrival_time).toLocaleTimeString();
             const newOption = $('<option>', {
               value: option.id,
-              text: `${option.aircraft_model} | ${departure_time} | ${arrival_time}`,
+              text: `${option.aircraft_code} | ${departure_time} | ${arrival_time}`,
               selected: flightIdSelected === option.id
             });
             $('#id_flight').append(newOption);
@@ -134,7 +134,7 @@ jQuery(function ($) {
         total_passenger: totalPassenger || 0
       },
       success: function (response) {
-        $('#id_total_amount').val(formatCurrency(response.total_fare))
+        $('#id_total_amount').val(response.total_fare)
       },
       error: function (xhr, status, error) {
         console.error(xhr.responseText);
