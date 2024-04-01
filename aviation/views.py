@@ -41,8 +41,9 @@ class BookingFlightView(APIView):
                 'arrival_airport': flight.arrival_airport,
                 'departure_time': flight.departure_time.isoformat(),
                 'arrival_time': flight.arrival_time.isoformat(),
-                'aircraft_model': flight.aircraft.model
+                'aircraft_code': flight.aircraft.code,
             }
+            print(flight.aircraft.code)
             flights_data.append(flight_data)
 
         # Return JSON response

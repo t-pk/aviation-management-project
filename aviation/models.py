@@ -17,7 +17,7 @@ class Flight(models.Model):
     class Meta:
         db_table = "aviation_flight"
     def __str__(self):
-        return f"{self.aircraft.model} | {self.departure_time.time().strftime("%H:%M")} | {self.arrival_time.time().strftime("%H:%M")}"
+        return f"{self.aircraft.code} | {self.departure_time.time().strftime("%H:%M")} | {self.arrival_time.time().strftime("%H:%M")}"
 
 class FlightAdmin(admin.ModelAdmin):
     list_display = ['id', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'aircraft_code', 'duration_time']
@@ -105,7 +105,7 @@ class BookingForm(forms.ModelForm):
         cleaned_data = super().clean()
         passengers = cleaned_data.get('passengers')
         total_passenger = cleaned_data.get('total_passenger')
-
+        print("cleaned_data.get('total_passenger')", cleaned_data.get('flight'))
         if passengers and passengers.count() != total_passenger:
             self.add_error('passengers', ValidationError("please check Total Passenger fields ."))
 
