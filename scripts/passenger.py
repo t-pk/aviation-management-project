@@ -15,7 +15,6 @@ for i in range(num_records):
     email = fake.email()
     phone = "+84" + str(fake.random_number(digits=9))
     citizen_identify_id = fake.random_number(digits=15)
-    passport_id = fake.random_number(digits=15)
     relation_id = None
     if i > 0:
         relation_id = fake.random_int(min=1, max=i)
@@ -27,7 +26,6 @@ for i in range(num_records):
             "email": email,
             "phone": phone,
             "citizen_identify_id": citizen_identify_id,
-            "passport_id": passport_id,
             "relation": relation_id,
         }
     }
