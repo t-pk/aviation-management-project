@@ -161,4 +161,4 @@ cython_debug/
 .vscode
 
 /aviation/fixtures
-#/aviation/migrations.DS_Store
+.DS_Store
