@@ -15,6 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import environ
 
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -138,3 +139,25 @@ MEDIA_URL= '/media/'
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "colorlog.StreamHandler",
+            "formatter": "colored",
+        },
+    },
+    "formatters": {
+        "colored": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",  # Change the root level to DEBUG to show all log levels
+    },
+}
+USE_TZ = False

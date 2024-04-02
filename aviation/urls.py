@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import *
+from .views import BookingFlightView, RetrieveBookingView, CalculateFaresView
+
 urlpatterns = [
-    path('departure/',BookingView.as_view()),
-    path('flights/',BookingFlightView.as_view()),
-    path('bookings/<int:booking_id>/', get_booking_data, name='get_booking_data'),
+    path('flights/', BookingFlightView.as_view(), name='flights'),
+    path('bookings/<int:booking_id>/', RetrieveBookingView.as_view(), name='get_booking_data'),
+    path('fares/', CalculateFaresView.as_view(), name='calculate_fares'),
 ]

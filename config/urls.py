@@ -20,11 +20,13 @@ from django.urls import include, path
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("aviation/", include('aviation.urls'))
+    path("aviation/", include('aviation.urls')),
+    path('favicon.ico', RedirectView.as_view(url='/media/images/flight.ico', permanent=True)),
 ] 
-
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
