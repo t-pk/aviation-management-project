@@ -12,6 +12,7 @@ faker = "*"
 vn-fullname-generator = "*"
 python-dotenv = "*"
 django-environ = "*"
+colorlog = "*"
 
 [dev-packages]
 

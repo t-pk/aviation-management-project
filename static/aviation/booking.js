@@ -72,12 +72,12 @@ jQuery(function ($) {
   }
 
   arrivalSelect.add(selectElement).change(function () {
-    calculateDistance();
     const isDepartureSelected = selectElement.val() === arrivalSelect.val();
     if (isDepartureSelected) {
       filterAndPopulateOptions(airports, $(this).val(), isDepartureSelected ? arrivalSelect : selectElement);
     }
     fetchFlight();
+    calculateDistance();
   });
 
   $('#id_departure_time').change(fetchFlight);
@@ -122,7 +122,7 @@ jQuery(function ($) {
     var arrivalCode = $('#id_arrival').val();
     var totalPassenger = $('#id_total_passenger').val();
     $.ajax({
-      url: '/aviation/calculate-distance/',
+      url: '/aviation/fares/',
       method: 'GET',
       data: {
         departure_code: departureCode,
