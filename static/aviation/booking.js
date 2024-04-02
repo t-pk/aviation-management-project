@@ -33,12 +33,11 @@ jQuery(function ($) {
         });
         selectElement.append(newOption);
       });
-      resolve(); // Resolve the promise after filtering and populating options
+      resolve();
     });
   }
   function fetchFlight() {
     return new Promise((resolve, reject) => {
-      console.log("$('#id_departure_time').val()", $('#id_departure_time').val());
       $.ajax({
         url: "/aviation/flights/",
         type: "POST",
@@ -49,7 +48,6 @@ jQuery(function ($) {
         },
         success: function (result) {
           $('#id_flight').empty();
-          console.log(result.flights.length);
           result.flights.forEach(option => {
             const departure_time = new Date(option.departure_time).toLocaleTimeString();
             const arrival_time = new Date(option.arrival_time).toLocaleTimeString();
@@ -60,26 +58,26 @@ jQuery(function ($) {
             });
             $('#id_flight').append(newOption);
           });
-          resolve(); // Resolve the promise after successful AJAX call
+          resolve();
         },
         headers: {
           "X-CSRFToken": getCookie("csrftoken")
         },
         error: function (e) {
           console.error(JSON.stringify(e));
-          reject(e); // Reject the promise if there's an error
+          reject(e);
         },
       });
     });
   }
 
   arrivalSelect.add(selectElement).change(function () {
-    calculateDistance();
     const isDepartureSelected = selectElement.val() === arrivalSelect.val();
     if (isDepartureSelected) {
       filterAndPopulateOptions(airports, $(this).val(), isDepartureSelected ? arrivalSelect : selectElement);
     }
     fetchFlight();
+    calculateDistance();
   });
 
   $('#id_departure_time').change(fetchFlight);
@@ -100,10 +98,9 @@ jQuery(function ($) {
       if (match) {
         var bookingId = match ? match[1] : null;
         $.ajax({
-          url: `/aviation/bookings/${bookingId}/`, // Adjust the URL to your Django view that returns booking data
+          url: `/aviation/bookings/${bookingId}/`,
           type: 'GET',
           success: function (data) {
-            // Populate form fields with retrieved data
             $('#id_departure').val(data.departure_airport);
             $('#id_arrival').val(data.arrival_airport);
             $('#id_departure_time').val(data.departure_time);
@@ -124,9 +121,8 @@ jQuery(function ($) {
     var departureCode = $('#id_departure').val();
     var arrivalCode = $('#id_arrival').val();
     var totalPassenger = $('#id_total_passenger').val();
-    // Make AJAX call to the API endpoint
     $.ajax({
-      url: '/aviation/calculate-distance/',
+      url: '/aviation/fares/',
       method: 'GET',
       data: {
         departure_code: departureCode,
