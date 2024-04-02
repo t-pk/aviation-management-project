@@ -21,18 +21,18 @@ transformed_data = []
 
 # start time of current date
 for obj in original_data:
-    start_date = current_date_utc - timedelta(days=1)  
-    end_date = current_date_utc + timedelta(days=1)    
+    start_date = current_date_utc - timedelta(days=7)  
+    end_date = current_date_utc + timedelta(days=14)    
     while start_date < end_date:
-        number_of_flight = random.randint(2,5)
+        number_of_flight = random.randint(1,3)
         arrivals = [item for item in original_data if item["code"] != obj["code"]]
         for airport in arrivals:
             i = 0
-            departure_time_min = 0
+            departure_time_min = 0.5
             while i < number_of_flight:
                 i +=1
                 departure_time_min += random.randint((i%3)+1, 4)
-                random_hours_arrival = departure_time_min + random.uniform(0.5, 3)
+                random_hours_arrival = departure_time_min + random.uniform(1, 1.5)
 
                 if random_hours_arrival >= 24:
                     random_hours_arrival -= 24

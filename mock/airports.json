@@ -21,13 +21,6 @@
     "longitude": "108.199"
   },
   {
-    "code": "CXR",
-    "city": "Nha Trang",
-    "name": "Sân bay quốc tế Cam Ranh (Cam Ranh International Airport)",
-    "latitude": "11.9981",
-    "longitude": "109.2196"
-  },
-  {
     "code": "PQC",
     "city": "Phú Quốc",
     "name": "Sân bay quốc tế Phú Quốc (Phu Quoc International Airport)",
@@ -35,32 +28,11 @@
     "longitude": "103.967"
   },
   {
-    "code": "HPH",
-    "city": "Hải Phòng",
-    "name": "Sân bay quốc tế Cát Bi (Cat Bi International Airport)",
-    "latitude": "20.8325",
-    "longitude": "106.7247"
-  },
-  {
-    "code": "VCA",
-    "city": "Cần Thơ",
-    "name": "Sân bay quốc tế Cần Thơ (Can Tho International Airport)",
-    "latitude": "10.085",
-    "longitude": "105.711"
-  },
-  {
     "code": "HUI",
     "city": "Huế",
     "name": "Sân bay quốc tế Phú Bài (Phu Bai International Airport)",
     "latitude": "16.399",
     "longitude": "107.702"
-  },
-  {
-    "code": "VDO",
-    "city": "Quảng Ninh",
-    "name": "Sân bay quốc tế Vân Đồn (Van Don International Airport)",
-    "latitude": "21.2224",
-    "longitude": "107.1974"
   },
   {
     "code": "DLI",
