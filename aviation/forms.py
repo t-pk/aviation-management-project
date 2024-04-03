@@ -22,3 +22,13 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['departure', 'arrival', 'departure_time', 'flight', 'total_passenger', 'passengers', 'total_amount']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        passengers = cleaned_data.get('passengers')
+        total_passenger = cleaned_data.get('total_passenger')
+        print("cleaned_data.get('total_passenger')", cleaned_data.get('flight'))
+        if passengers and passengers.count() != total_passenger:
+            self.add_error('passengers', forms.ValidationError("please check Total Passenger fields ."))
+
+        return cleaned_data

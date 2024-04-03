@@ -3,42 +3,42 @@
     "code": "HAN",
     "city": "Hà Nội",
     "name": "Sân bay quốc tế Nội Bài (Noi Bai International Airport)",
-    "latitude": "21.2212",
-    "longitude": "105.8055"
+    "latitude": 21.2212,
+    "longitude": 105.8055
   },
   {
     "code": "SGN",
     "city": "Hồ Chí Minh",
     "name": "Sân bay quốc tế Tân Sơn Nhất (Tan Son Nhat International Airport)",
-    "latitude": "10.8188",
-    "longitude": "106.6519"
+    "latitude": 10.8188,
+    "longitude": 106.6519
   },
   {
     "code": "DAD",
     "city": "Đà Nẵng",
     "name": "Sân bay quốc tế Đà Nẵng (Da Nang International Airport)",
-    "latitude": "16.0439",
-    "longitude": "108.199"
+    "latitude": 16.0439,
+    "longitude": 108.199
   },
   {
     "code": "PQC",
     "city": "Phú Quốc",
     "name": "Sân bay quốc tế Phú Quốc (Phu Quoc International Airport)",
-    "latitude": "10.227",
-    "longitude": "103.967"
+    "latitude": 10.227,
+    "longitude": 103.967
   },
   {
     "code": "HUI",
     "city": "Huế",
     "name": "Sân bay quốc tế Phú Bài (Phu Bai International Airport)",
-    "latitude": "16.399",
-    "longitude": "107.702"
+    "latitude": 16.399,
+    "longitude": 107.702
   },
   {
     "code": "DLI",
     "city": "Đà Lạt",
     "name": "Sân bay Liên Khương (Lien Khuong Airport)",
-    "latitude": "11.75",
-    "longitude": "108.367"
+    "latitude": 11.75,
+    "longitude": 108.367
   }
 ]

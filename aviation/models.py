@@ -41,7 +41,7 @@ class Booking(models.Model):
     flight = models.ForeignKey("Flight", on_delete=models.CASCADE)
     passengers = models.ManyToManyField(Passenger)
     booking_date = models.DateField(default=timezone.now)
-    total_amount = models.DecimalField(default=0, max_digits=10, decimal_places=2)  # Set default value to 0
+    total_amount = models.DecimalField(default=0, max_digits=12, decimal_places=0)
 
     class Meta:
         db_table = "aviation_booking"

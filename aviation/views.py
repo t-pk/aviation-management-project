@@ -56,6 +56,7 @@ class RetrieveBookingView(APIView):
                 "arrival_airport": booking.flight.arrival_airport,
                 "departure_time": booking.flight.departure_time.strftime("%Y-%m-%d"),
                 "flight_id": booking.flight.id,
+                "total_passenger": booking.passengers.count()
             }
             return JsonResponse(data)
         except Booking.DoesNotExist:

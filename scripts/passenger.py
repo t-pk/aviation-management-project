@@ -1,4 +1,5 @@
 import json
+import random
 from faker import Faker
 from vn_fullname_generator import generator
 import os
@@ -17,7 +18,14 @@ for i in range(num_records):
     citizen_identify_id = fake.random_number(digits=15)
     relation_id = None
     if i > 0:
-        relation_id = fake.random_int(min=1, max=i)
+        probability_of_null = 0.8  # Example: 80% probability of null
+
+        random_number = random.random()
+        if random_number < probability_of_null:
+            relation_id = None
+        else:
+            relation_id = fake.random_int(min=1, max=i)
+
     transformed_item = {
         "model": "aviation.passenger",
         "pk": i + 1,
