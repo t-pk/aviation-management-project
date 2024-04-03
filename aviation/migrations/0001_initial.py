@@ -9,61 +9,118 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Aircraft',
+            name="Aircraft",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('model', models.CharField(max_length=100)),
-                ('capacity', models.IntegerField()),
-                ('code', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("model", models.CharField(max_length=100)),
+                ("capacity", models.IntegerField()),
+                ("code", models.CharField(max_length=100)),
             ],
             options={
-                'db_table': 'aviation_aircraft',
+                "db_table": "aviation_aircraft",
             },
         ),
         migrations.CreateModel(
-            name='Flight',
+            name="Flight",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('departure_airport', models.CharField(max_length=100)),
-                ('arrival_airport', models.CharField(max_length=100)),
-                ('departure_time', models.DateTimeField()),
-                ('arrival_time', models.DateTimeField()),
-                ('aircraft', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aviation.aircraft')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("departure_airport", models.CharField(max_length=100)),
+                ("arrival_airport", models.CharField(max_length=100)),
+                ("departure_time", models.DateTimeField()),
+                ("arrival_time", models.DateTimeField()),
+                (
+                    "aircraft",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="aviation.aircraft",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'aviation_flight',
+                "db_table": "aviation_flight",
             },
         ),
         migrations.CreateModel(
-            name='Passenger',
+            name="Passenger",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('phone', models.CharField(blank=True, max_length=20, null=True)),
-                ('citizen_identify_id', models.CharField(blank=True, max_length=15, null=True)),
-                ('relation', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='aviation.passenger')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("email", models.EmailField(blank=True, max_length=254, null=True)),
+                ("phone", models.CharField(blank=True, max_length=20, null=True)),
+                (
+                    "citizen_identify_id",
+                    models.CharField(blank=True, max_length=15, null=True),
+                ),
+                (
+                    "relation",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="aviation.passenger",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'aviation_passenger',
+                "db_table": "aviation_passenger",
             },
         ),
         migrations.CreateModel(
-            name='Booking',
+            name="Booking",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('booking_date', models.DateField(default=django.utils.timezone.now)),
-                ('total_amount', models.DecimalField(decimal_places=0, default=0, max_digits=12)),
-                ('flight', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aviation.flight')),
-                ('passengers', models.ManyToManyField(to='aviation.passenger')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("booking_date", models.DateField(default=django.utils.timezone.now)),
+                (
+                    "total_amount",
+                    models.DecimalField(decimal_places=0, default=0, max_digits=12),
+                ),
+                (
+                    "flight",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="aviation.flight",
+                    ),
+                ),
+                ("passengers", models.ManyToManyField(to="aviation.passenger")),
             ],
             options={
-                'db_table': 'aviation_booking',
+                "db_table": "aviation_booking",
             },
         ),
     ]

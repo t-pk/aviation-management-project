@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import random
 from math import radians, sin, cos, sqrt, atan2
 
+
 def calculate_distance_between_points(lat1, lon1, lat2, lon2):
     lat1 = radians(lat1)
     lon1 = radians(lon1)
@@ -33,9 +34,10 @@ flight_path = "./aviation/fixtures/0003_Flight.json"
 with open(flight_path, "r") as json_file:
     flight_data = json.load(json_file)
 
-airport_path =  "./mock/airports.json"
+airport_path = "./mock/airports.json"
 with open(airport_path, "r") as json_file:
     airport_data = json.load(json_file)
+
 
 def find_airport_by_code(code):
     for airport in airport_data:
@@ -49,20 +51,22 @@ for flight in flight_data:
     arrival_code = flight["fields"]["arrival_airport"]
     departure_airport = find_airport_by_code(departure_code)
     arrival_airport = find_airport_by_code(arrival_code)
-    
+
     if departure_airport and arrival_airport:
         departure_lat = departure_airport["latitude"]
         departure_lon = departure_airport["longitude"]
         arrival_lat = arrival_airport["latitude"]
         arrival_lon = arrival_airport["longitude"]
-        
-        distance = calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)        
+
+        distance = calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)
         # Calculate the 1 fare
         fare = distance * 3000
         flight["fields"]["fare"] = fare
 
 
 transformed_data = []
+
+
 # Function to generate random booking data
 def generate_booking_data(flight, passengers, booking_date, total_amount):
     return {
@@ -72,9 +76,10 @@ def generate_booking_data(flight, passengers, booking_date, total_amount):
             "flight": flight["pk"],
             "passengers": passengers,
             "booking_date": booking_date,
-            "total_amount": total_amount
-        }
+            "total_amount": total_amount,
+        },
     }
+
 
 # # Function to find return flights
 # def find_return_flights(arrival_airport, departure_time):
@@ -94,10 +99,10 @@ def generate_booking_data(flight, passengers, booking_date, total_amount):
 for flight in flight_data:
     # Randomly select number of passengers for each flight (between 1 and 5)
     num_passengers = random.randint(1, 5)
-    
+
     # Randomly assign passengers to the flight
     passengers = random.sample(range(1, len(passenger_data) + 1), num_passengers)
-    
+
     # If passenger has relation_id (passenger id), include it in the passengers list
     passengers_with_ids = []
     for passenger_id in passengers:
@@ -105,15 +110,15 @@ for flight in flight_data:
             if passenger["pk"] == passenger_id:
                 passengers_with_ids.append(passenger_id)
                 break
-    
+
     # Generate booking date (current date)
     booking_date = datetime.now().strftime("%Y-%m-%d")
     total_amount = flight["fields"]["fare"] * len(passengers_with_ids)
     # Generate booking data for the flight
-    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date,  total_amount)
+    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date, total_amount)
     transformed_data.append(booking_data)
     # print(booking_data)  # Output the generated booking data
-    
+
     # # Find return flights for the current flight
     # return_flights = find_return_flights(flight["fields"]["arrival_airport"], flight["fields"]["departure_time"])
 
