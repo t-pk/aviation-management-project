@@ -10,10 +10,10 @@ for item in original_data:
         "model": "aviation.aircraft",
         "pk": item["id"],
         "fields": {
-            "model": item["model"], 
-            "capacity":  item["capacity"],
-            "code":  item["code"],
-        }
+            "model": item["model"],
+            "capacity": item["capacity"],
+            "code": item["code"],
+        },
     }
     transformed_data.append(transformed_item)
 

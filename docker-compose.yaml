@@ -10,5 +10,5 @@ services:
       POSTGRES_DB: "aviation"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "123456"
-    volumes:
-      - ../volumes/postgres-data:/var/lib/postgresql
+    # volumes:
+    #   - ../volumes/postgres-data:/var/lib/postgresql
