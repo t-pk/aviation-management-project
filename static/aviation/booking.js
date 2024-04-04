@@ -104,6 +104,7 @@ jQuery(function ($) {
             $('#id_departure').val(data.departure_airport);
             $('#id_arrival').val(data.arrival_airport);
             $('#id_departure_time').val(data.departure_time);
+            $('#id_total_passenger').val(data.total_passenger);
             flightIdSelected = data.flight_id;
             resolve();
           },

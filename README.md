@@ -19,7 +19,7 @@ docker compose up
 python manage.py makemigrations
 python manage.py migrate
 
-# create user is super
+# create 3 users and groups
 python manage.py create_group_user
 ```
 

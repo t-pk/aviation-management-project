@@ -9,6 +9,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+
 class BookingFlightView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -56,6 +57,7 @@ class RetrieveBookingView(APIView):
                 "arrival_airport": booking.flight.arrival_airport,
                 "departure_time": booking.flight.departure_time.strftime("%Y-%m-%d"),
                 "flight_id": booking.flight.id,
+                "total_passenger": booking.passengers.count(),
             }
             return JsonResponse(data)
         except Booking.DoesNotExist:
@@ -92,9 +94,7 @@ class CalculateFaresView(APIView):
         arrival_lat = float(arrival_airport["latitude"])
         arrival_lon = float(arrival_airport["longitude"])
 
-        distance = self.calculate_distance_between_points(
-            departure_lat, departure_lon, arrival_lat, arrival_lon
-        )
+        distance = self.calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)
 
         return JsonResponse(
             {
