@@ -111,3 +111,6 @@ class BookingAdmin(admin.ModelAdmin):
     passenger_names.short_description = "Passenger Names"
     total_passenger.short_description = "Total Passenger"
     total_amount_with_vnd.short_description = "Total Amount"
+
+    class Media:
+        js = ("aviation/booking.js",)

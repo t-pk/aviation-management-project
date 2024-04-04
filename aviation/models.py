@@ -47,3 +47,6 @@ class Booking(models.Model):
 
     class Meta:
         db_table = "aviation_booking"
+
+    def __str__(self):
+        return f"{self.id}"
