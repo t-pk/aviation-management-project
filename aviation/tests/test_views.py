@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from aviation.models import Aircraft, Booking, Flight
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.contrib.auth.models import User
 
 
@@ -8,10 +8,11 @@ class TestBookingFlightView(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client.login(username="testuser", password="password123")
+
 
     def test_valid_post_request(self):
         # Create test flight
-        self.client.login(username="testuser", password="password123")
         aircraft = Aircraft.objects.create(model="Boeing 777", capacity=300, code="GHI789")
 
         flight = Flight.objects.create(

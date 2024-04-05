@@ -8,6 +8,7 @@ from aviation.models import Booking, Flight
 from datetime import datetime
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Count
 
 
 logger = logging.getLogger(__name__)
@@ -28,10 +29,13 @@ class BookingFlightView(APIView):
             departure_airport=request.data["departure_airport"],
             arrival_airport=request.data["arrival_airport"],
             departure_time__range=(start_datetime, end_datetime),
-        )
+        ).annotate(num_booked_passengers=Count('booking__passengers'))
 
         flights_data = []
         for flight in matching_flights:
+            # Calculate available seats
+            available_seats = flight.aircraft.capacity - flight.num_booked_passengers
+
             flight_data = {
                 "id": flight.id,
                 "departure_airport": flight.departure_airport,
@@ -39,12 +43,12 @@ class BookingFlightView(APIView):
                 "departure_time": flight.departure_time.isoformat(),
                 "arrival_time": flight.arrival_time.isoformat(),
                 "aircraft_code": flight.aircraft.code,
+                "available_seats": available_seats,
             }
 
             flights_data.append(flight_data)
 
         return JsonResponse({"flights": flights_data})
-
 
 class RetrieveBookingView(APIView):
     permission_classes = [IsAuthenticated]

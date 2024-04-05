@@ -53,7 +53,7 @@ jQuery(function ($) {
             const arrival_time = new Date(option.arrival_time).toLocaleTimeString();
             const newOption = $('<option>', {
               value: option.id,
-              text: `${option.aircraft_code} | ${departure_time} | ${arrival_time}`,
+              text: `${option.aircraft_code} | ${departure_time} | ${arrival_time} | ${option.available_seats} (avail seats)`,
               selected: flightIdSelected === option.id
             });
             $('#id_flight').append(newOption);
@@ -85,7 +85,6 @@ jQuery(function ($) {
   if (airports && airports.length) {
     filterAndPopulateOptions(airports, airports[0].code, arrivalSelect)
       .then(fetchDataForEditing)
-      .then(fetchFlight)
       .catch(error => {
         console.error('Error:', error);
       });
@@ -106,6 +105,7 @@ jQuery(function ($) {
             $('#id_departure_time').val(data.departure_time);
             $('#id_total_passenger').val(data.total_passenger);
             flightIdSelected = data.flight_id;
+            fetchFlight();
             resolve();
           },
           error: function (xhr, textStatus, error) {
