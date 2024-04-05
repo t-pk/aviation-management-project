@@ -8,7 +8,9 @@ class BookingForm(forms.ModelForm):
     with open("./mock/airports.json") as airports_file:
         airport_data = json.load(airports_file)
 
-    airport_choices = [(airport["code"], f"{airport['code']} - {airport['city']} - {airport['name']}") for airport in airport_data]
+    airport_choices = [
+        (airport["code"], f"{airport['code']} - {airport['city']} - {airport['name']}") for airport in airport_data
+    ]
 
     departure = forms.ChoiceField(label="Departure", choices=airport_choices)
     arrival = forms.ChoiceField(label="Arrival", choices=airport_choices)

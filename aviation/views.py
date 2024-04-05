@@ -29,7 +29,7 @@ class BookingFlightView(APIView):
             departure_airport=request.data["departure_airport"],
             arrival_airport=request.data["arrival_airport"],
             departure_time__range=(start_datetime, end_datetime),
-        ).annotate(num_booked_passengers=Count('booking__passengers'))
+        ).annotate(num_booked_passengers=Count("booking__passengers"))
 
         flights_data = []
         for flight in matching_flights:
@@ -49,6 +49,7 @@ class BookingFlightView(APIView):
             flights_data.append(flight_data)
 
         return JsonResponse({"flights": flights_data})
+
 
 class RetrieveBookingView(APIView):
     permission_classes = [IsAuthenticated]
