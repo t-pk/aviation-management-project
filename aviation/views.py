@@ -6,6 +6,9 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from aviation.models import Booking, Flight
 from datetime import datetime
+from rest_framework.response import Response
+from rest_framework import status
+
 
 logger = logging.getLogger(__name__)
 
@@ -67,12 +70,27 @@ class RetrieveBookingView(APIView):
 
 
 class CalculateFaresView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         logger.info(f"request CalculateFaresView: {str(request.GET)}")
 
         departure_code = request.GET.get("departure_code")
         arrival_code = request.GET.get("arrival_code")
-        total_passenger = int(request.GET.get("total_passenger"))
+        total_passenger = request.GET.get("total_passenger")
+
+        if not all([departure_code, arrival_code, total_passenger]):
+            return Response({"error": "Missing required parameters"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not total_passenger.isdigit():
+            return Response({"error": "Total passenger count must be an integer"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            total_passenger = int(total_passenger)
+            if total_passenger < 0:
+                raise ValueError("Total passenger count must be non-negative")
+        except ValueError:
+            return Response({"error": "Invalid total passenger count"}, status=status.HTTP_400_BAD_REQUEST)
 
         with open("./mock/airports.json") as airports_file:
             airport_data = json.load(airports_file)

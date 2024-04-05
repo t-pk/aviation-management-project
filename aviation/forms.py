@@ -36,7 +36,6 @@ class BookingForm(forms.ModelForm):
         cleaned_data = super().clean()
         passengers = cleaned_data.get("passengers")
         total_passenger = cleaned_data.get("total_passenger")
-        print("cleaned_data.get('total_passenger')", cleaned_data.get("flight"))
         if passengers and passengers.count() != total_passenger:
             self.add_error(
                 "passengers",
