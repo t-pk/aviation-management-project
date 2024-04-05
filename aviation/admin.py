@@ -72,6 +72,7 @@ class BookingAdmin(admin.ModelAdmin):
         "total_amount_with_vnd",
         "booking_date",
     )
+    list_filter = ["flight__departure_airport", "flight__arrival_airport",  "flight__aircraft__code", "flight__departure_time"]
 
     @staticmethod
     def departure_airport(obj):
