@@ -37,11 +37,11 @@ class BookingForm(forms.ModelForm):
         passengers = cleaned_data.get("passengers")
         total_passenger = cleaned_data.get("total_passenger")
         flight = cleaned_data.get("flight")
-        
+
         if passengers and passengers.count() != total_passenger:
             self.add_error(
                 "passengers",
-                forms.ValidationError("please check Total Passenger fields ."),
+                forms.ValidationError("The number of passengers does not match the total passenger count. Please check the Total Passenger field."),
             )
 
         available_seats = self.get_available_seats(flight)
@@ -49,7 +49,7 @@ class BookingForm(forms.ModelForm):
             if total_passenger > available_seats:
                 self.add_error(
                     "passengers",
-                    forms.ValidationError("please check Total Passenger fields ."),
+                    forms.ValidationError("The number of passengers exceeds the available seats. Please adjust the Total Passenger field."),
                 )
         return cleaned_data
 
