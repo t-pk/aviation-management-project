@@ -36,10 +36,28 @@ class BookingForm(forms.ModelForm):
         cleaned_data = super().clean()
         passengers = cleaned_data.get("passengers")
         total_passenger = cleaned_data.get("total_passenger")
+        flight = cleaned_data.get("flight")
+        
         if passengers and passengers.count() != total_passenger:
             self.add_error(
                 "passengers",
                 forms.ValidationError("please check Total Passenger fields ."),
             )
 
+        available_seats = self.get_available_seats(flight)
+        if total_passenger and available_seats:
+            if total_passenger > available_seats:
+                self.add_error(
+                    "passengers",
+                    forms.ValidationError("please check Total Passenger fields ."),
+                )
         return cleaned_data
+
+    def get_available_seats(self, flight):
+        bookings = Booking.objects.filter(
+            flight = flight
+        )
+        
+        total_booked_seats = sum(booking.passengers.count() for booking in bookings)
+        available_seats = flight.aircraft.capacity - total_booked_seats
+        return available_seatsgi
