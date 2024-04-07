@@ -85,6 +85,7 @@ jQuery(function ($) {
   if (airports && airports.length) {
     filterAndPopulateOptions(airports, airports[0].code, arrivalSelect)
       .then(fetchDataForEditing)
+      .then(fetchFlight)
       .catch(error => {
         console.error('Error:', error);
       });
