@@ -60,4 +60,4 @@ class BookingForm(forms.ModelForm):
         
         total_booked_seats = sum(booking.passengers.count() for booking in bookings)
         available_seats = flight.aircraft.capacity - total_booked_seats
-        return available_seatsgi
+        return available_seats
