@@ -68,7 +68,7 @@ transformed_data = []
 
 
 # Function to generate random booking data
-def generate_booking_data(flight, passengers, booking_date, total_amount):
+def generate_booking_data(flight, passengers, booking_date, total_fare):
     return {
         "model": "aviation.booking",
         "pk": flight["pk"],
@@ -76,7 +76,7 @@ def generate_booking_data(flight, passengers, booking_date, total_amount):
             "flight": flight["pk"],
             "passengers": passengers,
             "booking_date": booking_date,
-            "total_amount": total_amount,
+            "total_fare": total_fare,
         },
     }
 
@@ -113,9 +113,9 @@ for flight in flight_data:
 
     # Generate booking date (current date)
     booking_date = datetime.now().strftime("%Y-%m-%d")
-    total_amount = flight["fields"]["fare"] * len(passengers_with_ids)
+    total_fare = flight["fields"]["fare"] * len(passengers_with_ids)
     # Generate booking data for the flight
-    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date, total_amount)
+    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date, total_fare)
     transformed_data.append(booking_data)
     # print(booking_data)  # Output the generated booking data
 

@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from aviation.forms import BookingForm
 from .models import Flight, Aircraft, Booking, Passenger
+from django.urls import resolve
 
 
 @admin.register(Flight)
@@ -68,8 +69,8 @@ class BookingAdmin(admin.ModelAdmin):
         "departure_time",
         "arrival_time",
         "passenger_names",
-        "total_passenger",
-        "total_amount_with_vnd",
+        "quantity",
+        "total_fare_with_vnd",
         "booking_date",
     )
     list_filter = [
@@ -79,9 +80,8 @@ class BookingAdmin(admin.ModelAdmin):
         "flight__departure_time",
     ]
 
-    date_hierarchy = 'flight__departure_time'
+    date_hierarchy = "flight__departure_time"
 
-    
     @staticmethod
     def departure_airport(obj):
         return obj.flight.departure_airport
@@ -105,12 +105,12 @@ class BookingAdmin(admin.ModelAdmin):
         return arrival_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
-    def total_passenger(obj):
+    def quantity(obj):
         return obj.passengers.count()
 
     @staticmethod
-    def total_amount_with_vnd(obj):
-        formatted_amount = "{:,.0f}".format(obj.total_amount)  # Format with commas for thousands separators
+    def total_fare_with_vnd(obj):
+        formatted_amount = "{:,.0f}".format(obj.total_fare)  # Format with commas for thousands separators
         return f"{formatted_amount} VND"
 
     departure_airport.short_description = "Departure Airport"
@@ -118,8 +118,8 @@ class BookingAdmin(admin.ModelAdmin):
     passenger_names.short_description = "Passenger Names"
     arrival_time.short_description = "Arrival Time"
     passenger_names.short_description = "Passenger Names"
-    total_passenger.short_description = "Total Passenger"
-    total_amount_with_vnd.short_description = "Total Amount"
+    quantity.short_description = "Quantity"
+    total_fare_with_vnd.short_description = "Total_fare"
 
     class Media:
         js = ("aviation/booking.js",)

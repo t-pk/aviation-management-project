@@ -77,9 +77,7 @@ class TestCalculateFaresView(TestCase):
 
     def test_valid_get_request(self):
         # Make get request with valid parameters
-        response = self.client.get(
-            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "total_passenger": 2}
-        )
+        response = self.client.get(f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": 2})
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue("distance" in response.json())
@@ -95,7 +93,7 @@ class TestCalculateFaresView(TestCase):
     def test_invalid_airport_code(self):
         # Test with invalid airport code
         response = self.client.get(
-            f"/aviation/fares/", {"departure_code": "INVALID", "arrival_code": "HAN", "total_passenger": 2}
+            f"/aviation/fares/", {"departure_code": "INVALID", "arrival_code": "HAN", "quantity": 2}
         )
         self.assertEqual(response.status_code, 400)
         self.assertTrue("error" in response.json())
@@ -103,7 +101,7 @@ class TestCalculateFaresView(TestCase):
     def test_invalid_passenger_count(self):
         # Test with invalid passenger count (non-integer value)
         response = self.client.get(
-            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "total_passenger": "invalid"}
+            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": "invalid"}
         )
         self.assertEqual(response.status_code, 400)
         self.assertTrue("error" in response.json())
@@ -111,16 +109,14 @@ class TestCalculateFaresView(TestCase):
     def test_negative_passenger_count(self):
         # Test with negative passenger count
         response = self.client.get(
-            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "total_passenger": -2}
+            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": -2}
         )
         self.assertEqual(response.status_code, 400)
         self.assertTrue("error" in response.json())
 
     def test_zero_passenger_count(self):
         # Test with zero passenger count
-        response = self.client.get(
-            f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "total_passenger": 0}
-        )
+        response = self.client.get(f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": 0})
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue("distance" in response.json())
