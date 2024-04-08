@@ -10,7 +10,6 @@ class TestBookingFlightView(TestCase):
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.client.login(username="testuser", password="password123")
 
-
     def test_valid_post_request(self):
         # Create test flight
         aircraft = Aircraft.objects.create(model="Boeing 777", capacity=300, code="GHI789")
