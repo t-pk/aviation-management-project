@@ -13,7 +13,7 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-const get_booking_information = () => {
+const get_booking_information = (action) => {
   const departure = document.getElementById('id_departure').value;
   const arrival = document.getElementById('id_arrival').value;
   const departure_time = document.getElementById('id_departure_time').value;
@@ -33,13 +33,16 @@ const get_booking_information = () => {
   })
     .then(response => response.json())
     .then(data => {
-      const select = document.getElementById('id_flight');
-      select.innerHTML = '';
-      data.forEach(flight => {
-        const option = document.createElement('option');
-        option.value = flight.pk;
-        option.text = flight.__str__;
-        select.appendChild(option);
-      });
+      if (['id_departure', 'id_arrival', 'id_departure_time'].includes(action)) {
+        const select = document.getElementById('id_flight');
+        select.innerHTML = '';
+        data.flights.forEach(flight => {
+          const option = document.createElement('option');
+          option.value = flight.pk;
+          option.text = flight.__str__;
+          select.appendChild(option);
+        });
+      }
+      document.getElementById('id_total_fare').value = data.total_fare
     });
 };

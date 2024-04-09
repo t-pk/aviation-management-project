@@ -66,6 +66,7 @@ class BookingAdmin(admin.ModelAdmin):
         "id",
         "departure_airport",
         "arrival_airport",
+        "aircraft_code",
         "departure_time",
         "arrival_time",
         "passenger_names",
@@ -93,6 +94,10 @@ class BookingAdmin(admin.ModelAdmin):
     @staticmethod
     def passenger_names(obj):
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
+
+    @staticmethod
+    def aircraft_code(obj):
+        return obj.flight.aircraft.code if obj.flight.aircraft else ""
 
     @staticmethod
     def departure_time(obj):

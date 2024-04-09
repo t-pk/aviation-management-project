@@ -21,9 +21,11 @@ class Flight(models.Model):
         db_table = "aviation_flight"
 
     def __str__(self):
-        num_booked_passengers = self.booking_set.aggregate(num_booked_passengers=Count("passengers"))["num_booked_passengers"]
+        num_booked_passengers = self.booking_set.aggregate(num_booked_passengers=Count("passengers"))[
+            "num_booked_passengers"
+        ]
         available_seats = self.aircraft.capacity - num_booked_passengers
-        return f"{self.aircraft.code} | {self.departure_time.time().strftime('%H:%M')} | {self.arrival_time.time().strftime('%H:%M')} | {available_seats} avail seats"
+        return f"{self.aircraft.code} | {self.departure_time.time().strftime('%H:%M')} | {self.arrival_time.time().strftime('%H:%M')} | {available_seats} (avail seats)"
 
 
 class Aircraft(models.Model):
