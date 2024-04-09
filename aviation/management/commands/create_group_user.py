@@ -20,7 +20,7 @@ class Command(BaseCommand):
         # Create the user_flight_manager
         user_flight_manager = User.objects.create_user(username="flightmanager", password="flightmanager")
         self.stdout.write(self.style.SUCCESS(f"User '{user_flight_manager.username}' created successfully!"))
-        group_flight_manager, created = Group.objects.get_or_create(name="FlightManager")
+        group_flight_manager, created = Group.objects.get_or_create(name="Flight Manager")
 
         add_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_flight")
         change_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="change_flight")
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         user_flight_manager.save()
         self.stdout.write(
             self.style.SUCCESS(
-                f"User '{user_flight_manager.username}' added to group 'FlightManager' with permissions!"
+                f"User '{user_flight_manager.username}' added to group 'Flight Manager' with permissions!"
             )
         )
 
