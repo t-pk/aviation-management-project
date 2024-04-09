@@ -17,7 +17,7 @@ const get_booking_information = (action) => {
   const departure = document.getElementById('id_departure').value;
   const arrival = document.getElementById('id_arrival').value;
   const departure_time = document.getElementById('id_departure_time').value;
-  const quantity = document.getElementById('id_quantity').value;
+  const quantity = document.getElementById('id_quantity').value || 0;
 
   const params = new URLSearchParams({ departure, arrival, departure_time, quantity });
   const url = `${window.location.origin}/aviation/get-booking-information/?${params}`;

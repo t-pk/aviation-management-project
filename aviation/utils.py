@@ -2,10 +2,12 @@ import json
 from math import radians, sin, cos, sqrt, atan2
 
 with open("./mock/airports.json") as airports_file:
-        airport_data = json.load(airports_file)
+    airport_data = json.load(airports_file)
+
 
 def get_airport():
-     return airport_data
+    return airport_data
+
 
 def calculate_fare(departure_code, arrival_code, total_passenger):
     # Load airport data from JSON file
@@ -43,6 +45,7 @@ def calculate_fare(departure_code, arrival_code, total_passenger):
         "fare": fare,
         "total_fare": total_fare,
     }
+
 
 def calculate_distance_between_points(lat1, lon1, lat2, lon2):
     lat1 = radians(lat1)

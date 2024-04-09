@@ -17,13 +17,15 @@ class BookingView(View):
         departure_time = request.GET.get("departure_time")
         quantity = request.GET.get("quantity")
 
-        logger.info(f"API get-booking-information query: {str(request.GET)}")
+        logger.debug(f"API get-booking-information query: {str(request.GET)}")
 
         departure_date = datetime.strptime(departure_time, "%Y-%m-%d")
-    
+
         current_datetime = timezone.now()
         if departure_date.date() == current_datetime.date():
-            start_datetime = departure_date.replace(hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second)
+            start_datetime = departure_date.replace(
+                hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second
+            )
         else:
             start_datetime = departure_date.replace(hour=0, minute=0, second=0)
 

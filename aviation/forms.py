@@ -1,9 +1,11 @@
-import json
+import logging
 from django import forms
 from django.utils import timezone
 
 from aviation.utils import get_airport
 from .models import Booking, Flight
+
+logger = logging.getLogger(__name__)
 
 
 class BookingForm(forms.ModelForm):
@@ -30,9 +32,10 @@ class BookingForm(forms.ModelForm):
 
     departure_time = forms.DateField(
         label="Departure Time",
-        widget=forms.DateInput(attrs={"type": "date", "onchange": "get_booking_information(this.id);", "min": timezone.now().date()}),
+        widget=forms.DateInput(
+            attrs={"type": "date", "onchange": "get_booking_information(this.id);", "min": timezone.now().date()}
+        ),
         initial=timezone.now().date(),
-
     )
 
     quantity = forms.IntegerField(
@@ -42,7 +45,13 @@ class BookingForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={"oninput": "get_booking_information();"}),
     )
 
-    total_fare = forms.DecimalField(label="Total Fare", required=True, initial=0, min_value=0, widget=forms.NumberInput(attrs={'readonly': 'readonly'}))
+    total_fare = forms.DecimalField(
+        label="Total Fare",
+        required=True,
+        initial=0,
+        min_value=0,
+        widget=forms.NumberInput(attrs={"readonly": "readonly"}),
+    )
 
     class Meta:
         model = Booking
@@ -79,7 +88,11 @@ class BookingForm(forms.ModelForm):
 
         current_datetime = timezone.now()
         if departure_time_instance.date() == current_datetime.date():
-            start_datetime = departure_time_instance.replace(hour=departure_time_instance.hour, minute=departure_time_instance.minute, second=departure_time_instance.second)
+            start_datetime = departure_time_instance.replace(
+                hour=departure_time_instance.hour,
+                minute=departure_time_instance.minute,
+                second=departure_time_instance.second,
+            )
         else:
             start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
 
@@ -95,14 +108,16 @@ class BookingForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        booking_instance = self.instance
         passengers = cleaned_data.get("passengers")
         quantity = cleaned_data.get("quantity")
-        flight_id = self.data.get("flight")
-
+        flight = self.data.get("flight")
+        passengers_selected = quantity or 0
         if "flight" not in cleaned_data or cleaned_data["flight"] is None:
-            if flight_id:
+            if flight:
                 try:
-                    cleaned_data["flight"] = Flight.objects.get(pk=flight_id)
+                    flight = Flight.objects.get(pk=flight)
+                    cleaned_data["flight"] = flight
                     errors = self.errors
                     if "flight" in errors:
                         errors.pop("flight")
@@ -115,4 +130,33 @@ class BookingForm(forms.ModelForm):
                 forms.ValidationError("Please check the Quantity field."),
             )
 
+        if passengers and flight:
+            passenger_count = 0
+            if booking_instance and booking_instance.id:
+                booked_passenger = Booking.objects.get(id=booking_instance.id)
+                passenger_count = booked_passenger.passengers.count() #exists booked current on DB.
+            available_seats = self.get_available_seats(flight) + passenger_count
+            logger.debug(
+                f"Class name: {self.__class__.__name__} func name {self.save.__name__} available_seats = {available_seats}, passengers_selected = {passengers_selected} passenger_count = {passenger_count}"
+            )
+
+            if passengers_selected > available_seats:
+                raise forms.ValidationError(f"Only {available_seats - passenger_count} seats available on this flight.")
+
         return cleaned_data
+
+    def get_available_seats(self, flight):
+        logger.debug(f"flight information {flight}")
+        if type(flight) is str:
+            bookings = Booking.objects.filter(flight_id=flight)
+            flight = Flight.objects.get(pk=flight)
+        else:
+            bookings = Booking.objects.filter(flight_id=flight.id)
+        total_booked_seats = sum(booking.passengers.count() for booking in bookings)
+
+        try:
+            available_seats = flight.aircraft.capacity - total_booked_seats
+        except Flight.DoesNotExist:
+            available_seats = 0
+
+        return available_seats
