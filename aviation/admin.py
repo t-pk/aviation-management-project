@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from aviation.forms import BookingForm
 from .models import Flight, Aircraft, Booking, Passenger
-from django.urls import resolve
+
 
 
 @admin.register(Flight)
@@ -27,6 +27,7 @@ class FlightAdmin(admin.ModelAdmin):
         "duration_time",
     ]
     list_filter = ["departure_airport", "arrival_airport"]
+    list_per_page = 20  # Set the number of bookings per page
 
     @staticmethod
     def aircraft_code(obj):
@@ -49,6 +50,7 @@ class AircraftAdmin(admin.ModelAdmin):
     list_display = ["id", "model", "code", "capacity"]
     search_fields = ["id", "model", "code", "capacity"]
     list_filter = ["model"]
+    list_per_page = 20  # Set the number of bookings per page
 
 
 @admin.register(Passenger)
@@ -56,6 +58,8 @@ class PassengerAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "email", "phone"]
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
+    list_per_page = 20  # Set the number of bookings per page
+
 
 
 @admin.register(Booking)
@@ -82,6 +86,8 @@ class BookingAdmin(admin.ModelAdmin):
     ]
 
     date_hierarchy = "flight__departure_time"
+
+    list_per_page = 20  # Set the number of bookings per page
 
     @staticmethod
     def departure_airport(obj):
