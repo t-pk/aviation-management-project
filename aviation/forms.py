@@ -67,11 +67,23 @@ class BookingForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        departure_instance = self.data.get('departure', self.airport_choices[0][0])
-        arrival_instance = self.data.get('arrival', self.airport_choices[1][0])
-        departure_time_instance = self.data.get('departure_time', timezone.now())
+        super().__init__(*args, **kwargs)
+        booking_instance = kwargs.pop("instance", None)
+
+        if booking_instance and self.data.get('departure') is None:
+            flight_instance = booking_instance.flight
+            departure_instance = flight_instance.departure_airport
+            arrival_instance = flight_instance.arrival_airport
+            departure_time_instance = flight_instance.departure_time
+            self.initial["flight"] = flight_instance.pk
+            passenger_count = booking_instance.passengers.count()
+            self.initial["quantity"] = passenger_count
+
+        else:
+            departure_instance = self.data.get('departure', self.airport_choices[0][0])
+            arrival_instance = self.data.get('arrival', self.airport_choices[1][0])
+            departure_time_instance = self.data.get('departure_time', timezone.now())
 
         self.initial["departure"] = departure_instance
         self.initial["arrival"] = arrival_instance
