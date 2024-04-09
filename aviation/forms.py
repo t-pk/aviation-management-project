@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from django import forms
 from django.utils import timezone
@@ -67,35 +68,27 @@ class BookingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        booking_instance = kwargs.pop("instance", None)
-        if booking_instance:
 
-            flight_instance = booking_instance.flight
-            departure_instance = flight_instance.departure_airport
-            arrival_instance = flight_instance.arrival_airport
-            departure_time_instance = flight_instance.departure_time
-            self.initial["flight"] = flight_instance.pk
-            passenger_count = booking_instance.passengers.count()
-            self.initial["quantity"] = passenger_count
-        else:
-            departure_instance = self.airport_choices[0][0]
-            arrival_instance = self.airport_choices[1][0]
-            departure_time_instance = timezone.now()
+        departure_instance = self.data.get('departure', self.airport_choices[0][0])
+        arrival_instance = self.data.get('arrival', self.airport_choices[1][0])
+        departure_time_instance = self.data.get('departure_time', timezone.now())
 
         self.initial["departure"] = departure_instance
         self.initial["arrival"] = arrival_instance
         self.initial["departure_time"] = departure_time_instance
 
         current_datetime = timezone.now()
-        if departure_time_instance.date() == current_datetime.date():
+        if departure_time_instance == current_datetime.date():
             start_datetime = departure_time_instance.replace(
                 hour=departure_time_instance.hour,
                 minute=departure_time_instance.minute,
                 second=departure_time_instance.second,
             )
         else:
-            start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
+            if(type(departure_time_instance) is str):
+                departure_time_instance = datetime.strptime(departure_time_instance, '%Y-%m-%d')
 
+            start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
         end_datetime = departure_time_instance.replace(hour=23, minute=59, second=59)
 
         matching_flights = Flight.objects.filter(
