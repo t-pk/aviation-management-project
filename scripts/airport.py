@@ -22,7 +22,7 @@ for item in original_data:
     transformed_data.append(transformed_item)
 
 output_file_path = "./aviation/fixtures/0002_Airport.json"
-with open(output_file_path, "w") as json_file:
-    json.dump(transformed_data, json_file, indent=2)
+with open(output_file_path, "w", encoding="utf-8") as json_file:
+    json.dump(transformed_data, json_file, indent=2, ensure_ascii=False)
 
 print(f"Transformed data saved to {output_file_path}")

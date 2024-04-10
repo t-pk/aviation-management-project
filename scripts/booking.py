@@ -34,14 +34,14 @@ flight_path = "./aviation/fixtures/0004_Flight.json"
 with open(flight_path, "r") as json_file:
     flight_data = json.load(json_file)
 
-airport_path = "./mock/airports.json"
+airport_path = "./aviation/fixtures/0002_Airport.json"
 with open(airport_path, "r") as json_file:
     airport_data = json.load(json_file)
 
 
-def find_airport_by_code(code):
+def find_airport_by_code(pk):
     for airport in airport_data:
-        if airport["code"] == code:
+        if airport["pk"] == pk:
             return airport
     return None
 
@@ -53,10 +53,10 @@ for flight in flight_data:
     arrival_airport = find_airport_by_code(arrival_code)
 
     if departure_airport and arrival_airport:
-        departure_lat = departure_airport["latitude"]
-        departure_lon = departure_airport["longitude"]
-        arrival_lat = arrival_airport["latitude"]
-        arrival_lon = arrival_airport["longitude"]
+        departure_lat = departure_airport['fields']["latitude"]
+        departure_lon = departure_airport['fields']["longitude"]
+        arrival_lat = arrival_airport['fields']["latitude"]
+        arrival_lon = arrival_airport['fields']["longitude"]
 
         distance = calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)
         # Calculate the 1 fare

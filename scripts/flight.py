@@ -14,7 +14,8 @@ def format_datetime_with_utc_offset(dt):
 
 
 # Load airports data
-input_file_path = "./mock/airports.json"
+input_file_path = "./aviation/fixtures/0002_Airport.json"
+
 with open(input_file_path, "r") as json_file:
     original_data = json.load(json_file)
 
@@ -27,7 +28,7 @@ for obj in original_data:
     end_date = current_date_utc + timedelta(days=14)
     while start_date < end_date:
         number_of_flight = random.randint(1, 3)
-        arrivals = [item for item in original_data if item["code"] != obj["code"]]
+        arrivals = [item for item in original_data if item["pk"] != obj["pk"]]
         for airport in arrivals:
             i = 0
             departure_time_min = 0.5
@@ -53,8 +54,8 @@ for obj in original_data:
                     "model": "aviation.flight",
                     "pk": len(transformed_data) + 1,
                     "fields": {
-                        "departure_airport": obj["code"],
-                        "arrival_airport": airport["code"],
+                        "departure_airport": obj["pk"],
+                        "arrival_airport": airport["pk"],
                         "departure_time": format_datetime_with_utc_offset(departure_time),
                         "arrival_time": format_datetime_with_utc_offset(arrival_time),
                         "aircraft_id": random.randint(1, 90),

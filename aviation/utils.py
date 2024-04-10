@@ -1,36 +1,16 @@
-import json
 from math import radians, sin, cos, sqrt, atan2
 
-with open("./mock/airports.json") as airports_file:
-    airport_data = json.load(airports_file)
-
-
-def get_airport():
-    return airport_data
-
-
-def calculate_fare(departure_code, arrival_code, total_passenger):
-    # Load airport data from JSON file
-    airports = get_airport()
-    # Find departure and arrival airports
-    departure_airport = next(
-        (airport for airport in airports if airport["code"] == departure_code),
-        None,
-    )
-    arrival_airport = next(
-        (airport for airport in airports if airport["code"] == arrival_code),
-        None,
-    )
+def calculate_fare(departure_airport, arrival_airport, total_passenger):
 
     # If either airport is not found, return error
     if departure_airport is None or arrival_airport is None:
         return {"error": "Invalid airport code"}
 
     # Extract latitude and longitude of departure and arrival airports
-    departure_lat = float(departure_airport["latitude"])
-    departure_lon = float(departure_airport["longitude"])
-    arrival_lat = float(arrival_airport["latitude"])
-    arrival_lon = float(arrival_airport["longitude"])
+    departure_lat = float(departure_airport.latitude)
+    departure_lon = float(departure_airport.longitude)
+    arrival_lat = float(arrival_airport.latitude)
+    arrival_lon = float(arrival_airport.longitude)
 
     # Calculate distance between departure and arrival airports
     distance = calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)

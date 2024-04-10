@@ -1,6 +1,8 @@
 from django.contrib import admin
 from datetime import timedelta
 
+from django.forms import ValidationError
+
 from aviation.forms import BookingForm
 from .models import Airport, Flight, Aircraft, Booking, Passenger
 from django.db.models import Count
@@ -51,8 +53,6 @@ class FlightAdmin(admin.ModelAdmin):
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
     total_passenger.short_description = "Total Passenger"
-    
-
 
 @admin.register(Aircraft)
 class AircraftAdmin(admin.ModelAdmin):

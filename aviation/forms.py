@@ -2,9 +2,7 @@ from datetime import datetime
 import logging
 from django import forms
 from django.utils import timezone
-
-from aviation.utils import get_airport
-from .models import Booking, Flight
+from .models import Airport, Booking, Flight
 
 logger = logging.getLogger(__name__)
 
@@ -14,20 +12,13 @@ class BookingForm(forms.ModelForm):
         self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
 
-    airport_choices = [
-        (airport["code"], f"{airport['code']} - {airport['city']} - {airport['name']}") for airport in get_airport()
-    ]
-
     departure = forms.ChoiceField(
         label="Departure",
-        choices=airport_choices,
         widget=forms.Select(attrs={"onchange": "get_booking_information(this.id);"}),
     )
 
     arrival = forms.ChoiceField(
         label="Arrival",
-        choices=airport_choices,
-        initial=airport_choices[1][0],
         widget=forms.Select(attrs={"onchange": "get_booking_information(this.id);"}),
     )
 
@@ -67,9 +58,12 @@ class BookingForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
         booking_instance = kwargs.pop("instance", None)
+        airports = Airport.objects.all()
+        airport_choices = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
+        self.fields['departure'].choices = airport_choices
+        self.fields['arrival'].choices = airport_choices
 
         if booking_instance and self.data.get("departure") is None:
             flight_instance = booking_instance.flight
@@ -79,15 +73,16 @@ class BookingForm(forms.ModelForm):
             self.initial["flight"] = flight_instance.pk
             passenger_count = booking_instance.passengers.count()
             self.initial["quantity"] = passenger_count
-
+            self.initial["departure"] = departure_instance.pk
+            self.initial["arrival"] = arrival_instance.pk
+            self.initial["departure_time"] = departure_time_instance
         else:
-            departure_instance = self.data.get("departure", self.airport_choices[0][0])
-            arrival_instance = self.data.get("arrival", self.airport_choices[1][0])
+            departure_instance = self.data.get("departure", airport_choices[0][0])
+            arrival_instance = self.data.get("arrival", airport_choices[1][0])
             departure_time_instance = self.data.get("departure_time", timezone.now())
-
-        self.initial["departure"] = departure_instance
-        self.initial["arrival"] = arrival_instance
-        self.initial["departure_time"] = departure_time_instance
+            self.initial["departure"] = departure_instance
+            self.initial["arrival"] = arrival_instance
+            self.initial["departure_time"] = departure_time_instance
 
         current_datetime = timezone.now()
         if departure_time_instance == current_datetime.date():
