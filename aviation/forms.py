@@ -64,8 +64,10 @@ class BookingForm(forms.ModelForm):
         self.fields["arrival"].choices = airport_choices
 
         if booking_instance and self.data.get("departure") is None:
-            booking_instance.departure = booking_instance.flight.departure_airport
-            booking_instance.arrival = booking_instance.flight.arrival_airport
+            if self.initial == {}:
+                booking_instance.departure = booking_instance.flight.departure_airport
+                booking_instance.arrival = booking_instance.flight.arrival_airport
+                return
 
             flight_instance = booking_instance.flight
             departure_instance = flight_instance.departure_airport
