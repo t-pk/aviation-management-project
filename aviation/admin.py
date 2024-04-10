@@ -151,3 +151,8 @@ class BookingAdmin(admin.ModelAdmin):
 
     class Media:
         js = ("aviation/booking.js",)
+
+    def has_change_permission(self, request, obj=None):
+        # implement logic here
+        return False
+

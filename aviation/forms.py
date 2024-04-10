@@ -82,7 +82,7 @@ class BookingForm(forms.ModelForm):
         else:
             departure_instance = self.data.get("departure", airport_choices[0][0])
             arrival_instance = self.data.get("arrival", airport_choices[1][0])
-            departure_time_instance = self.data.get("departure_time", timezone.now())
+            departure_time_instance = self.data.get("departure_time", timezone.now().strftime("%Y-%m-%d"))
             self.initial["departure"] = departure_instance
             self.initial["arrival"] = arrival_instance
             self.initial["departure_time"] = departure_time_instance
@@ -91,10 +91,7 @@ class BookingForm(forms.ModelForm):
         logger.debug(
             f"booking_instance {booking_instance} current_datetime {current_datetime}, departure_time_instance = {departure_time_instance} departure_time_instance == current_datetime.date() {departure_time_instance == current_datetime.date()}"
         )
-        if (
-            departure_time_instance == current_datetime.date()
-            or departure_time_instance.date() == current_datetime.date()
-        ):
+        if departure_time_instance == current_datetime.date():
             start_datetime = departure_time_instance.replace(
                 hour=departure_time_instance.hour,
                 minute=departure_time_instance.minute,
