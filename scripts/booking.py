@@ -53,10 +53,10 @@ for flight in flight_data:
     arrival_airport = find_airport_by_code(arrival_code)
 
     if departure_airport and arrival_airport:
-        departure_lat = departure_airport['fields']["latitude"]
-        departure_lon = departure_airport['fields']["longitude"]
-        arrival_lat = arrival_airport['fields']["latitude"]
-        arrival_lon = arrival_airport['fields']["longitude"]
+        departure_lat = departure_airport["fields"]["latitude"]
+        departure_lon = departure_airport["fields"]["longitude"]
+        arrival_lat = arrival_airport["fields"]["latitude"]
+        arrival_lon = arrival_airport["fields"]["longitude"]
 
         distance = calculate_distance_between_points(departure_lat, departure_lon, arrival_lat, arrival_lon)
         # Calculate the 1 fare

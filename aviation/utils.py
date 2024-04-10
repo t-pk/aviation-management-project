@@ -1,5 +1,6 @@
 from math import radians, sin, cos, sqrt, atan2
 
+
 def calculate_fare(departure_airport, arrival_airport, total_passenger):
 
     # If either airport is not found, return error

@@ -62,8 +62,8 @@ class BookingForm(forms.ModelForm):
         booking_instance = kwargs.pop("instance", None)
         airports = Airport.objects.all()
         airport_choices = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
-        self.fields['departure'].choices = airport_choices
-        self.fields['arrival'].choices = airport_choices
+        self.fields["departure"].choices = airport_choices
+        self.fields["arrival"].choices = airport_choices
 
         if booking_instance and self.data.get("departure") is None:
             flight_instance = booking_instance.flight
@@ -169,8 +169,8 @@ class FlightForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        departure_airport = cleaned_data.get('departure_airport')
-        arrival_airport = cleaned_data.get('arrival_airport')
+        departure_airport = cleaned_data.get("departure_airport")
+        arrival_airport = cleaned_data.get("arrival_airport")
         logger.info(f"departure_airport {departure_airport} arrival_airport {arrival_airport}")
 
         if departure_airport == arrival_airport:

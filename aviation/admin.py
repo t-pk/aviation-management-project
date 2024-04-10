@@ -17,7 +17,7 @@ class FlightAdmin(admin.ModelAdmin):
         "arrival_time",
         "aircraft_code",
         "duration_time",
-        "total_passenger"
+        "total_passenger",
     ]
     search_fields = [
         "id",
@@ -32,7 +32,7 @@ class FlightAdmin(admin.ModelAdmin):
     list_per_page = 20  # Set the number of bookings per page
 
     def total_passenger(self, obj):
-        return obj.booking_set.aggregate(total_passengers=Count('passengers'))['total_passengers']
+        return obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
 
     @staticmethod
     def aircraft_code(obj):
@@ -50,12 +50,14 @@ class FlightAdmin(admin.ModelAdmin):
     duration_time.short_description = "Duration"
     total_passenger.short_description = "Total Passenger"
 
+
 @admin.register(Aircraft)
 class AircraftAdmin(admin.ModelAdmin):
     list_display = ["id", "model", "code", "capacity"]
     search_fields = ["id", "model", "code", "capacity"]
     list_filter = ["model"]
     list_per_page = 20  # Set the number of bookings per page
+
 
 @admin.register(Airport)
 class AirportAdmin(admin.ModelAdmin):
@@ -64,13 +66,13 @@ class AirportAdmin(admin.ModelAdmin):
     list_filter = ["code", "city"]
     list_per_page = 20  # Set the number of bookings per page
 
+
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "email", "phone"]
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
     list_per_page = 20  # Set the number of bookings per page
-
 
 
 @admin.register(Booking)

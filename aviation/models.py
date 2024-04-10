@@ -11,8 +11,8 @@ from django.db.models import Count
 
 
 class Flight(models.Model):
-    departure_airport = models.ForeignKey('Airport', on_delete=models.CASCADE, related_name='departures')
-    arrival_airport = models.ForeignKey('Airport', on_delete=models.CASCADE, related_name='arrivals')
+    departure_airport = models.ForeignKey("Airport", on_delete=models.CASCADE, related_name="departures")
+    arrival_airport = models.ForeignKey("Airport", on_delete=models.CASCADE, related_name="arrivals")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     aircraft = models.ForeignKey("Aircraft", on_delete=models.CASCADE)
