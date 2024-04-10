@@ -62,13 +62,15 @@ class BookingForm(forms.ModelForm):
         airport_choices = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
         self.fields["departure"].choices = airport_choices
         self.fields["arrival"].choices = airport_choices
+        current_datetime = timezone.now()
 
         if booking_instance and self.data.get("departure") is None:
+
             if self.initial == {}:
                 booking_instance.departure = booking_instance.flight.departure_airport
                 booking_instance.arrival = booking_instance.flight.arrival_airport
                 return
-
+            
             flight_instance = booking_instance.flight
             departure_instance = flight_instance.departure_airport
             arrival_instance = flight_instance.arrival_airport
@@ -82,16 +84,17 @@ class BookingForm(forms.ModelForm):
         else:
             departure_instance = self.data.get("departure", airport_choices[0][0])
             arrival_instance = self.data.get("arrival", airport_choices[1][0])
-            departure_time_instance = self.data.get("departure_time", timezone.now().strftime("%Y-%m-%d"))
+            departure_time_instance = self.data.get("departure_time", current_datetime)
             self.initial["departure"] = departure_instance
             self.initial["arrival"] = arrival_instance
             self.initial["departure_time"] = departure_time_instance
 
-        current_datetime = timezone.now()
+        if type(departure_time_instance) is str:
+            departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
         logger.debug(
-            f"booking_instance {booking_instance} current_datetime {current_datetime}, departure_time_instance = {departure_time_instance} departure_time_instance == current_datetime.date() {departure_time_instance == current_datetime.date()}"
+            f"departure_time_instance = {departure_time_instance.date()} current_datetime.date = {current_datetime.date()} {departure_time_instance.date() == current_datetime.date()}"
         )
-        if departure_time_instance == current_datetime.date():
+        if departure_time_instance.date() == current_datetime.date():
             start_datetime = departure_time_instance.replace(
                 hour=departure_time_instance.hour,
                 minute=departure_time_instance.minute,
@@ -99,9 +102,6 @@ class BookingForm(forms.ModelForm):
             )
             logger.debug(f"start_datetime = {start_datetime}")
         else:
-            if type(departure_time_instance) is str:
-                departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
-
             start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
         end_datetime = departure_time_instance.replace(hour=23, minute=59, second=59)
 
