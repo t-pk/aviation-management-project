@@ -39,3 +39,9 @@ password: ticketingstaff
 username: flightmanager
 password: flightmanager
 ```
+
+We also support running testcases with the command
+
+```
+ ./manage.py test
+```
