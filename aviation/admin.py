@@ -5,6 +5,7 @@ from aviation.forms import BookingForm
 from .models import Flight, Aircraft, Booking, Passenger
 
 
+
 @admin.register(Flight)
 class FlightAdmin(admin.ModelAdmin):
     list_display = [
@@ -26,6 +27,7 @@ class FlightAdmin(admin.ModelAdmin):
         "duration_time",
     ]
     list_filter = ["departure_airport", "arrival_airport"]
+    list_per_page = 20  # Set the number of bookings per page
 
     @staticmethod
     def aircraft_code(obj):
@@ -48,6 +50,7 @@ class AircraftAdmin(admin.ModelAdmin):
     list_display = ["id", "model", "code", "capacity"]
     search_fields = ["id", "model", "code", "capacity"]
     list_filter = ["model"]
+    list_per_page = 20  # Set the number of bookings per page
 
 
 @admin.register(Passenger)
@@ -55,6 +58,8 @@ class PassengerAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "email", "phone"]
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
+    list_per_page = 20  # Set the number of bookings per page
+
 
 
 @admin.register(Booking)
@@ -65,11 +70,12 @@ class BookingAdmin(admin.ModelAdmin):
         "id",
         "departure_airport",
         "arrival_airport",
+        "aircraft_code",
         "departure_time",
         "arrival_time",
         "passenger_names",
-        "total_passenger",
-        "total_amount_with_vnd",
+        "quantity",
+        "total_fare_with_vnd",
         "booking_date",
     )
     list_filter = [
@@ -79,9 +85,10 @@ class BookingAdmin(admin.ModelAdmin):
         "flight__departure_time",
     ]
 
-    date_hierarchy = 'flight__departure_time'
+    date_hierarchy = "flight__departure_time"
 
-    
+    list_per_page = 20  # Set the number of bookings per page
+
     @staticmethod
     def departure_airport(obj):
         return obj.flight.departure_airport
@@ -95,6 +102,10 @@ class BookingAdmin(admin.ModelAdmin):
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
 
     @staticmethod
+    def aircraft_code(obj):
+        return obj.flight.aircraft.code if obj.flight.aircraft else ""
+
+    @staticmethod
     def departure_time(obj):
         departure_time = obj.flight.departure_time + timedelta(hours=7)
         return departure_time.strftime("%Y-%m-%d %H:%M")
@@ -105,12 +116,12 @@ class BookingAdmin(admin.ModelAdmin):
         return arrival_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
-    def total_passenger(obj):
+    def quantity(obj):
         return obj.passengers.count()
 
     @staticmethod
-    def total_amount_with_vnd(obj):
-        formatted_amount = "{:,.0f}".format(obj.total_amount)  # Format with commas for thousands separators
+    def total_fare_with_vnd(obj):
+        formatted_amount = "{:,.0f}".format(obj.total_fare)  # Format with commas for thousands separators
         return f"{formatted_amount} VND"
 
     departure_airport.short_description = "Departure Airport"
@@ -118,8 +129,8 @@ class BookingAdmin(admin.ModelAdmin):
     passenger_names.short_description = "Passenger Names"
     arrival_time.short_description = "Arrival Time"
     passenger_names.short_description = "Passenger Names"
-    total_passenger.short_description = "Total Passenger"
-    total_amount_with_vnd.short_description = "Total Amount"
+    quantity.short_description = "Quantity"
+    total_fare_with_vnd.short_description = "Total_fare"
 
     class Media:
         js = ("aviation/booking.js",)

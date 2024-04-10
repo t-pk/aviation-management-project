@@ -35,9 +35,9 @@ class BookingFormTest(TestCase):
             "arrival": "HAN",
             "flight": self.flight.pk,
             "departure_time": timezone.now().date(),
-            "total_passenger": 2,
+            "quantity": 2,
             "passengers": [self.passenger1.pk, self.passenger2.pk],
-            "total_amount": 200,
+            "total_fare": 200,
         }
         form = BookingForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -48,9 +48,9 @@ class BookingFormTest(TestCase):
             "arrival": "HAN",
             "flight": self.flight.pk,
             "departure_time": timezone.now().date(),
-            "total_passenger": 2,
+            "quantity": 2,
             "passengers": [self.passenger1.pk, self.passenger2.pk],
-            "total_amount": 200,
+            "total_fare": 200,
         }
         form = BookingForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -60,9 +60,9 @@ class BookingFormTest(TestCase):
             "departure": "SGN",
             "arrival": "HAN",
             "departure_time": timezone.now().date(),
-            "total_passenger": 2,
+            "quantity": 2,
             "passengers": [self.passenger1.pk, self.passenger2.pk],
-            "total_amount": 200,
+            "total_fare": 200,
         }
         form = BookingForm(data=form_data)
         self.assertFalse(form.is_valid())
@@ -74,9 +74,9 @@ class BookingFormTest(TestCase):
             "arrival": "HAN",
             "flight": self.flight.pk,
             "departure_time": timezone.now().date(),
-            "total_passenger": 1,
+            "quantity": 1,
             "passengers": [self.passenger1.pk, self.passenger2.pk],
-            "total_amount": 200,
+            "total_fare": 200,
         }
         form = BookingForm(data=form_data)
         self.assertFalse(form.is_valid())
