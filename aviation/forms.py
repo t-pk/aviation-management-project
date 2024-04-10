@@ -2,6 +2,8 @@ from datetime import datetime
 import logging
 from django import forms
 from django.utils import timezone
+
+from aviation.utils import adjust_datetime, get_end_datetime, get_start_datetime
 from .models import Airport, Booking, Flight
 
 logger = logging.getLogger(__name__)
@@ -65,45 +67,52 @@ class BookingForm(forms.ModelForm):
         current_datetime = timezone.now()
 
         if booking_instance and self.data.get("departure") is None:
-
             if self.initial == {}:
                 booking_instance.departure = booking_instance.flight.departure_airport
                 booking_instance.arrival = booking_instance.flight.arrival_airport
                 return
-            
+
             flight_instance = booking_instance.flight
             departure_instance = flight_instance.departure_airport
             arrival_instance = flight_instance.arrival_airport
             departure_time_instance = flight_instance.departure_time
-            self.initial["flight"] = flight_instance.pk
-            passenger_count = booking_instance.passengers.count()
-            self.initial["quantity"] = passenger_count
-            self.initial["departure"] = departure_instance.pk
-            self.initial["arrival"] = arrival_instance.pk
-            self.initial["departure_time"] = departure_time_instance
+            self.initial.update(
+                {
+                    "flight": flight_instance.pk,
+                    "quantity": booking_instance.passengers.count(),
+                    "departure": departure_instance.pk,
+                    "arrival": arrival_instance.pk,
+                    "departure_time": departure_time_instance,
+                }
+            )
         else:
             departure_instance = self.data.get("departure", airport_choices[0][0])
             arrival_instance = self.data.get("arrival", airport_choices[1][0])
             departure_time_instance = self.data.get("departure_time", current_datetime)
-            self.initial["departure"] = departure_instance
-            self.initial["arrival"] = arrival_instance
-            self.initial["departure_time"] = departure_time_instance
-
-        if type(departure_time_instance) is str:
-            departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
-        logger.debug(
-            f"departure_time_instance = {departure_time_instance.date()} current_datetime.date = {current_datetime.date()} {departure_time_instance.date() == current_datetime.date()}"
-        )
-        if departure_time_instance.date() == current_datetime.date():
-            start_datetime = departure_time_instance.replace(
-                hour=departure_time_instance.hour,
-                minute=departure_time_instance.minute,
-                second=departure_time_instance.second,
+            self.initial.update(
+                {
+                    "departure": departure_instance,
+                    "arrival": arrival_instance,
+                    "departure_time": departure_time_instance,
+                }
             )
-            logger.debug(f"start_datetime = {start_datetime}")
-        else:
-            start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
-        end_datetime = departure_time_instance.replace(hour=23, minute=59, second=59)
+
+        if isinstance(departure_time_instance, str):
+            departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
+
+        logger.debug(
+            f"Departure Time: {departure_time_instance.date()}, "
+            f"Current Date: {current_datetime.date()}, "
+            f"Same Date Check: {departure_time_instance.date() == current_datetime.date()}"
+        )
+
+        start_datetime = (
+            adjust_datetime(departure_time_instance)
+            if departure_time_instance.date() == current_datetime.date()
+            else get_start_datetime(departure_time_instance)
+        )
+
+        end_datetime = get_end_datetime(departure_time_instance)
 
         matching_flights = Flight.objects.filter(
             departure_airport=departure_instance,
@@ -122,14 +131,10 @@ class BookingForm(forms.ModelForm):
         passengers_selected = quantity or 0
         if "flight" not in cleaned_data or cleaned_data["flight"] is None:
             if flight:
-                try:
-                    flight = Flight.objects.get(pk=flight)
-                    cleaned_data["flight"] = flight
-                    errors = self.errors
-                    if "flight" in errors:
-                        errors.pop("flight")
-                except Flight.DoesNotExist:
-                    pass
+                flight = Flight.objects.get(pk=flight)
+                cleaned_data["flight"] = flight
+                errors = self.errors
+                errors.pop("flight") if "flight" in errors else None
 
         if passengers and passengers.count() != quantity:
             self.add_error(
@@ -143,9 +148,6 @@ class BookingForm(forms.ModelForm):
                 booked_passenger = Booking.objects.get(id=booking_instance.id)
                 passenger_count = booked_passenger.passengers.count()  # exists booked current on DB.
             available_seats = self.get_available_seats(flight) + passenger_count
-            logger.debug(
-                f"Class name: {self.__class__.__name__} func name {self.save.__name__} available_seats = {available_seats}, passengers_selected = {passengers_selected} passenger_count = {passenger_count}"
-            )
 
             if passengers_selected > available_seats:
                 raise forms.ValidationError(f"Only {available_seats - passenger_count} seats available on this flight.")
@@ -160,12 +162,7 @@ class BookingForm(forms.ModelForm):
         else:
             bookings = Booking.objects.filter(flight_id=flight.id)
         total_booked_seats = sum(booking.passengers.count() for booking in bookings)
-
-        try:
-            available_seats = flight.aircraft.capacity - total_booked_seats
-        except Flight.DoesNotExist:
-            available_seats = 0
-
+        available_seats = flight.aircraft.capacity - total_booked_seats if flight else 0
         return available_seats
 
 
