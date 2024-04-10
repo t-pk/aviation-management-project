@@ -25,12 +25,12 @@ def calculate_distance_between_points(lat1, lon1, lat2, lon2):
 
 
 # Load passenger data from JSON
-passenger_path = "./aviation/fixtures/0002_Passenger.json"
+passenger_path = "./aviation/fixtures/0003_Passenger.json"
 with open(passenger_path, "r") as json_file:
     passenger_data = json.load(json_file)
 
 # Load flight data from JSON
-flight_path = "./aviation/fixtures/0003_Flight.json"
+flight_path = "./aviation/fixtures/0004_Flight.json"
 with open(flight_path, "r") as json_file:
     flight_data = json.load(json_file)
 
@@ -124,7 +124,7 @@ for flight in flight_data:
 
 
 # Save transformed data to JSON file
-output_file_path = "./aviation/fixtures/0004_Booking.json"
+output_file_path = "./aviation/fixtures/0005_Booking.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)
 

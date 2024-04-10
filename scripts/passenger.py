@@ -40,7 +40,7 @@ for i in range(num_records):
 
     transformed_data.append(transformed_item)
 
-output_file_path = "./aviation/fixtures/0002_Passenger.json"
+output_file_path = "./aviation/fixtures/0003_Passenger.json"
 with open(output_file_path, "w", encoding="utf-8") as json_file:
     json.dump(transformed_data, json_file, indent=2, ensure_ascii=False)
 

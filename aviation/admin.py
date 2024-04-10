@@ -2,7 +2,10 @@ from django.contrib import admin
 from datetime import timedelta
 
 from aviation.forms import BookingForm
-from .models import Flight, Aircraft, Booking, Passenger
+from .models import Airport, Flight, Aircraft, Booking, Passenger
+from django.db.models import Count
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
 
 
 
@@ -16,6 +19,7 @@ class FlightAdmin(admin.ModelAdmin):
         "arrival_time",
         "aircraft_code",
         "duration_time",
+        "total_passenger"
     ]
     search_fields = [
         "id",
@@ -28,6 +32,9 @@ class FlightAdmin(admin.ModelAdmin):
     ]
     list_filter = ["departure_airport", "arrival_airport"]
     list_per_page = 20  # Set the number of bookings per page
+
+    def total_passenger(self, obj):
+        return obj.booking_set.aggregate(total_passengers=Count('passengers'))['total_passengers']
 
     @staticmethod
     def aircraft_code(obj):
@@ -43,6 +50,8 @@ class FlightAdmin(admin.ModelAdmin):
 
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
+    total_passenger.short_description = "Total Passenger"
+    
 
 
 @admin.register(Aircraft)
@@ -52,6 +61,12 @@ class AircraftAdmin(admin.ModelAdmin):
     list_filter = ["model"]
     list_per_page = 20  # Set the number of bookings per page
 
+@admin.register(Airport)
+class AirportAdmin(admin.ModelAdmin):
+    list_display = ["id", "code", "city", "name", "latitude", "longitude"]
+    search_fields = ["code", "city", "name"]
+    list_filter = ["code", "city"]
+    list_per_page = 20  # Set the number of bookings per page
 
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
@@ -59,7 +74,6 @@ class PassengerAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
     list_per_page = 20  # Set the number of bookings per page
-
 
 
 @admin.register(Booking)

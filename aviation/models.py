@@ -36,6 +36,20 @@ class Aircraft(models.Model):
     class Meta:
         db_table = "aviation_aircraft"
 
+    def __str__(self):
+        return f"{self.code} ({self.model})"
+
+
+class Airport(models.Model):
+    code = models.CharField(max_length=10, unique=True, validators=[MinLengthValidator(4), MaxLengthValidator(10)])
+    city = models.CharField(max_length=100, unique=True, validators=[MinLengthValidator(4), MaxLengthValidator(100)])
+    name = models.CharField(max_length=200, validators=[MinLengthValidator(4), MaxLengthValidator(200)])
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return f"{self.code} - {self.name} ({self.city})"
+
 
 class Passenger(models.Model):
     name = models.CharField(max_length=100, validators=[MinLengthValidator(6), MaxLengthValidator(100)])

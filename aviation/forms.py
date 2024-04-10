@@ -71,7 +71,7 @@ class BookingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         booking_instance = kwargs.pop("instance", None)
 
-        if booking_instance and self.data.get('departure') is None:
+        if booking_instance and self.data.get("departure") is None:
             flight_instance = booking_instance.flight
             departure_instance = flight_instance.departure_airport
             arrival_instance = flight_instance.arrival_airport
@@ -81,9 +81,9 @@ class BookingForm(forms.ModelForm):
             self.initial["quantity"] = passenger_count
 
         else:
-            departure_instance = self.data.get('departure', self.airport_choices[0][0])
-            arrival_instance = self.data.get('arrival', self.airport_choices[1][0])
-            departure_time_instance = self.data.get('departure_time', timezone.now())
+            departure_instance = self.data.get("departure", self.airport_choices[0][0])
+            arrival_instance = self.data.get("arrival", self.airport_choices[1][0])
+            departure_time_instance = self.data.get("departure_time", timezone.now())
 
         self.initial["departure"] = departure_instance
         self.initial["arrival"] = arrival_instance
@@ -97,8 +97,8 @@ class BookingForm(forms.ModelForm):
                 second=departure_time_instance.second,
             )
         else:
-            if(type(departure_time_instance) is str):
-                departure_time_instance = datetime.strptime(departure_time_instance, '%Y-%m-%d')
+            if type(departure_time_instance) is str:
+                departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
 
             start_datetime = departure_time_instance.replace(hour=0, minute=0, second=0)
         end_datetime = departure_time_instance.replace(hour=23, minute=59, second=59)
@@ -139,7 +139,7 @@ class BookingForm(forms.ModelForm):
             passenger_count = 0
             if booking_instance and booking_instance.id:
                 booked_passenger = Booking.objects.get(id=booking_instance.id)
-                passenger_count = booked_passenger.passengers.count() #exists booked current on DB.
+                passenger_count = booked_passenger.passengers.count()  # exists booked current on DB.
             available_seats = self.get_available_seats(flight) + passenger_count
             logger.debug(
                 f"Class name: {self.__class__.__name__} func name {self.save.__name__} available_seats = {available_seats}, passengers_selected = {passengers_selected} passenger_count = {passenger_count}"

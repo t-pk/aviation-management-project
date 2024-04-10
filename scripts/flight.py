@@ -65,7 +65,7 @@ for obj in original_data:
         start_date += timedelta(days=1)
 
 # Save transformed data to JSON file
-output_file_path = "./aviation/fixtures/0003_Flight.json"
+output_file_path = "./aviation/fixtures/0004_Flight.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)
 

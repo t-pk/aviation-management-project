@@ -95,6 +95,7 @@ class Command(BaseCommand):
             change_booking_permission,
             delete_booking_permission,
             view_booking_permission,
+            view_flight_permission
         )
 
         # Add Ticketing Staff user to the 'Ticketing Staff' group
