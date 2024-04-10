@@ -1,18 +1,14 @@
 from django.contrib import admin
 from datetime import timedelta
-
-from django.forms import ValidationError
-
-from aviation.forms import BookingForm
+from aviation.forms import BookingForm, FlightForm
 from .models import Airport, Flight, Aircraft, Booking, Passenger
 from django.db.models import Count
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseForbidden
-
 
 
 @admin.register(Flight)
 class FlightAdmin(admin.ModelAdmin):
+    form = FlightForm
+
     list_display = [
         "id",
         "departure_airport",
@@ -74,6 +70,7 @@ class PassengerAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
     list_per_page = 20  # Set the number of bookings per page
+
 
 
 @admin.register(Booking)

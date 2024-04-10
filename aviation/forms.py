@@ -160,3 +160,20 @@ class BookingForm(forms.ModelForm):
             available_seats = 0
 
         return available_seats
+
+
+class FlightForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        departure_airport = cleaned_data.get('departure_airport')
+        arrival_airport = cleaned_data.get('arrival_airport')
+        logger.info(f"departure_airport {departure_airport} arrival_airport {arrival_airport}")
+
+        if departure_airport == arrival_airport:
+            raise forms.ValidationError("Departure and Arrival airports cannot be the same.")
+
+        return cleaned_data
