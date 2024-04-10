@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class BookingView(View):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
 
         # Retrieve specific parameters from the GET request

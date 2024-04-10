@@ -8,10 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class BookingForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
-        super().__init__(*args, **kwargs)
-
     departure = forms.ChoiceField(
         label="Departure",
         widget=forms.Select(attrs={"onchange": "get_booking_information(this.id);"}),
@@ -60,12 +56,17 @@ class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         booking_instance = kwargs.pop("instance", None)
+
         airports = Airport.objects.all()
+
         airport_choices = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
         self.fields["departure"].choices = airport_choices
         self.fields["arrival"].choices = airport_choices
 
         if booking_instance and self.data.get("departure") is None:
+            booking_instance.departure = booking_instance.flight.departure_airport
+            booking_instance.arrival = booking_instance.flight.arrival_airport
+
             flight_instance = booking_instance.flight
             departure_instance = flight_instance.departure_airport
             arrival_instance = flight_instance.arrival_airport
@@ -85,12 +86,19 @@ class BookingForm(forms.ModelForm):
             self.initial["departure_time"] = departure_time_instance
 
         current_datetime = timezone.now()
-        if departure_time_instance == current_datetime.date():
+        logger.debug(
+            f"booking_instance {booking_instance} current_datetime {current_datetime}, departure_time_instance = {departure_time_instance} departure_time_instance == current_datetime.date() {departure_time_instance == current_datetime.date()}"
+        )
+        if (
+            departure_time_instance == current_datetime.date()
+            or departure_time_instance.date() == current_datetime.date()
+        ):
             start_datetime = departure_time_instance.replace(
                 hour=departure_time_instance.hour,
                 minute=departure_time_instance.minute,
                 second=departure_time_instance.second,
             )
+            logger.debug(f"start_datetime = {start_datetime}")
         else:
             if type(departure_time_instance) is str:
                 departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")

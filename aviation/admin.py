@@ -1,8 +1,12 @@
 from django.contrib import admin
+import logging
 from datetime import timedelta
+from django.utils import timezone
 from aviation.forms import BookingForm, FlightForm
 from .models import Airport, Flight, Aircraft, Booking, Passenger
 from django.db.models import Count
+
+logger = logging.getLogger(__name__)
 
 
 @admin.register(Flight)
