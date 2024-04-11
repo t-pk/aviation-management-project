@@ -1,5 +1,19 @@
+from datetime import datetime
 from math import radians, sin, cos, sqrt, atan2
 
+
+def get_end_datetime(departure_time_instance: datetime):
+    return departure_time_instance.replace(hour=23, minute=59, second=59)
+
+
+def get_start_datetime(departure_time_instance: datetime):
+    return departure_time_instance.replace(hour=0, minute=0, second=0)
+
+
+def adjust_datetime(departure_time_instance: datetime):
+    return departure_time_instance.replace(
+        hour=departure_time_instance.hour, minute=departure_time_instance.minute, second=departure_time_instance.second
+    )
 
 def calculate_fare(departure_airport, arrival_airport, total_passenger):
 
