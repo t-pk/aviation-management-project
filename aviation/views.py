@@ -1,11 +1,11 @@
 from datetime import datetime
 import logging
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.views import View
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-from aviation.utils import calculate_fare
 from .models import Airport, Flight
+from aviation.utils import calculate_fare
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class BookingView(View):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request: HttpRequest):
 
         # Retrieve specific parameters from the GET request
         departure = request.GET.get("departure")

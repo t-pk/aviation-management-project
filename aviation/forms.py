@@ -185,4 +185,3 @@ class FlightForm(forms.ModelForm):
             raise forms.ValidationError("Departure and Arrival airports cannot be the same.")
 
         return cleaned_data
-
