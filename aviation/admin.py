@@ -105,7 +105,7 @@ class BookingAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        return queryset.prefetch_related("passengers")  # Optimize performance
+        return queryset.prefetch_related("passengers")
 
     date_hierarchy = "flight__departure_time"
 
@@ -175,6 +175,6 @@ class BookingAdmin(admin.ModelAdmin):
         if obj and obj.flight and obj.flight.departure_time <= timezone.now():
             logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
             if request.user and request.user.is_superuser:
-                return super().has_change_permission(request, obj)
+                return super().has_delete_permission(request, obj)
             return False
-        return super().has_change_permission(request, obj)
+        return super().has_delete_permission(request, obj)
