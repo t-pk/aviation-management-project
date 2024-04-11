@@ -160,4 +160,5 @@ LOGGING = {
         "level": "DEBUG",  # Change the root level to DEBUG to show all log levels
     },
 }
+
 USE_TZ = False

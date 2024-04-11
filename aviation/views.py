@@ -2,15 +2,19 @@ from datetime import datetime
 import logging
 from django.http import JsonResponse
 from django.views import View
+from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from aviation.utils import calculate_fare
-from .models import Flight
+from .models import Airport, Flight
 
 logger = logging.getLogger(__name__)
 
 
 class BookingView(View):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
+
         # Retrieve specific parameters from the GET request
         departure = request.GET.get("departure")
         arrival = request.GET.get("arrival")
@@ -39,7 +43,11 @@ class BookingView(View):
 
         # Serialize flights to JSON
         serialized_flights = [{"pk": flight.pk, "__str__": str(flight)} for flight in matching_flights]
-        fare_information = calculate_fare(departure, arrival, quantity)
+        departure_airport = Airport.objects.get(pk=departure)
+        arrival_airport = Airport.objects.get(pk=arrival)
+        logger.debug(f"departure_airport: {departure_airport} {arrival_airport}")
+
+        fare_information = calculate_fare(departure_airport, arrival_airport, quantity)
         fare_information.update({"flights": serialized_flights})
 
         return JsonResponse(fare_information, safe=False)

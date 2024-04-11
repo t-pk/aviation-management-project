@@ -1,13 +1,18 @@
 from django.contrib import admin
+import logging
 from datetime import timedelta
+from django.utils import timezone
+from aviation.forms import BookingForm, FlightForm
+from .models import Airport, Flight, Aircraft, Booking, Passenger
+from django.db.models import Count
 
-from aviation.forms import BookingForm
-from .models import Flight, Aircraft, Booking, Passenger
-
+logger = logging.getLogger(__name__)
 
 
 @admin.register(Flight)
 class FlightAdmin(admin.ModelAdmin):
+    form = FlightForm
+
     list_display = [
         "id",
         "departure_airport",
@@ -16,6 +21,7 @@ class FlightAdmin(admin.ModelAdmin):
         "arrival_time",
         "aircraft_code",
         "duration_time",
+        "total_passenger",
     ]
     search_fields = [
         "id",
@@ -27,7 +33,10 @@ class FlightAdmin(admin.ModelAdmin):
         "duration_time",
     ]
     list_filter = ["departure_airport", "arrival_airport"]
-    list_per_page = 20  # Set the number of bookings per page
+    list_per_page = 20
+
+    def total_passenger(self, obj):
+        return obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
 
     @staticmethod
     def aircraft_code(obj):
@@ -43,6 +52,7 @@ class FlightAdmin(admin.ModelAdmin):
 
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
+    total_passenger.short_description = "Total Passenger"
 
 
 @admin.register(Aircraft)
@@ -50,7 +60,15 @@ class AircraftAdmin(admin.ModelAdmin):
     list_display = ["id", "model", "code", "capacity"]
     search_fields = ["id", "model", "code", "capacity"]
     list_filter = ["model"]
-    list_per_page = 20  # Set the number of bookings per page
+    list_per_page = 20
+
+
+@admin.register(Airport)
+class AirportAdmin(admin.ModelAdmin):
+    list_display = ["id", "code", "city", "name", "latitude", "longitude"]
+    search_fields = ["code", "city", "name"]
+    list_filter = ["code", "city"]
+    list_per_page = 20
 
 
 @admin.register(Passenger)
@@ -58,14 +76,14 @@ class PassengerAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "email", "phone"]
     search_fields = ["id", "name", "email", "phone"]
     list_filter = ["name", "email", "phone"]
-    list_per_page = 20  # Set the number of bookings per page
-
+    list_per_page = 20
 
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     form = BookingForm
     filter_horizontal = ["passengers"]
+    search_fields = ["passengers__name"]
     list_display = (
         "id",
         "departure_airport",
@@ -79,15 +97,19 @@ class BookingAdmin(admin.ModelAdmin):
         "booking_date",
     )
     list_filter = [
+        "flight__departure_time",
         "flight__departure_airport",
         "flight__arrival_airport",
         "flight__aircraft__code",
-        "flight__departure_time",
     ]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.prefetch_related("passengers")
 
     date_hierarchy = "flight__departure_time"
 
-    list_per_page = 20  # Set the number of bookings per page
+    list_per_page = 20
 
     @staticmethod
     def departure_airport(obj):
@@ -134,3 +156,25 @@ class BookingAdmin(admin.ModelAdmin):
 
     class Media:
         js = ("aviation/booking.js",)
+
+    def has_change_permission(self, request, obj=None):
+
+        logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
+
+        if obj and obj.flight and obj.flight.departure_time <= timezone.now():
+            logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
+            if request.user and request.user.is_superuser:
+                return super().has_change_permission(request, obj)
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+
+        logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
+
+        if obj and obj.flight and obj.flight.departure_time <= timezone.now():
+            logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
+            if request.user and request.user.is_superuser:
+                return super().has_delete_permission(request, obj)
+            return False
+        return super().has_delete_permission(request, obj)
