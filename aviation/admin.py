@@ -158,9 +158,8 @@ class BookingAdmin(admin.ModelAdmin):
         js = ("aviation/booking.js",)
 
     def has_change_permission(self, request, obj=None):
-        logger.debug(
-            f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser} timezone.now() {timezone.now()}"
-        )
+
+        logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
 
         if obj and obj.flight and obj.flight.departure_time <= timezone.now():
             logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
