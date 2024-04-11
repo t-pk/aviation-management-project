@@ -128,25 +128,29 @@ class BookingForm(forms.ModelForm):
         passengers = cleaned_data.get("passengers")
         quantity = cleaned_data.get("quantity")
         flight = self.data.get("flight")
+
         passengers_selected = quantity or 0
-        if "flight" not in cleaned_data or cleaned_data["flight"] is None:
+
+        if not cleaned_data.get("flight"):
             if flight:
-                flight = Flight.objects.get(pk=flight)
-                cleaned_data["flight"] = flight
+                cleaned_data["flight"] = Flight.objects.get(pk=flight)
                 errors = self.errors
-                errors.pop("flight") if "flight" in errors else None
+                errors.pop("flight", None)
 
         if passengers and passengers.count() != quantity:
             self.add_error(
                 "passengers",
-                forms.ValidationError("Please check the Quantity field."),
+                forms.ValidationError(
+                    f"Expected {quantity} passenger(s) based on the Quantity field, "
+                    f"but found {passengers.count()} passenger(s)."
+                ),
             )
 
         if passengers and flight:
             passenger_count = 0
             if booking_instance and booking_instance.id:
                 booked_passenger = Booking.objects.get(id=booking_instance.id)
-                passenger_count = booked_passenger.passengers.count()  # exists booked current on DB.
+                passenger_count = booked_passenger.passengers.count()
             available_seats = self.get_available_seats(flight) + passenger_count
 
             if passengers_selected > available_seats:
@@ -175,9 +179,10 @@ class FlightForm(forms.ModelForm):
         cleaned_data = super().clean()
         departure_airport = cleaned_data.get("departure_airport")
         arrival_airport = cleaned_data.get("arrival_airport")
-        logger.info(f"departure_airport {departure_airport} arrival_airport {arrival_airport}")
+        logger.debug(f"departure_airport {departure_airport} arrival_airport {arrival_airport}")
 
         if departure_airport == arrival_airport:
             raise forms.ValidationError("Departure and Arrival airports cannot be the same.")
 
         return cleaned_data
+
