@@ -162,7 +162,7 @@ class BookingAdmin(admin.ModelAdmin):
         logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
 
         if obj and obj.flight and obj.flight.departure_time <= timezone.now():
-            logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
+            logger.debug(f"flight.departure_time = {obj.flight.departure_time} timezone.now() = {timezone.now()}")
             if request.user and request.user.is_superuser:
                 return super().has_change_permission(request, obj)
             return False
@@ -173,7 +173,7 @@ class BookingAdmin(admin.ModelAdmin):
         logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
 
         if obj and obj.flight and obj.flight.departure_time <= timezone.now():
-            logger.debug(f"flight.departure_time {obj.flight.departure_time} timezone.now() {timezone.now()}")
+            logger.debug(f"flight.departure_time = {obj.flight.departure_time} timezone.now() = {timezone.now()}")
             if request.user and request.user.is_superuser:
                 return super().has_delete_permission(request, obj)
             return False

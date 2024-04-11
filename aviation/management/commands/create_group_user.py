@@ -27,6 +27,11 @@ class Command(BaseCommand):
         delete_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="delete_flight")
         view_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="view_flight")
 
+        add_airport_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_airport")
+        change_airport_permission = Permission.objects.get(content_type__app_label="aviation", codename="change_airport")
+        delete_airport_permission = Permission.objects.get(content_type__app_label="aviation", codename="delete_airport")
+        view_airport_permission = Permission.objects.get(content_type__app_label="aviation", codename="view_airport")
+
         add_aircraft_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_aircraft")
         change_aircraft_permission = Permission.objects.get(
             content_type__app_label="aviation", codename="change_aircraft"
@@ -45,6 +50,10 @@ class Command(BaseCommand):
             change_aircraft_permission,
             delete_aircraft_permission,
             view_aircraft_permission,
+            add_airport_permission,
+            change_airport_permission,
+            delete_airport_permission,
+            view_airport_permission,
         )
 
         user_flight_manager.groups.add(group_flight_manager)
