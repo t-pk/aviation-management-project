@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from django.utils import timezone
 import random
 
 
@@ -7,7 +7,7 @@ import random
 def format_datetime_with_utc_offset(dt):
     rounded_minute = int(((dt.minute + 7.5) // 15) * 15)
     if rounded_minute >= 60:
-        dt += timedelta(hours=1)
+        dt += timezone.timedelta(hours=1)
         rounded_minute = 0
     formatted_date = dt.strftime("%Y-%m-%d %H:") + "{:02d}".format(rounded_minute) + ":00 +0000"
     return formatted_date
@@ -19,13 +19,13 @@ input_file_path = "./aviation/fixtures/0002_Airport.json"
 with open(input_file_path, "r") as json_file:
     original_data = json.load(json_file)
 
-current_date_utc = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+current_date_utc = timezone.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 transformed_data = []
 
 # start time of current date
 for obj in original_data:
-    start_date = current_date_utc - timedelta(days=7)
-    end_date = current_date_utc + timedelta(days=14)
+    start_date = current_date_utc - timezone.timedelta(days=7)
+    end_date = current_date_utc + timezone.timedelta(days=14)
     while start_date < end_date:
         number_of_flight = random.randint(1, 3)
         arrivals = [item for item in original_data if item["pk"] != obj["pk"]]
@@ -46,7 +46,7 @@ for obj in original_data:
                     second=0,
                     microsecond=0,
                 )
-                arrival_time = start_date + timedelta(
+                arrival_time = start_date + timezone.timedelta(
                     hours=random_hours_arrival, minutes=random.choice([0, 15, 30, 45])
                 )
 
@@ -63,7 +63,7 @@ for obj in original_data:
                 }
                 transformed_data.append(transformed_item)
 
-        start_date += timedelta(days=1)
+        start_date += timezone.timedelta(days=1)
 
 # Save transformed data to JSON file
 output_file_path = "./aviation/fixtures/0004_Flight.json"

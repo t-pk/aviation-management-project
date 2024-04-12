@@ -140,6 +140,7 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -152,7 +153,14 @@ LOGGING = {
     "formatters": {
         "colored": {
             "()": "colorlog.ColoredFormatter",
-            "format": "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
+            "format": "%(log_color)s%(levelname)-8s%(reset)s %(log_color)s%(message)s",
+            "log_colors": {
+                "DEBUG": "green",
+                "INFO": "blue",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+            },
         },
     },
     "root": {

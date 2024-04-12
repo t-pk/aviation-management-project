@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 import logging
 from django import forms
 from django.utils import timezone
@@ -98,7 +98,7 @@ class BookingForm(forms.ModelForm):
             )
 
         if isinstance(departure_time_instance, str):
-            departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
+            departure_time_instance = timezone.datetime.strptime(departure_time_instance, "%Y-%m-%d")
 
         logger.debug(
             f"Departure Time: {departure_time_instance.date()}, "
@@ -133,7 +133,10 @@ class BookingForm(forms.ModelForm):
 
         if not cleaned_data.get("flight"):
             if flight:
-                cleaned_data["flight"] = Flight.objects.get(pk=flight)
+                if type(flight) is str:
+                    cleaned_data["flight"] = Flight.objects.get(pk=flight)
+                else:
+                    cleaned_data["flight"] = Flight.objects.get(pk=flight.id)
                 errors = self.errors
                 errors.pop("flight", None)
 
@@ -186,3 +189,12 @@ class FlightForm(forms.ModelForm):
 
         return cleaned_data
 
+    class Meta:
+        model = Flight
+        fields = [
+            "departure_airport",
+            "arrival_airport",
+            "departure_time",
+            "arrival_time",
+            "aircraft",
+        ]

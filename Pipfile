@@ -13,6 +13,7 @@ vn-fullname-generator = "*"
 python-dotenv = "*"
 django-environ = "*"
 colorlog = "*"
+coverage = "*"
 
 [dev-packages]
 

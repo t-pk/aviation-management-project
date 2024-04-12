@@ -1,11 +1,10 @@
-from datetime import datetime
 import logging
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.views import View
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-from aviation.utils import calculate_fare
 from .models import Airport, Flight
+from aviation.utils import adjust_datetime, calculate_fare, get_end_datetime, get_start_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +12,9 @@ logger = logging.getLogger(__name__)
 class BookingView(View):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request: HttpRequest):
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
 
         # Retrieve specific parameters from the GET request
         departure = request.GET.get("departure")
@@ -23,17 +24,15 @@ class BookingView(View):
 
         logger.debug(f"API get-booking-information query: {str(request.GET)}")
 
-        departure_date = datetime.strptime(departure_time, "%Y-%m-%d")
+        departure_date = timezone.datetime.strptime(departure_time, "%Y-%m-%d")
 
         current_datetime = timezone.now()
         if departure_date.date() == current_datetime.date():
-            start_datetime = departure_date.replace(
-                hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second
-            )
+            start_datetime = adjust_datetime(departure_date)
         else:
-            start_datetime = departure_date.replace(hour=0, minute=0, second=0)
+            start_datetime = get_start_datetime(departure_date)
 
-        end_datetime = departure_date.replace(hour=23, minute=59, second=59)
+        end_datetime = get_end_datetime(departure_date)
 
         matching_flights = Flight.objects.filter(
             departure_airport=departure,

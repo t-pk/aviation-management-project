@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils.timezone import datetime
 from math import radians, sin, cos, sqrt, atan2
 
 
@@ -14,6 +14,7 @@ def adjust_datetime(departure_time_instance: datetime):
     return departure_time_instance.replace(
         hour=departure_time_instance.hour, minute=departure_time_instance.minute, second=departure_time_instance.second
     )
+
 
 def calculate_fare(departure_airport, arrival_airport, total_passenger):
 

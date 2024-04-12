@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from django.utils import timezone
 import random
 from math import radians, sin, cos, sqrt, atan2
 
@@ -112,10 +112,14 @@ for flight in flight_data:
                 break
 
     # Generate booking date (current date)
-    booking_date = datetime.now().strftime("%Y-%m-%d")
+
+    current_datetime = timezone.datetime.now() - timezone.timedelta(weeks=random.randint(5, 16))
+    booking_datetime = current_datetime.replace(hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59))
+    booking_date_str = booking_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
     total_fare = flight["fields"]["fare"] * len(passengers_with_ids)
     # Generate booking data for the flight
-    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date, total_fare)
+    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date_str, total_fare)
     transformed_data.append(booking_data)
     # print(booking_data)  # Output the generated booking data
 
