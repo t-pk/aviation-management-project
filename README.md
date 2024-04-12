@@ -45,3 +45,9 @@ We also support running testcases with the command
 ```
  ./manage.py test
 ```
+
+Running a specifict test case
+```
+test_models is file name.
+python ./manage.py test aviation.tests.test_models
+```

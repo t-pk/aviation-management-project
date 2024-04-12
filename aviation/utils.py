@@ -15,6 +15,7 @@ def adjust_datetime(departure_time_instance: datetime):
         hour=departure_time_instance.hour, minute=departure_time_instance.minute, second=departure_time_instance.second
     )
 
+
 def calculate_fare(departure_airport, arrival_airport, total_passenger):
 
     # If either airport is not found, return error
