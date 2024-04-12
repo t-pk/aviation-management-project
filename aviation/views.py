@@ -14,7 +14,7 @@ class BookingView(View):
 
     def get(self, request: HttpRequest):
         if not request.user.is_authenticated:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+            return JsonResponse({"error": "Unauthorized"}, status=401)
 
         # Retrieve specific parameters from the GET request
         departure = request.GET.get("departure")
