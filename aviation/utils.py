@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils.timezone import datetime
 from math import radians, sin, cos, sqrt, atan2
 
 

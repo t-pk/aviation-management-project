@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 import logging
 from django import forms
 from django.utils import timezone
@@ -98,7 +98,7 @@ class BookingForm(forms.ModelForm):
             )
 
         if isinstance(departure_time_instance, str):
-            departure_time_instance = datetime.strptime(departure_time_instance, "%Y-%m-%d")
+            departure_time_instance = timezone.datetime.strptime(departure_time_instance, "%Y-%m-%d")
 
         logger.debug(
             f"Departure Time: {departure_time_instance.date()}, "
