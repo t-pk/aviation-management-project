@@ -114,7 +114,9 @@ for flight in flight_data:
     # Generate booking date (current date)
 
     current_datetime = timezone.datetime.now() - timezone.timedelta(weeks=random.randint(5, 16))
-    booking_datetime = current_datetime.replace(hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59))
+    booking_datetime = current_datetime.replace(
+        hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59)
+    )
     booking_date_str = booking_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
     total_fare = flight["fields"]["fare"] * len(passengers_with_ids)
