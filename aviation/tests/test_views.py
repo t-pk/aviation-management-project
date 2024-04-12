@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 import json
 
+
 class BookingViewTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -14,7 +15,7 @@ class BookingViewTest(TestCase):
 
         # Create some sample flights
         self.departure_time = timezone.now() + timezone.timedelta(days=1)
-        self.arrival_time =timezone.now() + timezone.timedelta(days=1, hours=2)
+        self.arrival_time = timezone.now() + timezone.timedelta(days=1, hours=2)
 
         self.flight = Flight.objects.create(
             departure_airport=self.airport1,
@@ -26,13 +27,13 @@ class BookingViewTest(TestCase):
 
     def test_booking_view_get_invalid(self):
         query_params = {
-            'departure': self.airport1.pk,
-            'arrival': self.airport2.pk,
-            'departure_time': self.departure_time.strftime("%Y-%m-%d"),
-            'quantity': 1,
+            "departure": self.airport1.pk,
+            "arrival": self.airport2.pk,
+            "departure_time": self.departure_time.strftime("%Y-%m-%d"),
+            "quantity": 1,
         }
-        url = reverse('get_booking_information')  # Assuming the URL name is 'booking_view'
-        response = self.client.get(url, query_params,  content_type="application/json")
+        url = reverse("get_booking_information")
+        response = self.client.get(url, query_params, content_type="application/json")
         self.assertEqual(response.status_code, 401)
 
     def test_booking_view_get_valid(self):
@@ -40,16 +41,17 @@ class BookingViewTest(TestCase):
         self.client.login(username="testuser", password="password123")
 
         query_params = {
-            'departure': self.airport1.pk,
-            'arrival': self.airport2.pk,
-            'departure_time': self.departure_time.strftime("%Y-%m-%d"),
-            'quantity': 1,
+            "departure": self.airport1.pk,
+            "arrival": self.airport2.pk,
+            "departure_time": self.departure_time.strftime("%Y-%m-%d"),
+            "quantity": 1,
         }
-        response = self.client.get(f"/aviation/get-booking-information/", query_params,  content_type="application/json")
+        url = reverse("get_booking_information")
+        response = self.client.get(url, query_params, content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.content)
-        self.assertIn('flights', response_data)
-        self.assertIn('fare', response_data)
-        self.assertEqual(len(response_data['flights']), 1)
-        self.assertEqual(response_data['flights'][0]['pk'], self.flight.pk)
+        self.assertIn("flights", response_data)
+        self.assertIn("fare", response_data)
+        self.assertEqual(len(response_data["flights"]), 1)
+        self.assertEqual(response_data["flights"][0]["pk"], self.flight.pk)

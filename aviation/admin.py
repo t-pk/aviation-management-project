@@ -186,6 +186,7 @@ class BookingAdmin(admin.ModelAdmin):
             if request.user and request.user.is_superuser:
                 return super().has_change_permission(request, obj)
             return False
+
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):

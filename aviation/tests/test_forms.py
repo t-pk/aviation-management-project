@@ -4,6 +4,7 @@ from django.utils import timezone
 from aviation.forms import BookingForm, FlightForm
 from aviation.models import Aircraft, Airport, Flight, Passenger
 
+
 class BookingFormTest(TestCase):
     def setUp(self):
         self.aircraft = Aircraft.objects.create(model="Boeing 737", capacity=180, code="ABC123")
@@ -27,13 +28,13 @@ class BookingFormTest(TestCase):
         self.passenger2.relation = self.passenger1
         self.passenger2.save()
         self.booking_data = {
-            'departure': self.airport1.pk,
-            'arrival': self.airport2.pk,
-            'departure_time': timezone.now(),
-            'flight': self.flight,
-            'quantity': 2,
-            'passengers': [self.passenger1, self.passenger2],
-            'total_fare': 2_700_000,
+            "departure": self.airport1.pk,
+            "arrival": self.airport2.pk,
+            "departure_time": timezone.now(),
+            "flight": self.flight,
+            "quantity": 2,
+            "passengers": [self.passenger1, self.passenger2],
+            "total_fare": 2_700_000,
         }
 
     def test_booking_form_valid(self):
@@ -42,31 +43,31 @@ class BookingFormTest(TestCase):
 
     def test_booking_form_invalid_by_quantity(self):
         invalid_data = self.booking_data.copy()
-        invalid_data['quantity'] = 0
+        invalid_data["quantity"] = 0
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_booking_form_invalid_by_total_fare(self):
         invalid_data = self.booking_data.copy()
-        invalid_data['total_fare'] = -1
+        invalid_data["total_fare"] = -1
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_booking_form_invalid_by_flight(self):
         invalid_data = self.booking_data.copy()
-        invalid_data['flight'] = None
+        invalid_data["flight"] = None
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_booking_form_invalid_by_departure(self):
         invalid_data = self.booking_data.copy()
-        invalid_data['departure'] = None
+        invalid_data["departure"] = None
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_booking_form_invalid_by_arrival(self):
         invalid_data = self.booking_data.copy()
-        invalid_data['arrival'] = None
+        invalid_data["arrival"] = None
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
@@ -78,18 +79,18 @@ class FlightFormTestCase(TestCase):
         self.airport2 = Airport.objects.create(code="HAN", city="HAN", name="ABC122", latitude=2.1, longitude=2.2)
 
         self.valid_flight_data = {
-            'departure_airport': self.airport1,
-            'arrival_airport': self.airport2,
-            'departure_time': timezone.now() + timezone.timedelta(days=1),
-            'arrival_time': timezone.now() + timezone.timedelta(days=1, hours=2),
-            'aircraft':self.aircraft,
+            "departure_airport": self.airport1,
+            "arrival_airport": self.airport2,
+            "departure_time": timezone.now() + timezone.timedelta(days=1),
+            "arrival_time": timezone.now() + timezone.timedelta(days=1, hours=2),
+            "aircraft": self.aircraft,
         }
         self.invalid_flight_data = {
-            'departure_airport': self.airport1,
-            'arrival_airport': self.airport2,  
-            'departure_time': timezone.now() + timezone.timedelta(days=1),
-            'arrival_time': timezone.now() + timezone.timedelta(days=1, hours=2),
-            'aircraft':self.aircraft,
+            "departure_airport": self.airport1,
+            "arrival_airport": self.airport2,
+            "departure_time": timezone.now() + timezone.timedelta(days=1),
+            "arrival_time": timezone.now() + timezone.timedelta(days=1, hours=2),
+            "aircraft": self.aircraft,
         }
 
     def test_flight_form_valid(self):
@@ -98,18 +99,18 @@ class FlightFormTestCase(TestCase):
 
     def test_flight_form_invalid_by_airport(self):
         invalid_data = self.invalid_flight_data.copy()
-        invalid_data['departure_airport'] = self.airport2
+        invalid_data["departure_airport"] = self.airport2
         form = FlightForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_flight_form_invalid_by_departure_time(self):
         invalid_data = self.invalid_flight_data.copy()
-        invalid_data['departure_time'] = None
+        invalid_data["departure_time"] = None
         form = FlightForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
     def test_flight_form_invalid_by_arrival_time(self):
         invalid_data = self.invalid_flight_data.copy()
-        invalid_data['arrival_time'] = None
+        invalid_data["arrival_time"] = None
         form = FlightForm(data=invalid_data)
         self.assertFalse(form.is_valid())
