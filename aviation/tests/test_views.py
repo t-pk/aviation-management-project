@@ -1,124 +1,55 @@
-# from django.test import TestCase, Client
-# from aviation.models import Aircraft, Booking, Flight
-# from datetime import datetime
-# from django.contrib.auth.models import User
+from django.test import TestCase, Client
+from django.utils import timezone
+from aviation.models import Aircraft, Airport, Flight
+from django.contrib.auth.models import User
+from django.urls import reverse
+import json
 
+class BookingViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.aircraft = Aircraft.objects.create(model="Boeing 737", capacity=180, code="ABC123")
+        self.airport1 = Airport.objects.create(code="SGN", city="HCM", name="ABC123", latitude=1.1, longitude=1.2)
+        self.airport2 = Airport.objects.create(code="HAN", city="HAN", name="ABC122", latitude=2.1, longitude=2.2)
 
-# class TestBookingFlightView(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.user = User.objects.create_user(username="testuser", password="password123")
-#         self.client.login(username="testuser", password="password123")
+        # Create some sample flights
+        self.departure_time = timezone.now() + timezone.timedelta(days=1)
+        self.arrival_time =timezone.now() + timezone.timedelta(days=1, hours=2)
 
-#     def test_valid_post_request(self):
-#         # Create test flight
-#         aircraft = Aircraft.objects.create(model="Boeing 777", capacity=300, code="GHI789")
+        self.flight = Flight.objects.create(
+            departure_airport=self.airport1,
+            arrival_airport=self.airport2,
+            departure_time=timezone.now() + timezone.timedelta(days=1),
+            arrival_time=timezone.now() + timezone.timedelta(days=1, hours=2),
+            aircraft=self.aircraft,
+        )
 
-#         flight = Flight.objects.create(
-#             departure_airport="SGN",
-#             arrival_airport="HAN",
-#             departure_time=datetime.now(),
-#             arrival_time=datetime.now(),
-#             aircraft=aircraft,
-#         )
+    def test_booking_view_get_invalid(self):
+        query_params = {
+            'departure': self.airport1.pk,
+            'arrival': self.airport2.pk,
+            'departure_time': self.departure_time.strftime("%Y-%m-%d"),
+            'quantity': 1,
+        }
+        url = reverse('get_booking_information')  # Assuming the URL name is 'booking_view'
+        response = self.client.get(url, query_params,  content_type="application/json")
+        self.assertEqual(response.status_code, 401)
 
-#         # Make post request
-#         response = self.client.post(
-#             f"/aviation/flights/",
-#             {
-#                 "departure_airport": "SGN",
-#                 "arrival_airport": "HAN",
-#                 "departure_time": datetime.now().strftime("%Y-%m-%d"),
-#             },
-#             content_type="application/json",
-#         )
+    def test_booking_view_get_valid(self):
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client.login(username="testuser", password="password123")
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue("flights" in response.json())
+        query_params = {
+            'departure': self.airport1.pk,
+            'arrival': self.airport2.pk,
+            'departure_time': self.departure_time.strftime("%Y-%m-%d"),
+            'quantity': 1,
+        }
+        response = self.client.get(f"/aviation/get-booking-information/", query_params,  content_type="application/json")
 
-#     # Add more test cases for invalid requests, missing data, etc.
-
-
-# class TestRetrieveBookingView(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.user = User.objects.create_user(username="testuser", password="password123")
-#         self.client.login(username="testuser", password="password123")
-
-#     def test_retrieve_existing_booking(self):
-#         # Create test booking
-#         aircraft = Aircraft.objects.create(model="Boeing 777", capacity=300, code="GHI789")
-
-#         flight = Flight.objects.create(
-#             departure_airport="SGN",
-#             arrival_airport="HAN",
-#             departure_time=datetime.now(),
-#             arrival_time=datetime.now(),
-#             aircraft=aircraft,
-#         )
-#         booking = Booking.objects.create(flight=flight)
-
-#         # Make get request
-#         response = self.client.get(f"/aviation/bookings/{booking.id}/")
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue("departure_airport" in response.json())
-#         self.assertEqual(response.json()["departure_airport"], "SGN")
-#         # Add more assertions for other fields
-
-#     # Add test cases for non-existent booking ID, etc.
-
-
-# class TestCalculateFaresView(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.user = User.objects.create_user(username="testuser", password="password123")
-#         self.client.login(username="testuser", password="password123")
-
-#     def test_valid_get_request(self):
-#         # Make get request with valid parameters
-#         response = self.client.get(f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": 2})
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue("distance" in response.json())
-#         self.assertTrue("fare" in response.json())
-#         self.assertTrue("total_fare" in response.json())
-
-#     def test_missing_parameters(self):
-#         # Test with missing parameters
-#         response = self.client.get(f"/aviation/fares/")
-#         self.assertEqual(response.status_code, 400)
-#         self.assertTrue("error" in response.json())
-
-#     def test_invalid_airport_code(self):
-#         # Test with invalid airport code
-#         response = self.client.get(
-#             f"/aviation/fares/", {"departure_code": "INVALID", "arrival_code": "HAN", "quantity": 2}
-#         )
-#         self.assertEqual(response.status_code, 400)
-#         self.assertTrue("error" in response.json())
-
-#     def test_invalid_passenger_count(self):
-#         # Test with invalid passenger count (non-integer value)
-#         response = self.client.get(
-#             f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": "invalid"}
-#         )
-#         self.assertEqual(response.status_code, 400)
-#         self.assertTrue("error" in response.json())
-
-#     def test_negative_passenger_count(self):
-#         # Test with negative passenger count
-#         response = self.client.get(
-#             f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": -2}
-#         )
-#         self.assertEqual(response.status_code, 400)
-#         self.assertTrue("error" in response.json())
-
-#     def test_zero_passenger_count(self):
-#         # Test with zero passenger count
-#         response = self.client.get(f"/aviation/fares/", {"departure_code": "SGN", "arrival_code": "HAN", "quantity": 0})
-
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue("distance" in response.json())
-#         self.assertTrue("fare" in response.json())
-#         self.assertTrue("total_fare" in response.json())
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertIn('flights', response_data)
+        self.assertIn('fare', response_data)
+        self.assertEqual(len(response_data['flights']), 1)
+        self.assertEqual(response_data['flights'][0]['pk'], self.flight.pk)
