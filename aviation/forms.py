@@ -133,7 +133,10 @@ class BookingForm(forms.ModelForm):
 
         if not cleaned_data.get("flight"):
             if flight:
-                cleaned_data["flight"] = Flight.objects.get(pk=flight)
+                if type(flight) is str:
+                    cleaned_data["flight"] = Flight.objects.get(pk=flight)
+                else:
+                    cleaned_data["flight"] = Flight.objects.get(pk=flight.id)
                 errors = self.errors
                 errors.pop("flight", None)
 
@@ -185,3 +188,13 @@ class FlightForm(forms.ModelForm):
             raise forms.ValidationError("Departure and Arrival airports cannot be the same.")
 
         return cleaned_data
+
+    class Meta:
+        model = Flight
+        fields = [
+            "departure_airport",
+            "arrival_airport",
+            "departure_time",
+            "arrival_time",
+            "aircraft",
+        ]
