@@ -1,28 +1,7 @@
 import json
 from django.utils import timezone
 import random
-from math import radians, sin, cos, sqrt, atan2
-
-
-def calculate_distance_between_points(lat1, lon1, lat2, lon2):
-    lat1 = radians(lat1)
-    lon1 = radians(lon1)
-    lat2 = radians(lat2)
-    lon2 = radians(lon2)
-
-    # Radius of the Earth in kilometers
-    radius = 6371.0
-
-    # Calculate the change in coordinates
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    # Calculate the Haversine distance
-    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    distance = radius * c
-    return round(distance)
-
+from aviation.utils import calculate_distance_between_points
 
 # Load passenger data from JSON
 passenger_path = "./aviation/fixtures/0003_Passenger.json"
@@ -68,10 +47,10 @@ transformed_data = []
 
 
 # Function to generate random booking data
-def generate_booking_data(flight, passengers, booking_date, total_fare):
+def generate_booking_data(flight, passengers, booking_date, total_fare, i):
     return {
         "model": "aviation.booking",
-        "pk": flight["pk"],
+        "pk": i,
         "fields": {
             "flight": flight["pk"],
             "passengers": passengers,
@@ -81,53 +60,39 @@ def generate_booking_data(flight, passengers, booking_date, total_fare):
     }
 
 
-# # Function to find return flights
-# def find_return_flights(arrival_airport, departure_time):
-#     return_flights = []
-#     for flight in flight_data:
-#         if flight["fields"]["departure_airport"] == arrival_airport:
-#             # Calculate the arrival date of the return flight (2 to 5 days after departure)
-#             departure_time = datetime.strptime(flight["fields"]["departure_time"].split()[0], "%Y-%m-%d")
-#             arrival_date = departure_time + timedelta(days=random.randint(2, 5))
-#             return_flights.append({
-#                 "flight": flight["pk"],
-#                 "arrival_date": arrival_date.strftime("%Y-%m-%d")
-#             })
-#     return return_flights
-
 # Iterate over each flight
+i = 0
 for flight in flight_data:
-    # Randomly select number of passengers for each flight (between 1 and 5)
-    num_passengers = random.randint(3, 5)
+    # Randomly select number of bookings for each flight (between 5 and 10)
+    num_bookings = random.randint(5, 20)
 
-    # Randomly assign passengers to the flight
-    passengers = random.sample(range(1, len(passenger_data) + 1), num_passengers)
+    for _ in range(num_bookings):
+        i += 1
+        # Randomly select number of passengers for each booking (between 1 and 5)
+        num_passengers = random.randint(3, 5)
 
-    # If passenger has relation_id (passenger id), include it in the passengers list
-    passengers_with_ids = []
-    for passenger_id in passengers:
-        for passenger in passenger_data:
-            if passenger["pk"] == passenger_id:
-                passengers_with_ids.append(passenger_id)
-                break
+        # Randomly assign passengers to the booking
+        passengers = random.sample(range(1, len(passenger_data) + 1), num_passengers)
 
-    # Generate booking date (current date)
+        # If passenger has relation_id (passenger id), include it in the passengers list
+        passengers_with_ids = []
+        for passenger_id in passengers:
+            for passenger in passenger_data:
+                if passenger["pk"] == passenger_id:
+                    passengers_with_ids.append(passenger_id)
+                    break
 
-    current_datetime = timezone.datetime.now() - timezone.timedelta(weeks=random.randint(5, 16))
-    booking_datetime = current_datetime.replace(
-        hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59)
-    )
-    booking_date_str = booking_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        # Generate booking date (current date)
+        current_datetime = timezone.datetime.now() - timezone.timedelta(weeks=random.randint(5, 16))
+        booking_datetime = current_datetime.replace(
+            hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59)
+        )
+        booking_date_str = booking_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
-    total_fare = flight["fields"]["fare"] * len(passengers_with_ids)
-    # Generate booking data for the flight
-    booking_data = generate_booking_data(flight, passengers_with_ids, booking_date_str, total_fare)
-    transformed_data.append(booking_data)
-    # print(booking_data)  # Output the generated booking data
-
-    # # Find return flights for the current flight
-    # return_flights = find_return_flights(flight["fields"]["arrival_airport"], flight["fields"]["departure_time"])
-
+        total_fare = flight["fields"]["fare"] * len(passengers_with_ids)
+        # Generate booking data for the flight
+        booking_data = generate_booking_data(flight, passengers_with_ids, booking_date_str, total_fare, i)
+        transformed_data.append(booking_data)
 
 # Save transformed data to JSON file
 output_file_path = "./aviation/fixtures/0005_Booking.json"

@@ -8,10 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 fake = Faker("vi_VN")
-num_records = int(os.getenv("NUM_PASSENGERS"))
 transformed_data = []
 
-for i in range(num_records):
+for i in range(4000):
     name = generator.generate(i % 2)
     email = fake.email()
     phone = "+84" + str(fake.random_number(digits=9))

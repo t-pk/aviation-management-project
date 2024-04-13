@@ -53,16 +53,18 @@ class FlightAdmin(admin.ModelAdmin):
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
     total_passenger.short_description = "Total Passenger"
-    
+
     def has_change_permission(self, request, obj=None):
-        logger.debug(f"has_change_permission request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
+        logger.debug(
+            f"has_change_permission request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}"
+        )
 
         if obj and (obj.departure_time <= timezone.now() or obj.arrival_time <= timezone.now()):
             if request.user and request.user.is_superuser:
                 return super().has_change_permission(request, obj)
             return False
         return super().has_change_permission(request, obj)
-    
+
     def has_delete_permission(self, request, obj=None):
 
         logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
@@ -72,6 +74,7 @@ class FlightAdmin(admin.ModelAdmin):
                 return super().has_delete_permission(request, obj)
             return False
         return super().has_delete_permission(request, obj)
+
 
 @admin.register(Aircraft)
 class AircraftAdmin(admin.ModelAdmin):
