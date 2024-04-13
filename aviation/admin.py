@@ -40,15 +40,12 @@ class FlightAdmin(admin.ModelAdmin):
 
     @staticmethod
     def aircraft_code(obj):
-        return obj.aircraft.code if obj.aircraft else ""
+        return obj.aircraft.code
 
     @staticmethod
     def duration_time(obj):
-        if obj.departure_time and obj.arrival_time:
-            duration = obj.arrival_time - obj.departure_time
-            return duration
-        else:
-            return None
+        duration = obj.arrival_time - obj.departure_time
+        return duration
 
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
@@ -146,7 +143,7 @@ class BookingAdmin(admin.ModelAdmin):
 
     @staticmethod
     def aircraft_code(obj):
-        return obj.flight.aircraft.code if obj.flight.aircraft else ""
+        return obj.flight.aircraft.code
 
     @staticmethod
     def departure_time(obj):
