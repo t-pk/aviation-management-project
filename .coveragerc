@@ -2,3 +2,8 @@
 omit =
     config/asgi.py
     config/wsgi.py
+    scripts/airport.py
+    scripts/aircraft.py
+    scripts/flight.py
+    scripts/passenger.py
+    scripts/booking.py

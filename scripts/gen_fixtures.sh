@@ -1,9 +1,9 @@
 mkdir -p aviation/fixtures
-python ./scripts/aircraft.py
-python ./scripts/airport.py
-python ./scripts/passenger.py
-python ./scripts/flight.py
-python ./scripts/booking.py
+python -m scripts.aircraft
+python -m scripts.airport
+python -m scripts.passenger
+python -m scripts.flight
+python -m scripts.booking
 
 
 python manage.py loaddata 0001_Aircraft.json
