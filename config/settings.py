@@ -169,4 +169,5 @@ LOGGING = {
     },
 }
 
-USE_TZ = False
+USE_TZ = True
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
