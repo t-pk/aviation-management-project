@@ -69,18 +69,12 @@ class FlightAdminTest(TestCase):
             search_fields,
             [
                 "id",
-                "departure_airport",
-                "arrival_airport",
-                "departure_time",
-                "arrival_time",
-                "aircraft_id",
-                "duration_time",
             ],
         )
 
     def test_list_filter(self):
         list_filter = self.flight_admin.get_list_filter(None)
-        self.assertEqual(list_filter, ["departure_airport", "arrival_airport"])
+        self.assertEqual(list_filter, ["departure_airport", "arrival_airport","departure_time", "arrival_time"])
 
 
 class AircraftAdminTest(TestCase):
@@ -128,10 +122,7 @@ class PassengerAdminTest(TestCase):
         self.assertEqual(self.admin.list_display, ["id", "name", "email", "phone"])
 
     def test_search_fields(self):
-        self.assertEqual(self.admin.search_fields, ["id", "name", "email", "phone"])
-
-    def test_list_filter(self):
-        self.assertEqual(self.admin.list_filter, ["name", "email", "phone"])
+        self.assertEqual(self.admin.search_fields, ["name", "email", "phone"])
 
     def test_list_per_page(self):
         self.assertEqual(self.admin.list_per_page, 20)

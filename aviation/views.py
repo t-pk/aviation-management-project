@@ -24,7 +24,7 @@ class BookingView(View):
 
         logger.debug(f"API get-booking-information query: {str(request.GET)}")
 
-        departure_date = timezone.datetime.strptime(departure_time, "%Y-%m-%d")
+        departure_date = timezone.make_aware(timezone.datetime.strptime(departure_time, "%Y-%m-%d"))
 
         current_datetime = timezone.now()
         if departure_date.date() == current_datetime.date():

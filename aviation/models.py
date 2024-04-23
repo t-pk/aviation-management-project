@@ -25,7 +25,7 @@ class Flight(models.Model):
             "num_booked_passengers"
         ]
         available_seats = self.aircraft.capacity - num_booked_passengers
-        return f"{self.aircraft.code} | {self.departure_time.time().strftime('%H:%M')} | {self.arrival_time.time().strftime('%H:%M')} | {available_seats} (avail seats)"
+        return f"{self.aircraft.code} | {self.departure_time.astimezone().time().strftime('%H:%M')} | {self.arrival_time.astimezone().time().strftime('%H:%M')} | {available_seats} (avail seats)"
 
 
 class Aircraft(models.Model):

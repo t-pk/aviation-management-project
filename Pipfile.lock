@@ -121,12 +121,12 @@
         },
         "faker": {
             "hashes": [
-                "sha256:1a46466b22c6bf5925448f725f90c6e0d8bf085819906520ddaa15aec58a6df5",
-                "sha256:2f70a7817b4147d67c544192e169c5653060fce8aef758db0ea8823d89caac94"
+                "sha256:34b947581c2bced340c39b35f89dbfac4f356932cfff8fe893bde854903f0e6e",
+                "sha256:adb98e771073a06bdc5d2d6710d8af07ac5da64c8dc2ae3b17bb32319e66fd82"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==24.8.0"
+            "version": "==24.11.0"
         },
         "psycopg": {
             "hashes": [
@@ -246,7 +246,6 @@
                 "sha256:714d0a4932c059d16189f58ef5411ec2287a4360f17cdd0edd2d09d4c5087c93",
                 "sha256:c204494cd97479d0e39f28c93d46c0b2d5959c7b9ab904762ea6c7af211c8663"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==0.5.0"
         },

@@ -17,6 +17,9 @@ pipenv install
 # Start Docker containers
 docker compose up
 
+# Create .env file
+cp .env.sample .env
+
 # Run setup script for migration and data import
 python scripts/setup.sh
 

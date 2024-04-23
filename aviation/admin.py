@@ -25,14 +25,10 @@ class FlightAdmin(admin.ModelAdmin):
     ]
     search_fields = [
         "id",
-        "departure_airport",
-        "arrival_airport",
-        "departure_time",
-        "arrival_time",
-        "aircraft_id",
-        "duration_time",
     ]
-    list_filter = ["departure_airport", "arrival_airport"]
+    date_hierarchy = "departure_time"
+
+    list_filter = ["departure_airport", "arrival_airport", "departure_time", "arrival_time"]
     list_per_page = 20
 
     def total_passenger(self, obj):
@@ -92,8 +88,7 @@ class AirportAdmin(admin.ModelAdmin):
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "email", "phone"]
-    search_fields = ["id", "name", "email", "phone"]
-    list_filter = ["name", "email", "phone"]
+    search_fields = ["name", "email", "phone"]
     list_per_page = 20
 
 
@@ -147,12 +142,12 @@ class BookingAdmin(admin.ModelAdmin):
 
     @staticmethod
     def departure_time(obj):
-        departure_time = obj.flight.departure_time + timedelta(hours=7)
+        departure_time = obj.flight.departure_time.astimezone()
         return departure_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
     def arrival_time(obj):
-        arrival_time = obj.flight.arrival_time + timedelta(hours=7)
+        arrival_time = obj.flight.arrival_time.astimezone()
         return arrival_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
