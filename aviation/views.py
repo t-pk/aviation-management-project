@@ -4,7 +4,7 @@ from django.views import View
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from .models import Airport, Flight
-from aviation.utils import adjust_datetime, calculate_fare, get_end_datetime, get_start_datetime
+from aviation.utils import calculate_fare, get_end_datetime, get_start_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -25,10 +25,11 @@ class BookingView(View):
         logger.debug(f"API get-booking-information query: {str(request.GET)}")
 
         departure_date = timezone.make_aware(timezone.datetime.strptime(departure_time, "%Y-%m-%d"))
+        current_datetime = timezone.now().astimezone()
+        departure_date = departure_date.replace(hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second)
 
-        current_datetime = timezone.now()
         if departure_date.date() == current_datetime.date():
-            start_datetime = adjust_datetime(departure_date)
+            start_datetime = departure_date
         else:
             start_datetime = get_start_datetime(departure_date)
 
