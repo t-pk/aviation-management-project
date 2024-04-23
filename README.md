@@ -1,93 +1,63 @@
-install python, pipenv, docker (docker-compose).
-run source by command: ```python manage.py runserver```. should be port default 8000.
+# Aviation management
 
-we use https://www.mockaroo.com/ to create mock data.
+## Quick Start
 
+Ensure you have Python, pipenv, Docker, and docker-compose installed.
 
 ```bash
-# setup enviroment to develop
+# Install pipenv if not installed
 pip install pipenv
+
+# Set up virtual environment
 pipenv shell
 
+# Install dependencies
 pipenv install
-pipenv shell
 
-# setup database
+# Start Docker containers
 docker compose up
 
-# need to create migration
-python manage.py makemigrations
-python manage.py migrate
+# Run setup script for migration and data import
+python scripts/setup.sh
 
-# create 3 users and groups
-python manage.py create_group_user
+# Start the server
+python manage.py runserver
 ```
 
+## Users
 
-we have 3 users
+We have 3 predefined users:
 
+- **Super Admin**
+  - **Username:** admin
+  - **Password:** 123456
+
+- **Ticketing Staff**
+  - **Username:** ticketingstaff
+  - **Password:** ticketingstaff
+
+- **Flight Manager**
+  - **Username:** flightmanager
+  - **Password:** flightmanager
+
+## Testing
+Run test cases using the following command:
 ```
-#supper admin
-username: admin
-password: 123456
-
-#ticketingstaff
-username: ticketingstaff
-password: ticketingstaff
-
-#flightmanager
-username: flightmanager
-password: flightmanager
+./manage.py test
 ```
-
-We also support running testcases with the command
-
+To run a specific test case:
 ```
- ./manage.py test
-```
-
-Running a specifict test case
-```
-test_models is file name.
 python ./manage.py test aviation.tests.test_models
 ```
-
-result run test
+## Test Results
+After running tests, you'll see coverage report:
 ```
 $ coverage run --source='.' manage.py test
-Found 60 test(s).
-Creating test database for alias 'default'...
-System check identified no issues (0 silenced).
-............DEBUG    has_change_permission request <WSGIRequest: GET '/aviationadmin/booking/'> obj 5 user test_user is supper user False
-DEBUG    flight.departure_time = 2024-04-12 07:46:44.507003 timezone.now() = 2024-04-12 09:46:44.509755
-.DEBUG    has_delete_permission request <WSGIRequest: GET '/aviationadmin/booking/'> obj 6 user test_user is supper user False
-DEBUG    flight.departure_time = 2024-04-12 07:46:44.536226 timezone.now() = 2024-04-12 09:46:44.539359
-...............DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-DEBUG    flight information ABC123 | 09:46 | 11:46 | 180 (avail seats)
-.DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-DEBUG    flight information ABC123 | 09:46 | 11:46 | 180 (avail seats)
-.DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-.DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-DEBUG    flight information ABC123 | 09:46 | 11:46 | 180 (avail seats)
-.DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-DEBUG    flight information ABC123 | 09:46 | 11:46 | 180 (avail seats)
-.DEBUG    Departure Time: 2024-04-12, Current Date: 2024-04-12, Same Date Check: True
-DEBUG    flight information ABC123 | 09:46 | 11:46 | 180 (avail seats)
-.DEBUG    departure_airport HAN - ABC122 (HAN) arrival_airport HAN - ABC122 (HAN)
-.DEBUG    departure_airport SGN - ABC123 (HCM) arrival_airport HAN - ABC122 (HAN)
-.DEBUG    departure_airport SGN - ABC123 (HCM) arrival_airport HAN - ABC122 (HAN)
-.DEBUG    departure_airport SGN - ABC123 (HCM) arrival_airport HAN - ABC122 (HAN)
-.....................WARNING  Unauthorized: /aviation/get-booking-information/
-.DEBUG    API get-booking-information query: <QueryDict: {'departure': ['77'], 'arrival': ['78'], 'departure_time': ['2024-04-13'], 'quantity': ['1']}>
-DEBUG    departure_airport: SGN - ABC123 (HCM) HAN - ABC122 (HAN)
-.
-----------------------------------------------------------------------
-Ran 60 tests in 2.519s
-
-OK
-Destroying test database for alias 'default'...
+...
 $ coverage report
+```
 
+```
 Name                                  Stmts   Miss  Cover
 ---------------------------------------------------------
 aviation/__init__.py                      0      0   100%
