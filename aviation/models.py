@@ -47,6 +47,9 @@ class Airport(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
 
+    class Meta:
+        db_table = "aviation_airport"
+
     def __str__(self):
         return f"{self.code} - {self.name} ({self.city})"
 

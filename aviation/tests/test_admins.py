@@ -74,7 +74,7 @@ class FlightAdminTest(TestCase):
 
     def test_list_filter(self):
         list_filter = self.flight_admin.get_list_filter(None)
-        self.assertEqual(list_filter, ["departure_airport", "arrival_airport","departure_time", "arrival_time"])
+        self.assertEqual(list_filter, ["departure_airport", "arrival_airport", "departure_time", "arrival_time"])
 
 
 class AircraftAdminTest(TestCase):

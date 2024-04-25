@@ -170,4 +170,4 @@ LOGGING = {
 }
 
 USE_TZ = True
-TIME_ZONE = 'Asia/Ho_Chi_Minh'
+TIME_ZONE = "Asia/Ho_Chi_Minh"
