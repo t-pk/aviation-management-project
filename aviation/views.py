@@ -26,7 +26,9 @@ class BookingView(View):
 
         departure_date = timezone.make_aware(timezone.datetime.strptime(departure_time, "%Y-%m-%d"))
         current_datetime = timezone.now().astimezone()
-        departure_date = departure_date.replace(hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second)
+        departure_date = departure_date.replace(
+            hour=current_datetime.hour, minute=current_datetime.minute, second=current_datetime.second
+        )
 
         if departure_date.date() == current_datetime.date():
             start_datetime = departure_date

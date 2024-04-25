@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', lambda request: redirect('/admin/')),  # Redirect root URL to /admin/
+    path("", lambda request: redirect("/admin/")),  # Redirect root URL to /admin/
     path("admin/", admin.site.urls),
     path("aviation/", include("aviation.urls")),
     path(

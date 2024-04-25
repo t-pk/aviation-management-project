@@ -2,10 +2,6 @@ import json
 import random
 from faker import Faker
 from vn_fullname_generator import generator
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 fake = Faker("vi_VN")
 transformed_data = []
