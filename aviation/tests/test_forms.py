@@ -19,9 +19,9 @@ class BookingFormTest(TestCase):
             aircraft=self.aircraft,
         )
         self.flight.save()
-        self.passenger1 = Passenger.objects.create(name="Tâm")
-        self.passenger2 = Passenger.objects.create(name="Nguyệt")
-        self.passenger3 = Passenger.objects.create(name="Như")
+        self.passenger1 = Passenger.objects.create(name="Tân", date_of_birth="2010-01-03", sex="F")
+        self.passenger2 = Passenger.objects.create(name="Nguyệt", date_of_birth="2010-01-03", sex="F")
+        self.passenger3 = Passenger.objects.create(name="Như", date_of_birth="2010-01-03", sex="F")
 
         self.passenger1.relation = self.passenger2
         self.passenger1.save()
