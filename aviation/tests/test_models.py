@@ -156,7 +156,12 @@ class PassengerModelTest(TestCase):
 
     def setUp(self):
         self.passenger = Passenger.objects.create(
-            name="John Doe", email="johndoe@example.com", phone="123456789", citizen_identify_id="ABC123"
+            name="John Doe",
+            email="johndoe@example.com",
+            phone="123456789",
+            citizen_identify_id="ABC123",
+            date_of_birth="2010-01-03",
+            sex="F",
         )
 
     def test_passenger_creation(self):
@@ -165,6 +170,8 @@ class PassengerModelTest(TestCase):
         self.assertEqual(self.passenger.email, "johndoe@example.com")
         self.assertEqual(self.passenger.phone, "123456789")
         self.assertEqual(self.passenger.citizen_identify_id, "ABC123")
+        self.assertEqual(self.passenger.date_of_birth, "2010-01-03")
+        self.assertEqual(self.passenger.sex, "F")
 
     def test_passenger_update(self):
         """Test updating a Passenger object"""
@@ -207,7 +214,12 @@ class BookingModelTest(TestCase):
     def setUp(self):
         # Create passengers
         self.passenger = Passenger.objects.create(
-            name="John Doe", email="johndoe@example.com", phone="123456789", citizen_identify_id="ABC123"
+            name="John Doe",
+            email="johndoe@example.com",
+            phone="123456789",
+            citizen_identify_id="ABC123",
+            date_of_birth="2010-01-03",
+            sex="F",
         )
 
         self.aircraft = Aircraft.objects.create(model="Boeing 737", capacity=180, code="ABC123")

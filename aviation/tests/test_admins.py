@@ -27,9 +27,9 @@ class FlightAdminTest(TestCase):
             aircraft=self.aircraft,
         )
 
-        self.passenger1 = Passenger.objects.create(name="Passenger 1")
-        self.passenger2 = Passenger.objects.create(name="Passenger 2")
-        self.passenger3 = Passenger.objects.create(name="Passenger 3")
+        self.passenger1 = Passenger.objects.create(name="Thái", date_of_birth="2010-01-03", sex="F")
+        self.passenger2 = Passenger.objects.create(name="Sang", date_of_birth="2010-01-03", sex="F")
+        self.passenger3 = Passenger.objects.create(name="Bảo", date_of_birth="2010-01-03", sex="F")
 
         self.booking1 = Booking.objects.create(flight=self.flight)
         self.booking1.passengers.add(self.passenger1, self.passenger2)
@@ -119,7 +119,7 @@ class PassengerAdminTest(TestCase):
         self.admin = PassengerAdmin(Passenger, self.site)
 
     def test_list_display(self):
-        self.assertEqual(self.admin.list_display, ["id", "name", "email", "phone"])
+        self.assertEqual(self.admin.list_display, ["id", "name", "date_of_birth", "sex", "email", "phone"])
 
     def test_search_fields(self):
         self.assertEqual(self.admin.search_fields, ["name", "email", "phone"])
@@ -143,8 +143,8 @@ class BookingAdminTest(TestCase):
             arrival_time=timezone.now() + timezone.timedelta(days=5, hours=2),
             aircraft=self.aircraft,
         )
-        self.passenger1 = Passenger.objects.create(name="Passenger 1")
-        self.passenger2 = Passenger.objects.create(name="Passenger 2")
+        self.passenger1 = Passenger.objects.create(name="Thái", date_of_birth="2010-01-03", sex="F")
+        self.passenger2 = Passenger.objects.create(name="Thông", date_of_birth="2010-01-03", sex="F")
         self.booking = Booking.objects.create(flight=self.flight)
         self.booking.passengers.add(self.passenger1, self.passenger2)
         self.factory = RequestFactory()

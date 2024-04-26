@@ -86,7 +86,7 @@ class AirportAdmin(admin.ModelAdmin):
 
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "email", "phone"]
+    list_display = ["id", "name", "date_of_birth", "sex", "email", "phone"]
     search_fields = ["name", "email", "phone"]
     list_per_page = 20
 

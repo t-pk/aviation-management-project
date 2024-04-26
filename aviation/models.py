@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils import timezone
 from django.core.validators import (
     MinValueValidator,
@@ -8,6 +9,11 @@ from django.core.validators import (
     EmailValidator,
 )
 from django.db.models import Count
+
+
+def validate_date_of_birth(value):
+    if value > timezone.datetime.now().astimezone().date():
+        raise ValidationError("Date of birth cannot be in the future")
 
 
 class Flight(models.Model):
@@ -55,7 +61,14 @@ class Airport(models.Model):
 
 
 class Passenger(models.Model):
+    class Sex(models.TextChoices):
+        MALE = "M", "Nam"
+        FEMALE = "F", "Nữ"
+        OTHER = "O", "Khác"
+
     name = models.CharField(max_length=100, validators=[MinLengthValidator(6), MaxLengthValidator(100)])
+    date_of_birth = models.DateField(null=False, validators=[validate_date_of_birth])
+    sex = models.CharField(max_length=1, choices=Sex.choices, null=False)
     email = models.EmailField(null=True, blank=True, validators=[EmailValidator()])
     phone = models.CharField(max_length=20, null=True, blank=True, validators=[MaxLengthValidator(20)])
     citizen_identify_id = models.CharField(max_length=15, null=True, blank=True, validators=[MaxLengthValidator(15)])

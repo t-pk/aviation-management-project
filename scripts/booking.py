@@ -64,12 +64,12 @@ def generate_booking_data(flight, passengers, booking_date, total_fare, i):
 i = 0
 for flight in flight_data:
     # Randomly select number of bookings for each flight (between 5 and 10)
-    num_bookings = random.randint(5, 20)
+    num_bookings = random.randint(3, 10)
 
     for _ in range(num_bookings):
         i += 1
         # Randomly select number of passengers for each booking (between 1 and 5)
-        num_passengers = random.randint(3, 5)
+        num_passengers = random.randint(3, 9)
 
         # Randomly assign passengers to the booking
         passengers = random.sample(range(1, len(passenger_data) + 1), num_passengers)

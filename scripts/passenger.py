@@ -12,9 +12,16 @@ for i in range(4000):
     phone = "+84" + str(fake.random_number(digits=9))
     citizen_identify_id = fake.random_number(digits=15)
     relation_id = None
+
+    # Generate date_of_birth
+    date_of_birth = fake.date_of_birth(minimum_age=18, maximum_age=100)
+    # Generate sex
+    sex_choices = ["M", "F", "O"]
+    weights = [0.48, 0.48, 0.02]  # 45% chance for "M" and "F", 10% chance for "O"
+    sex = random.choices(sex_choices, weights=weights)[0]
+
     if i > 0:
         probability_of_null = 0.8  # Example: 80% probability of null
-
         random_number = random.random()
         if random_number < probability_of_null:
             relation_id = None
@@ -30,6 +37,8 @@ for i in range(4000):
             "phone": phone,
             "citizen_identify_id": citizen_identify_id,
             "relation": relation_id,
+            "date_of_birth": str(date_of_birth),
+            "sex": sex,
         },
     }
 
