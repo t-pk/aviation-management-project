@@ -5,16 +5,16 @@ from aviation.utils import calculate_distance_between_points
 
 # Load passenger data from JSON
 passenger_path = "./aviation/fixtures/0003_Passenger.json"
-with open(passenger_path, "r") as json_file:
+with open(passenger_path, 'r', encoding='utf-8', errors='ignore') as json_file:
     passenger_data = json.load(json_file)
 
 # Load flight data from JSON
 flight_path = "./aviation/fixtures/0004_Flight.json"
-with open(flight_path, "r") as json_file:
+with open(flight_path, 'r', encoding='utf-8', errors='ignore') as json_file:
     flight_data = json.load(json_file)
 
 airport_path = "./aviation/fixtures/0002_Airport.json"
-with open(airport_path, "r") as json_file:
+with open(airport_path, 'r', encoding='utf-8', errors='ignore') as json_file:
     airport_data = json.load(json_file)
 
 

@@ -1,7 +1,7 @@
 import json
 
 input_file_path = "./mock/aircrafts.json"
-with open(input_file_path, "r") as json_file:
+with open(input_file_path, 'r', encoding='utf-8', errors='ignore') as json_file:
     original_data = json.load(json_file)
 
 transformed_data = []

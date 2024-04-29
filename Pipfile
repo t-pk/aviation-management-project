@@ -14,6 +14,7 @@ python-dotenv = "*"
 django-environ = "*"
 colorlog = "*"
 coverage = "*"
+tzdata = "*"
 
 [dev-packages]
 
