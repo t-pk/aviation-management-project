@@ -1,5 +1,8 @@
 # Aviation management
 
+## Class diagram
+![Class UML Diagram](documents/class-uml.png)
+
 ## Quick Start
 
 Ensure you have Python, pipenv, Docker, and docker-compose installed.
