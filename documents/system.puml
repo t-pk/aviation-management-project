@@ -1,0 +1,68 @@
+@startuml system
+skin rose
+left to right direction
+
+() "HTTP"
+HTTP --> "Web server component": http request
+
+component "Web server component" {
+    class Airport
+    class Aircraft
+    class Flight
+    class Passenger
+    class Booking
+}
+
+
+database "Database" {
+    entity "aviation_airport" as aviation_airport_table {
+        + id INT
+        + code VARCHAR
+        + city VARCHAR
+        + name VARCHAR
+        + latitude FLOAT
+        + longitude FLOAT
+    }
+
+    entity "aviation_aircraft" as aviation_aircraft_table {
+        + id INT
+        + model VARCHAR
+        + capacity INT
+        + code VARCHAR
+    }
+
+    entity "aviation_flight" as aviation_flight_table {
+        + id INT
+        + departure_airport_id INT
+        + arrival_airport_id INT
+        + departure_time DATETIME
+        + arrival_time DATETIME
+        + aircraft_id INT
+    }
+
+    entity "aviation_passenger" as aviation_passenger_table {
+        + id INT
+        + name VARCHAR
+        + date_of_birth DATE
+        + sex CHAR
+        + email VARCHAR
+        + phone VARCHAR
+        + citizen_identify_id VARCHAR
+        + relation_id INT
+    }
+
+    entity "aviation_booking" as aviation_booking_table {
+        + id INT
+        + flight_id INT
+        + booking_date DATETIME
+        + total_fare DECIMAL
+    }
+}
+
+Airport --> aviation_airport_table: Table
+Aircraft --> aviation_aircraft_table: Table
+Flight --> aviation_flight_table: Table
+Passenger --> aviation_passenger_table: Table
+Booking --> aviation_booking_table: Table
+
+@enduml
