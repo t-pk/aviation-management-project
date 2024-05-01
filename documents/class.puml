@@ -1,0 +1,154 @@
+@startuml "class uml"
+
+skin rose
+
+class Flight {
+    + id: Integer
+    + departure_airport: Airport
+    + arrival_airport: Airport
+    + departure_time: DateTime
+    + arrival_time: DateTime
+    + aircraft: Aircraft
+    __str__()
+}
+
+class Aircraft {
+    + model: String
+    + capacity: Integer
+    + code: String
+    __str__()
+}
+
+class Airport {
+    + code: String
+    + city: String
+    + name: String
+    + latitude: Float
+    + longitude: Float
+    __str__()
+}
+
+class Passenger {
+    + name: String
+    + date_of_birth: Date
+    + sex: Sex
+    + email: Email
+    + phone: String
+    + citizen_identify_id: String
+    + relation: Passenger
+    __str__()
+}
+
+class Booking {
+    + flight: Flight
+    + passengers: Passenger[]
+    + booking_date: DateTime
+    + total_fare: Decimal
+    __str__()
+}
+
+class FlightListView {
+    flight_list()
+}
+
+class FlightDetailView {
+    flight_detail()
+}
+
+class AirportListView {
+    airport_list()
+}
+
+class AirportDetailView {
+    airport_detail()
+}
+
+class AircraftListView {
+    aircraft_list()
+}
+
+class AircraftDetailView {
+    aircraft_detail()
+}
+
+class PassengerListView {
+    passenger_list()
+}
+
+class PassengerDetailView {
+    passenger_detail()
+}
+
+class BookingListView {
+    booking_list()
+}
+
+class BookingDetailView {
+    booking_detail()
+}
+
+class FlightController {
+    flight_list(request)
+    flight_detail(request, pk)
+    create_flight(request)
+    update_flight(request, pk)
+    delete_flight(request, pk)
+}
+
+class AirportController {
+    airport_list(request)
+    airport_detail(request, pk)
+    create_airport(request)
+    update_airport(request, pk)
+    delete_airport(request, pk)
+}
+
+class AircraftController {
+    aircraft_list(request)
+    aircraft_detail(request, pk)
+    create_aircraft(request)
+    update_aircraft(request, pk)
+    delete_aircraft(request, pk)
+}
+
+class PassengerController {
+    passenger_list(request)
+    passenger_detail(request, pk)
+    create_passenger(request)
+    update_passenger(request, pk)
+    delete_passenger(request, pk)
+}
+
+class BookingController {
+    booking_list(request)
+    booking_detail(request, pk)
+    create_booking(request)
+    update_booking(request, pk)
+    delete_booking(request, pk)
+}
+
+FlightListView --> FlightController
+FlightDetailView --> FlightController
+AirportListView --> AirportController
+AirportDetailView --> AirportController
+AircraftListView --> AircraftController
+AircraftDetailView --> AircraftController
+PassengerListView --> PassengerController
+PassengerDetailView --> PassengerController
+BookingListView --> BookingController
+BookingDetailView --> BookingController
+
+FlightController --> Flight
+AirportController --> Airport
+AircraftController --> Aircraft
+PassengerController --> Passenger
+BookingController --> Booking
+
+Passenger --> Passenger: relation
+Flight --> Airport: departure_airport
+Flight --> Airport: arrival_airport
+Flight --> Aircraft
+Booking --> Flight
+Booking --> Passenger
+
+@enduml
