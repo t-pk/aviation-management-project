@@ -1,7 +1,7 @@
 # Aviation management
 
 ## Class diagram
-![Class UML Diagram](document/class-uml.png)
+![Class UML Diagram](documents/class-uml.png)
 
 ## Quick Start
 
