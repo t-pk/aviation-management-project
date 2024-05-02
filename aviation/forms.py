@@ -1,13 +1,15 @@
-from django.utils import timezone
-import logging
 from django import forms
+from typing import Union, Dict
+from django.http import HttpRequest
+from django.utils.timezone import datetime
+from django.db.models.query import QuerySet
+from aviation.models import Airport, Booking, Flight
+import logging
 from django.utils import timezone
 
 from aviation.utils import adjust_datetime, get_end_datetime, get_start_datetime
-from .models import Airport, Booking, Flight
 
 logger = logging.getLogger(__name__)
-
 
 class BookingForm(forms.ModelForm):
     departure = forms.ChoiceField(
@@ -57,14 +59,14 @@ class BookingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        booking_instance = kwargs.pop("instance", None)
+        booking_instance: Union[None, Booking] = kwargs.pop("instance", None)
 
-        airports = Airport.objects.all()
+        airports: QuerySet[Airport] = Airport.objects.all()
 
-        airport_choices = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
+        airport_choices: list[tuple[int, str]] = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
         self.fields["departure"].choices = airport_choices
         self.fields["arrival"].choices = airport_choices
-        current_datetime = timezone.now()
+        current_datetime: datetime = timezone.now()
 
         if booking_instance and self.data.get("departure") is None:
             if self.initial == {}:
@@ -72,10 +74,10 @@ class BookingForm(forms.ModelForm):
                 booking_instance.arrival = booking_instance.flight.arrival_airport
                 return
 
-            flight_instance = booking_instance.flight
-            departure_instance = flight_instance.departure_airport
-            arrival_instance = flight_instance.arrival_airport
-            departure_time_instance = flight_instance.departure_time
+            flight_instance: Flight = booking_instance.flight
+            departure_instance: Airport = flight_instance.departure_airport
+            arrival_instance: Airport = flight_instance.arrival_airport
+            departure_time_instance: datetime = flight_instance.departure_time
             self.initial.update(
                 {
                     "flight": flight_instance.pk,
@@ -86,9 +88,9 @@ class BookingForm(forms.ModelForm):
                 }
             )
         else:
-            departure_instance = self.data.get("departure", airport_choices[0][0])
-            arrival_instance = self.data.get("arrival", airport_choices[1][0])
-            departure_time_instance = self.data.get("departure_time", current_datetime)
+            departure_instance: Union[int, str] = self.data.get("departure", airport_choices[0][0])
+            arrival_instance: Union[int, str] = self.data.get("arrival", airport_choices[1][0])
+            departure_time_instance: Union[datetime, str] = self.data.get("departure_time", current_datetime)
             self.initial.update(
                 {
                     "departure": departure_instance,
@@ -106,15 +108,15 @@ class BookingForm(forms.ModelForm):
             f"Same Date Check: {departure_time_instance.date() == current_datetime.date()}"
         )
 
-        start_datetime = (
+        start_datetime: datetime = (
             adjust_datetime(departure_time_instance)
             if departure_time_instance.date() == current_datetime.date()
             else get_start_datetime(departure_time_instance)
         )
 
-        end_datetime = get_end_datetime(departure_time_instance)
+        end_datetime: datetime = get_end_datetime(departure_time_instance)
 
-        matching_flights = Flight.objects.filter(
+        matching_flights: QuerySet[Flight] = Flight.objects.filter(
             departure_airport=departure_instance,
             arrival_airport=arrival_instance,
             departure_time__range=(start_datetime, end_datetime),
@@ -122,14 +124,14 @@ class BookingForm(forms.ModelForm):
 
         self.fields["flight"].queryset = matching_flights
 
-    def clean(self):
-        cleaned_data = super().clean()
-        booking_instance = self.instance
+    def clean(self) -> Dict[str, Union[str, int]]:
+        cleaned_data: Dict[str, Union[str, int]] = super().clean()
+        booking_instance: Union[Booking, None] = self.instance
         passengers = cleaned_data.get("passengers")
-        quantity = cleaned_data.get("quantity")
-        flight = self.data.get("flight")
+        quantity: int = cleaned_data.get("quantity")
+        flight: Union[str, None] = self.data.get("flight")
 
-        passengers_selected = quantity or 0
+        passengers_selected: int = quantity or 0
 
         if not cleaned_data.get("flight"):
             if flight:
@@ -150,38 +152,40 @@ class BookingForm(forms.ModelForm):
             )
 
         if passengers and flight:
-            passenger_count = 0
+            passenger_count: int = 0
             if booking_instance and booking_instance.id:
-                booked_passenger = Booking.objects.get(id=booking_instance.id)
+                booked_passenger: Booking = Booking.objects.get(id=booking_instance.id)
                 passenger_count = booked_passenger.passengers.count()
-            available_seats = self.get_available_seats(flight) + passenger_count
+            available_seats: int = self.get_available_seats(flight) + passenger_count
 
             if passengers_selected > available_seats:
                 raise forms.ValidationError(f"Only {available_seats - passenger_count} seats available on this flight.")
 
         return cleaned_data
 
-    def get_available_seats(self, flight):
+    def get_available_seats(self, flight: Union[str, Flight]) -> int:
         logger.debug(f"flight information {flight}")
         if type(flight) is str:
             bookings = Booking.objects.filter(flight_id=flight)
             flight = Flight.objects.get(pk=flight)
         else:
             bookings = Booking.objects.filter(flight_id=flight.id)
-        total_booked_seats = sum(booking.passengers.count() for booking in bookings)
-        available_seats = flight.aircraft.capacity - total_booked_seats if flight else 0
+        total_booked_seats: int = sum(booking.passengers.count() for booking in bookings)
+        available_seats: int = flight.aircraft.capacity - total_booked_seats if flight else 0
         return available_seats
 
 
 class FlightForm(forms.ModelForm):
+    request: Union[None, "HttpRequest"]
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
 
-    def clean(self):
-        cleaned_data = super().clean()
-        departure_airport = cleaned_data.get("departure_airport")
-        arrival_airport = cleaned_data.get("arrival_airport")
+    def clean(self) -> Dict[str, Union[str, datetime]]:
+        cleaned_data: Dict[str, Union[str, datetime]] = super().clean()
+        departure_airport: Union[int, str] = cleaned_data.get("departure_airport")
+        arrival_airport: Union[int, str] = cleaned_data.get("arrival_airport")
         logger.debug(f"departure_airport {departure_airport} arrival_airport {arrival_airport}")
 
         if departure_airport == arrival_airport:
