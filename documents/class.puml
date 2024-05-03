@@ -2,33 +2,46 @@
 
 skin rose
 
-class Flight {
+skinparam class {
+BackgroundColor<<Model>> orange
+}
+
+skinparam class {
+BackgroundColor<<Controller>> yellow
+}
+
+skinparam class {
+BackgroundColor<<Viewer>> chartreuse
+}
+
+
+class Flight <<Model>> {
     + id: Integer
     + departure_airport: Airport
     + arrival_airport: Airport
     + departure_time: DateTime
     + arrival_time: DateTime
     + aircraft: Aircraft
-    __str__()
+    ~ __str__()
 }
 
-class Aircraft {
+class Aircraft<<Model>> {
     + model: String
     + capacity: Integer
     + code: String
-    __str__()
+    ~ __str__()
 }
 
-class Airport {
+class Airport<<Model>> {
     + code: String
     + city: String
     + name: String
     + latitude: Float
     + longitude: Float
-    __str__()
+    ~ __str__()
 }
 
-class Passenger {
+class Passenger<<Model>> {
     + name: String
     + date_of_birth: Date
     + sex: Sex
@@ -36,95 +49,95 @@ class Passenger {
     + phone: String
     + citizen_identify_id: String
     + relation: Passenger
-    __str__()
+    ~ __str__()
 }
 
-class Booking {
+class Booking<<Model>> {
     + flight: Flight
     + passengers: Passenger[]
     + booking_date: DateTime
     + total_fare: Decimal
-    __str__()
+    ~ __str__()
 }
 
-class FlightListView {
-    flight_list()
+class FlightListView<<Viewer>> {
+    + flight_list()
 }
 
-class FlightDetailView {
-    flight_detail()
+class FlightDetailView<<Viewer>> {
+    + flight_detail()
 }
 
-class AirportListView {
-    airport_list()
+class AirportListView<<Viewer>> {
+    + airport_list()
 }
 
-class AirportDetailView {
-    airport_detail()
+class AirportDetailView<<Viewer>> {
+    + airport_detail()
 }
 
-class AircraftListView {
-    aircraft_list()
+class AircraftListView<<Viewer>> {
+    + aircraft_list()
 }
 
-class AircraftDetailView {
-    aircraft_detail()
+class AircraftDetailView<<Viewer>> {
+    + aircraft_detail()
 }
 
-class PassengerListView {
-    passenger_list()
+class PassengerListView<<Viewer>> {
+    + passenger_list()
 }
 
-class PassengerDetailView {
-    passenger_detail()
+class PassengerDetailView<<Viewer>> {
+    + passenger_detail()
 }
 
-class BookingListView {
-    booking_list()
+class BookingListView<<Viewer>> {
+    + booking_list()
 }
 
-class BookingDetailView {
-    booking_detail()
+class BookingDetailView<<Viewer>> {
+    + booking_detail()
 }
 
-class FlightController {
-    flight_list(request)
-    flight_detail(request, pk)
-    create_flight(request)
-    update_flight(request, pk)
-    delete_flight(request, pk)
+class FlightController<<Controller>> {
+    + flight_list(request)
+    + flight_detail(request, pk)
+    + create_flight(request)
+    + update_flight(request, pk)
+    + delete_flight(request, pk)
 }
 
-class AirportController {
-    airport_list(request)
-    airport_detail(request, pk)
-    create_airport(request)
-    update_airport(request, pk)
-    delete_airport(request, pk)
+class AirportController<<Controller>> {
+    + airport_list(request)
+    + airport_detail(request, pk)
+    + create_airport(request)
+    + update_airport(request, pk)
+    + delete_airport(request, pk)
 }
 
-class AircraftController {
-    aircraft_list(request)
-    aircraft_detail(request, pk)
-    create_aircraft(request)
-    update_aircraft(request, pk)
-    delete_aircraft(request, pk)
+class AircraftController<<Controller>> {
+    + aircraft_list(request)
+    + aircraft_detail(request, pk)
+    + create_aircraft(request)
+    + update_aircraft(request, pk)
+    + delete_aircraft(request, pk)
 }
 
-class PassengerController {
-    passenger_list(request)
-    passenger_detail(request, pk)
-    create_passenger(request)
-    update_passenger(request, pk)
-    delete_passenger(request, pk)
+class PassengerController<<Controller>> {
+    + passenger_list(request)
+    + passenger_detail(request, pk)
+    + create_passenger(request)
+    + update_passenger(request, pk)
+    + delete_passenger(request, pk)
 }
 
-class BookingController {
-    booking_list(request)
-    booking_detail(request, pk)
-    create_booking(request)
-    update_booking(request, pk)
-    delete_booking(request, pk)
+class BookingController<<Controller>> {
+    + booking_list(request)
+    + booking_detail(request, pk)
+    + create_booking(request)
+    + update_booking(request, pk)
+    + delete_booking(request, pk)
 }
 
 FlightListView --> FlightController
@@ -144,11 +157,11 @@ AircraftController --> Aircraft
 PassengerController --> Passenger
 BookingController --> Booking
 
-Passenger --> Passenger: relation
-Flight --> Airport: departure_airport
-Flight --> Airport: arrival_airport
-Flight --> Aircraft
-Booking --> Flight
-Booking --> Passenger
+Passenger ..o Passenger: relation
+Flight --o Airport: departure_airport
+Flight --o Airport: arrival_airport
+Flight --o Aircraft
+Booking --o Flight
+Booking --o Passenger
 
 @enduml
