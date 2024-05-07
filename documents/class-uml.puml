@@ -3,15 +3,15 @@
 skin rose
 
 skinparam class {
-BackgroundColor<<Model>> orange
+BackgroundColor<<Model>> #FFB2B2
 }
 
 skinparam class {
-BackgroundColor<<Controller>> yellow
+BackgroundColor<<Controller>> #FFFBD7
 }
 
 skinparam class {
-BackgroundColor<<Viewer>> chartreuse
+BackgroundColor<<View>> #D9FFB2
 }
 
 
@@ -60,44 +60,45 @@ class Booking<<Model>> {
     ~ __str__()
 }
 
-class FlightListView<<Viewer>> {
+class FlightListView<<View>> {
     + flight_list()
 }
 
-class FlightDetailView<<Viewer>> {
+class FlightDetailView<<View>> {
     + flight_detail()
 }
 
-class AirportListView<<Viewer>> {
+class AirportListView<<View>> {
     + airport_list()
 }
 
-class AirportDetailView<<Viewer>> {
+class AirportDetailView<<View>> {
     + airport_detail()
 }
 
-class AircraftListView<<Viewer>> {
+class AircraftListView<<View>> {
     + aircraft_list()
 }
 
-class AircraftDetailView<<Viewer>> {
+class AircraftDetailView<<View>> {
     + aircraft_detail()
 }
 
-class PassengerListView<<Viewer>> {
+class PassengerListView<<View>> {
     + passenger_list()
 }
 
-class PassengerDetailView<<Viewer>> {
+class PassengerDetailView<<View>> {
     + passenger_detail()
 }
 
-class BookingListView<<Viewer>> {
+class BookingListView<<View>> {
     + booking_list()
 }
 
-class BookingDetailView<<Viewer>> {
+class BookingDetailView<<View>> {
     + booking_detail()
+    + get_booking_information()
 }
 
 class FlightController<<Controller>> {
@@ -138,6 +139,7 @@ class BookingController<<Controller>> {
     + create_booking(request)
     + update_booking(request, pk)
     + delete_booking(request, pk)
+    + get_booking_information(request)
 }
 
 FlightListView --> FlightController

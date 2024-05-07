@@ -11,7 +11,7 @@ from django.core.validators import (
 from django.db.models import Count
 
 
-def validate_date_of_birth(value):
+def validate_date_of_birth(value: timezone.datetime):
     if value > timezone.datetime.now().astimezone().date():
         raise ValidationError("Date of birth cannot be in the future")
 
