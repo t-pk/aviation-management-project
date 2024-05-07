@@ -1,5 +1,8 @@
 # Aviation management
 
+## Sequence diagram
+![Class UML Diagram](documents/sequence-diagram.png)
+
 ## Class diagram
 ![Class UML Diagram](documents/class-uml.png)
 
