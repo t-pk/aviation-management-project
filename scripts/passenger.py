@@ -17,7 +17,7 @@ for i in range(4000):
     date_of_birth = fake.date_of_birth(minimum_age=18, maximum_age=100)
     # Generate sex
     sex_choices = ["M", "F", "O"]
-    weights = [0.48, 0.48, 0.02]  # 45% chance for "M" and "F", 10% chance for "O"
+    weights = [0.48, 0.48, 0.02]  # 48% chance for "M" and "F", 2% chance for "O"
     sex = random.choices(sex_choices, weights=weights)[0]
 
     if i > 0:

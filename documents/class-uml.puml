@@ -98,6 +98,7 @@ class BookingListView<<View>> {
 
 class BookingDetailView<<View>> {
     + booking_detail()
+    + get_booking_information()
 }
 
 class FlightController<<Controller>> {
@@ -138,6 +139,7 @@ class BookingController<<Controller>> {
     + create_booking(request)
     + update_booking(request, pk)
     + delete_booking(request, pk)
+    + get_booking_information(request)
 }
 
 FlightListView --> FlightController

@@ -20,7 +20,7 @@ const get_booking_information = (action) => {
   const quantity = document.getElementById('id_quantity').value || 0;
 
   const params = new URLSearchParams({ departure, arrival, departure_time, quantity });
-  const url = `${window.location.origin}/aviation/get-booking-information/?${params}`;
+  const url = `${window.location.origin}/aviation/get_booking_information/?${params}`;
 
   const csrftoken = getCookie('csrftoken');
 

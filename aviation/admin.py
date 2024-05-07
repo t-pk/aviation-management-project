@@ -25,6 +25,7 @@ class FlightAdmin(admin.ModelAdmin):
     ]
     search_fields: list[str] = [
         "id",
+        "aircraft__code"
     ]
     date_hierarchy: str = "departure_time"
 
