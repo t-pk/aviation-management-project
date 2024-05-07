@@ -11,6 +11,7 @@ from aviation.utils import adjust_datetime, get_end_datetime, get_start_datetime
 
 logger = logging.getLogger(__name__)
 
+
 class BookingForm(forms.ModelForm):
     departure = forms.ChoiceField(
         label="Departure",
@@ -63,7 +64,9 @@ class BookingForm(forms.ModelForm):
 
         airports: QuerySet[Airport] = Airport.objects.all()
 
-        airport_choices: list[tuple[int, str]] = [(airport.pk, f"{airport.code} - {airport.name}") for airport in airports]
+        airport_choices: list[tuple[int, str]] = [
+            (airport.pk, f"{airport.code} - {airport.name}") for airport in airports
+        ]
         self.fields["departure"].choices = airport_choices
         self.fields["arrival"].choices = airport_choices
         current_datetime: datetime = timezone.now()
