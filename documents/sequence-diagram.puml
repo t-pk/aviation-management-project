@@ -1,0 +1,27 @@
+@startuml "quy trinh dat ve may bay"
+skin rose
+title Quy trình đặt vé máy bay
+
+actor Passenger
+actor TicketingStaff
+participant "Booking System" as BookingSystem
+participant "Flight Service" as FlightService
+participant "Passenger Service" as PassengerService
+
+Passenger -> TicketingStaff: Liên hệ nhân viên bán vé
+note over Passenger, TicketingStaff: Cung cấp thông tin: **điểm đi**, \n**điểm đến, ngày đi, số lượng hành khách**.
+TicketingStaff -> BookingSystem: Mở phiên đặt vé
+BookingSystem -> FlightService: Tìm chuyến bay
+FlightService -> BookingSystem: Trả về danh sách chuyến bay
+BookingSystem -> TicketingStaff: Hiển thị danh sách chuyến bay
+TicketingStaff -> Passenger: Xác nhận **chuyến bay** với hành khách và **báo giá vé**
+Passenger -> TicketingStaff: Xác nhận thông tin
+TicketingStaff -> BookingSystem: Xác nhận thông tin hành khách
+BookingSystem -> PassengerService: Xác nhận thông tin hành khách
+PassengerService -> BookingSystem: Xác nhận thông tin hành khách
+BookingSystem -> FlightService: Đặt vé
+FlightService -> BookingSystem: Xác nhận đặt vé
+BookingSystem -> TicketingStaff: Xác nhận đặt vé
+TicketingStaff -> Passenger: Xác nhận đặt vé
+
+@enduml
