@@ -63,9 +63,9 @@ class Flight(models.Model):
         return f"{self.aircraft.code} | {self.departure_time.astimezone().time().strftime('%H:%M')} | {self.arrival_time.astimezone().time().strftime('%H:%M')} | {available_seats} (avail seats)"
 
 
-
 class Passenger(models.Model):
     id = models.AutoField(primary_key=True)
+
     class Sex(models.TextChoices):
         MALE = "M", "Nam"
         FEMALE = "F", "Nữ"

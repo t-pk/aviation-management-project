@@ -16,7 +16,7 @@ def format_datetime_with_utc_offset(dt):
 # Load airports data
 input_file_path = "./aviation/fixtures/0002_Airport.json"
 
-with open(input_file_path, 'r', encoding='utf-8', errors='ignore') as json_file:
+with open(input_file_path, "r", encoding="utf-8", errors="ignore") as json_file:
     original_data = json.load(json_file)
 
 current_date_utc = timezone.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)

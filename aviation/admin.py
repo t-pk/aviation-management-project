@@ -21,12 +21,11 @@ class FlightAdmin(admin.ModelAdmin):
         "arrival_time",
         "aircraft_code",
         "duration_time",
+        "capacity",
+        "avaiable_seat",
         "total_passenger",
     ]
-    search_fields: list[str] = [
-        "id",
-        "aircraft__code"
-    ]
+    search_fields: list[str] = ["id", "aircraft__code"]
     date_hierarchy: str = "departure_time"
 
     list_filter: list[str] = ["departure_airport", "arrival_airport", "departure_time", "arrival_time"]
@@ -34,6 +33,14 @@ class FlightAdmin(admin.ModelAdmin):
 
     def total_passenger(self, obj: Flight) -> int:
         return obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
+
+    def avaiable_seat(self, obj: Flight) -> int:
+        return (
+            obj.aircraft.capacity - obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
+        )
+
+    def capacity(self, obj: Flight) -> int:
+        return obj.aircraft.capacity
 
     @staticmethod
     def aircraft_code(obj: Flight) -> str:
@@ -46,7 +53,7 @@ class FlightAdmin(admin.ModelAdmin):
 
     aircraft_code.short_description = "Aircraft Code"
     duration_time.short_description = "Duration"
-    total_passenger.short_description = "Total Passenger"
+    total_passenger.short_description = "Total Passenger Booked"
 
     def has_change_permission(self, request, obj: Union[Flight, None] = None):
         logger.debug(
@@ -81,7 +88,7 @@ class AircraftAdmin(admin.ModelAdmin):
 @admin.register(Airport)
 class AirportAdmin(admin.ModelAdmin):
     list_display: list[str] = ["id", "code", "city", "name", "latitude", "longitude"]
-    search_fields: list[str] = ["code", "city", "name"]
+    search_fields: list[str] = ["id", "code", "city", "name"]
     list_filter: list[str] = ["code", "city"]
     list_per_page: int = 20
 
@@ -97,7 +104,7 @@ class PassengerAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
     form = BookingForm
     filter_horizontal = ["passengers"]
-    search_fields = ["passengers__name"]
+    search_fields = ["id", "passengers__name"]
     list_display: list[str] = (
         "id",
         "departure_airport",
