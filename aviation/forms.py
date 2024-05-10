@@ -35,6 +35,7 @@ class BookingForm(forms.ModelForm):
         label="Quantity",
         initial=0,
         min_value=1,
+        max_value=100,
         widget=forms.NumberInput(attrs={"oninput": "get_booking_information();"}),
     )
 

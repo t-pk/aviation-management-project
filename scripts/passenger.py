@@ -2,6 +2,10 @@ import json
 import random
 from faker import Faker
 from vn_fullname_generator import generator
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 fake = Faker("vi_VN")
 transformed_data = []
@@ -21,7 +25,8 @@ for i in range(4000):
     sex = random.choices(sex_choices, weights=weights)[0]
 
     if i > 0:
-        probability_of_null = 0.8  # Example: 80% probability of null
+        probability_of_null = 0.8
+
         random_number = random.random()
         if random_number < probability_of_null:
             relation_id = None

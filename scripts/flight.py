@@ -3,7 +3,6 @@ from django.utils import timezone
 import random
 
 
-# Function to format datetime with UTC offset
 def format_datetime_with_utc_offset(dt):
     rounded_minute = int(((dt.minute + 7.5) // 15) * 15)
     if rounded_minute >= 60:
@@ -13,7 +12,6 @@ def format_datetime_with_utc_offset(dt):
     return formatted_date
 
 
-# Load airports data
 input_file_path = "./aviation/fixtures/0002_Airport.json"
 
 with open(input_file_path, "r", encoding="utf-8", errors="ignore") as json_file:
@@ -22,7 +20,6 @@ with open(input_file_path, "r", encoding="utf-8", errors="ignore") as json_file:
 current_date_utc = timezone.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 transformed_data = []
 
-# start time of current date
 for obj in original_data:
     start_date = current_date_utc - timezone.timedelta(days=7)
     end_date = current_date_utc + timezone.timedelta(days=14)
@@ -65,7 +62,6 @@ for obj in original_data:
 
         start_date += timezone.timedelta(days=1)
 
-# Save transformed data to JSON file
 output_file_path = "./aviation/fixtures/0004_Flight.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)

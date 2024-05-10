@@ -212,6 +212,5 @@ class BookingAdminTest(TestCase):
         self.assertFalse(self.admin.has_delete_permission(request, self.booking))
 
     def test_media(self):
-        # Test if booking.js is included in media
         media = self.admin.media
         self.assertIn("aviation/booking.js", media._js)

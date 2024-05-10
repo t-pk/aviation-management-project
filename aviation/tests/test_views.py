@@ -13,7 +13,6 @@ class BookingViewTest(TestCase):
         self.airport1 = Airport.objects.create(code="SGN", city="HCM", name="ABC123", latitude=1.1, longitude=1.2)
         self.airport2 = Airport.objects.create(code="HAN", city="HAN", name="ABC122", latitude=2.1, longitude=2.2)
 
-        # Create some sample flights
         self.departure_time = timezone.now() + timezone.timedelta(days=1)
         self.arrival_time = timezone.now() + timezone.timedelta(days=1, hours=2)
 

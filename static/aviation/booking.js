@@ -28,9 +28,10 @@ const get_booking_information = (action) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken  // Include CSRF token in request headers
+      'X-CSRFToken': csrftoken
     }
   })
+
     .then(response => response.json())
     .then(data => {
       if (['id_departure', 'id_arrival', 'id_departure_time'].includes(action)) {

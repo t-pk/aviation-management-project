@@ -165,7 +165,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "DEBUG",  # Change the root level to DEBUG to show all log levels
+        "level": "INFO",
     },
 }
 
