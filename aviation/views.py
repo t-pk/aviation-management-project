@@ -16,7 +16,6 @@ class BookingView(View):
         if not request.user.is_authenticated:
             return JsonResponse({"error": "Unauthorized"}, status=401)
 
-        # Retrieve specific parameters from the GET request
         departure = request.GET.get("departure")
         arrival = request.GET.get("arrival")
         departure_time = request.GET.get("departure_time")
@@ -43,7 +42,6 @@ class BookingView(View):
             departure_time__range=(start_datetime, end_datetime),
         )
 
-        # Serialize flights to JSON
         serialized_flights = [{"pk": flight.pk, "__str__": str(flight)} for flight in matching_flights]
         departure_airport = Airport.objects.get(pk=departure)
         arrival_airport = Airport.objects.get(pk=arrival)

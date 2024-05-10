@@ -6,18 +6,15 @@ class Command(BaseCommand):
     help = "Creates a user and group with permissions"
 
     def handle(self, *args, **options):
-        # Create the superuser
         superuser = User.objects.create_superuser(username="admin", email="admin@gmail.com", password="123456")
         self.stdout.write(self.style.SUCCESS(f"Superuser '{superuser.username}' created successfully!"))
 
-        # Grant all available permissions to the superuser
         all_permissions = Permission.objects.all()
         superuser.user_permissions.set(all_permissions)
         superuser.is_staff = True
         superuser.save()
         self.stdout.write(self.style.SUCCESS(f"Superuser '{superuser.username}' granted all permissions!"))
 
-        # Create the user_flight_manager
         user_flight_manager = User.objects.create_user(username="flightmanager", password="flightmanager")
         self.stdout.write(self.style.SUCCESS(f"User '{user_flight_manager.username}' created successfully!"))
         group_flight_manager, created = Group.objects.get_or_create(name="Flight Manager")
@@ -69,14 +66,11 @@ class Command(BaseCommand):
             )
         )
 
-        # Create the Ticketing Staff user
         user_ticketing_staff = User.objects.create_user(username="ticketingstaff", password="ticketingstaff")
         self.stdout.write(self.style.SUCCESS(f"User '{user_ticketing_staff.username}' created successfully!"))
 
-        # Create or retrieve the group 'Ticketing Staff'
         group_ticketing_staff, created = Group.objects.get_or_create(name="Ticketing Staff")
 
-        # Retrieve permissions for Passenger
         add_passenger_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_passenger")
         change_passenger_permission = Permission.objects.get(
             content_type__app_label="aviation", codename="change_passenger"
@@ -88,7 +82,6 @@ class Command(BaseCommand):
             content_type__app_label="aviation", codename="view_passenger"
         )
 
-        # Retrieve permissions for Booking
         add_booking_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_booking")
         change_booking_permission = Permission.objects.get(
             content_type__app_label="aviation", codename="change_booking"
@@ -98,7 +91,6 @@ class Command(BaseCommand):
         )
         view_booking_permission = Permission.objects.get(content_type__app_label="aviation", codename="view_booking")
 
-        # Add permissions to group 'Ticketing Staff'
         group_ticketing_staff.permissions.add(
             add_passenger_permission,
             change_passenger_permission,
@@ -111,7 +103,6 @@ class Command(BaseCommand):
             view_flight_permission,
         )
 
-        # Add Ticketing Staff user to the 'Ticketing Staff' group
         user_ticketing_staff.groups.add(group_ticketing_staff)
         user_ticketing_staff.is_staff = True
         user_ticketing_staff.save()
