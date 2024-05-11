@@ -12,7 +12,10 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: 123456
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -46,7 +49,7 @@ jobs:
       env:
         DB_ENGINE: django.db.backends.postgresql
         DB_USER: postgres
-        DB_NAME: default
-        DB_PASSWORD: 123456
+        DB_NAME: postgres
+        DB_PASSWORD: postgres
         DB_HOST: postgres
         DB_PORT: 5432
