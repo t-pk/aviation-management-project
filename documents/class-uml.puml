@@ -1,17 +1,17 @@
-@startuml "class uml"
+@startuml "Class Diagram"
 
 skin rose
 
 skinparam class {
-BackgroundColor<<Model>> #FFB2B2
+    BackgroundColor<<Model>> #FFB2B2
 }
 
 skinparam class {
-BackgroundColor<<Controller>> #FFFBD7
+    BackgroundColor<<Controller>> #FFFBD7
 }
 
 skinparam class {
-BackgroundColor<<View>> #D9FFB2
+    BackgroundColor<<View>> #D9FFB2
 }
 
 
@@ -60,104 +60,68 @@ class Booking<<Model>> {
     ~ __str__()
 }
 
-class FlightListView<<View>> {
-    + flight_list()
+class BookingView<<View>> {
+    permission_classes: list[IsAuthenticated]
+
+    + get(request: HttpRequest) -> JsonResponse
 }
 
-class FlightDetailView<<View>> {
-    + flight_detail()
+
+class FlightAdmin<<View>> {
+    - form: FlightForm
+    - list_display: str[]
+    - search_fields: str[]
+    - ate_hierarchy: str
+    - list_filter: str[]
+    - list_per_page: int
+    - total_passenger()
+    - avaiable_seat()
+    - capacity()
+    - aircraft_code()
+    - duration_time()
+    - has_change_permission()
+    - has_delete_permission()
 }
 
-class AirportListView<<View>> {
-    + airport_list()
+class AircraftAdmin<<View>> {
+    - list_display: str[]
+    - search_fields: str[]
+    - list_filter: str[]
+    - list_per_page: int
 }
 
-class AirportDetailView<<View>> {
-    + airport_detail()
+class AirportAdmin<<View>> {
+    - list_display: str[]
+    - search_fields: str[]
+    - list_filter: str[]
+    - list_per_page: int
 }
 
-class AircraftListView<<View>> {
-    + aircraft_list()
+class PassengerAdmin<<View>> {
+    - list_display: str[]
+    - search_fields: str[]
+    - list_per_page: int
 }
 
-class AircraftDetailView<<View>> {
-    + aircraft_detail()
+class BookingAdmin<<View>> {
+    - form: BookingForm
+    - filter_horizontal: str[]
+    - search_fields: str[]
+    - list_display: str[]
+    - list_filter: str[]
+    - get_queryset()
+    - has_change_permission()
+    - has_delete_permission()
 }
 
-class PassengerListView<<View>> {
-    + passenger_list()
-}
 
-class PassengerDetailView<<View>> {
-    + passenger_detail()
-}
 
-class BookingListView<<View>> {
-    + booking_list()
-}
-
-class BookingDetailView<<View>> {
-    + booking_detail()
-    + get_booking_information()
-}
-
-class FlightController<<Controller>> {
-    + flight_list(request)
-    + flight_detail(request, pk)
-    + create_flight(request)
-    + update_flight(request, pk)
-    + delete_flight(request, pk)
-}
-
-class AirportController<<Controller>> {
-    + airport_list(request)
-    + airport_detail(request, pk)
-    + create_airport(request)
-    + update_airport(request, pk)
-    + delete_airport(request, pk)
-}
-
-class AircraftController<<Controller>> {
-    + aircraft_list(request)
-    + aircraft_detail(request, pk)
-    + create_aircraft(request)
-    + update_aircraft(request, pk)
-    + delete_aircraft(request, pk)
-}
-
-class PassengerController<<Controller>> {
-    + passenger_list(request)
-    + passenger_detail(request, pk)
-    + create_passenger(request)
-    + update_passenger(request, pk)
-    + delete_passenger(request, pk)
-}
-
-class BookingController<<Controller>> {
-    + booking_list(request)
-    + booking_detail(request, pk)
-    + create_booking(request)
-    + update_booking(request, pk)
-    + delete_booking(request, pk)
-    + get_booking_information(request)
-}
-
-FlightListView --> FlightController
-FlightDetailView --> FlightController
-AirportListView --> AirportController
-AirportDetailView --> AirportController
-AircraftListView --> AircraftController
-AircraftDetailView --> AircraftController
-PassengerListView --> PassengerController
-PassengerDetailView --> PassengerController
-BookingListView --> BookingController
-BookingDetailView --> BookingController
-
-FlightController --> Flight
-AirportController --> Airport
-AircraftController --> Aircraft
-PassengerController --> Passenger
-BookingController --> Booking
+FlightAdmin --> Flight
+AircraftAdmin --> Aircraft
+AirportAdmin --> Airport
+PassengerAdmin --> Passenger
+BookingAdmin --> Booking
+BookingView --> Booking
 
 Passenger ..o Passenger: relation
 Flight --o Airport: departure_airport
@@ -165,5 +129,6 @@ Flight --o Airport: arrival_airport
 Flight --o Aircraft
 Booking --o Flight
 Booking --o Passenger
+
 
 @enduml
