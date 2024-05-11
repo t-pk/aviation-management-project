@@ -8,6 +8,18 @@ on:
 
 jobs:
   build:
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: 123456
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     runs-on: ubuntu-latest
     strategy:
@@ -31,3 +43,9 @@ jobs:
     - name: Run Tests
       run: |
         pipenv run python manage.py test
+      env:
+        DB_ENGINE=django.db.backends.postgresql
+        DB_USER=postgres
+        DB_PASSWORD=123456
+        DB_HOST=postgres
+        DB_PORT=5432
