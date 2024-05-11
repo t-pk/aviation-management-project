@@ -46,6 +46,7 @@ jobs:
       env:
         DB_ENGINE: django.db.backends.postgresql
         DB_USER: postgres
+        DB_NAME: default
         DB_PASSWORD: 123456
         DB_HOST: postgres
         DB_PORT: 5432
