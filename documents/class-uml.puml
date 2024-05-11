@@ -14,7 +14,6 @@ skinparam class {
     BackgroundColor<<View>> #D9FFB2
 }
 
-
 class Flight <<Model>> {
     + id: Integer
     + departure_airport: Airport
@@ -61,11 +60,10 @@ class Booking<<Model>> {
 }
 
 class BookingView<<View>> {
-    permission_classes: list[IsAuthenticated]
+    - permission_classes: list[IsAuthenticated]
 
     + get(request: HttpRequest) -> JsonResponse
 }
-
 
 class FlightAdmin<<View>> {
     - form: FlightForm
@@ -114,7 +112,25 @@ class BookingAdmin<<View>> {
     - has_delete_permission()
 }
 
+class BookingForm <<View>> {
+    + departure: ChoiceField
+    + arrival: ChoiceField
+    + departure_time: DateField
+    + quantity: IntegerField
+    + total_fare: DecimalField
+    + Meta: class
 
+    + __init__(*args, **kwargs)
+    + clean() -> Dict[str, Union[str, int]]
+    + get_available_seats(flight: Union[str, Flight]) -> int
+}
+
+class FlightForm <<View>> {
+    - request: Union[None, "HttpRequest"]
+    + __init__(*args, **kwargs)
+    + clean() -> Dict[str, Union[str, datetime]]
+    + Meta: class
+}
 
 FlightAdmin --> Flight
 AircraftAdmin --> Aircraft
@@ -122,6 +138,8 @@ AirportAdmin --> Airport
 PassengerAdmin --> Passenger
 BookingAdmin --> Booking
 BookingView --> Booking
+BookingForm --> BookingAdmin
+FlightForm --> FlightAdmin
 
 Passenger ..o Passenger: relation
 Flight --o Airport: departure_airport
