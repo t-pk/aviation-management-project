@@ -14,7 +14,7 @@ from django.db.models import Count
 def validate_date_of_birth(value: timezone.datetime):
     """
     Hàm kiểm tra ngày sinh.
-    Args:
+    Input:
         value (timezone.datetime): Ngày sinh.
     Raises:
         ValidationError: ngày sinh > hiện tại.

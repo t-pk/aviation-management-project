@@ -73,7 +73,7 @@ class BookingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """
         Khởi tạo form
-        Args:
+        Input:
             args: args.
             kwargs:  kwargs.
         """
@@ -148,7 +148,7 @@ class BookingForm(forms.ModelForm):
     def clean(self) -> Dict[str, Union[str, int]]:
         """
         Xác thực và làm sạch dữ liệu của form.
-        Returns:
+        Output:
             Dict[str, Union[str, int]]: Dữ liệu đã được làm sạch.
         """
         cleaned_data: Dict[str, Union[str, int]] = super().clean()
@@ -192,9 +192,9 @@ class BookingForm(forms.ModelForm):
     def get_available_seats(self, flight: Union[str, Flight]) -> int:
         """
         Lấy số ghế còn trống của chuyến bay.
-        Args:
+        Input:
             flight (Union[str, Flight]): chuyến bay hoặc mã chuyến bay.
-        Returns:
+        Output:
             int: Số ghế còn trống.
         """
         logger.debug(f"flight information {flight}")
@@ -220,7 +220,7 @@ class FlightForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """
         Khởi tạo form với request.
-        Args:
+        Input:
             args: không bắt buộc.
             kwargs: không bắt buộc, bao gồm request.
         """
@@ -230,7 +230,7 @@ class FlightForm(forms.ModelForm):
     def clean(self) -> Dict[str, Union[str, datetime]]:
         """
         Xác thực và làm sạch dữ liệu của form.
-        Returns:
+        Output:
             Dict[str, Union[str, datetime]]: Dữ liệu đã được làm sạch.
         """
         cleaned_data: Dict[str, Union[str, datetime]] = super().clean()
