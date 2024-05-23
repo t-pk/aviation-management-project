@@ -6,19 +6,26 @@ class Command(BaseCommand):
     help = "Creates a user and group with permissions"
 
     def handle(self, *args, **options):
+        """
+        tạo các người dùng, nhóm, và phân quyền.
+        """
+        # Tạo superuser (quản trị viên)
         superuser = User.objects.create_superuser(username="admin", email="admin@gmail.com", password="123456")
         self.stdout.write(self.style.SUCCESS(f"Superuser '{superuser.username}' created successfully!"))
 
+        # Gán tất cả quyền cho superuser
         all_permissions = Permission.objects.all()
         superuser.user_permissions.set(all_permissions)
         superuser.is_staff = True
         superuser.save()
         self.stdout.write(self.style.SUCCESS(f"Superuser '{superuser.username}' granted all permissions!"))
 
+        # Tạo người dùng 'flightmanager' và nhóm 'Flight Manager'
         user_flight_manager = User.objects.create_user(username="flightmanager", password="flightmanager")
         self.stdout.write(self.style.SUCCESS(f"User '{user_flight_manager.username}' created successfully!"))
         group_flight_manager, created = Group.objects.get_or_create(name="Flight Manager")
 
+        # Lấy các quyền liên quan đến chuyến bay, sân bay và máy bay
         add_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_flight")
         change_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="change_flight")
         delete_flight_permission = Permission.objects.get(content_type__app_label="aviation", codename="delete_flight")
@@ -42,6 +49,7 @@ class Command(BaseCommand):
         )
         view_aircraft_permission = Permission.objects.get(content_type__app_label="aviation", codename="view_aircraft")
 
+        # Gán các quyền này cho nhóm 'Flight Manager'
         group_flight_manager.permissions.add(
             add_flight_permission,
             change_flight_permission,
@@ -57,6 +65,7 @@ class Command(BaseCommand):
             view_airport_permission,
         )
 
+        # Gán nhóm 'Flight Manager' cho người dùng 'flightmanager'
         user_flight_manager.groups.add(group_flight_manager)
         user_flight_manager.is_staff = True
         user_flight_manager.save()
@@ -66,11 +75,13 @@ class Command(BaseCommand):
             )
         )
 
+        # Tạo người dùng 'ticketingstaff' và nhóm 'Ticketing Staff'
         user_ticketing_staff = User.objects.create_user(username="ticketingstaff", password="ticketingstaff")
         self.stdout.write(self.style.SUCCESS(f"User '{user_ticketing_staff.username}' created successfully!"))
 
         group_ticketing_staff, created = Group.objects.get_or_create(name="Ticketing Staff")
 
+        # Lấy các quyền liên quan đến hành khách và đặt chỗ
         add_passenger_permission = Permission.objects.get(content_type__app_label="aviation", codename="add_passenger")
         change_passenger_permission = Permission.objects.get(
             content_type__app_label="aviation", codename="change_passenger"
@@ -91,6 +102,7 @@ class Command(BaseCommand):
         )
         view_booking_permission = Permission.objects.get(content_type__app_label="aviation", codename="view_booking")
 
+        # Gán các quyền này cho nhóm 'Ticketing Staff'
         group_ticketing_staff.permissions.add(
             add_passenger_permission,
             change_passenger_permission,
@@ -103,6 +115,7 @@ class Command(BaseCommand):
             view_flight_permission,
         )
 
+        # Gán nhóm 'Ticketing Staff' cho người dùng 'ticketingstaff'
         user_ticketing_staff.groups.add(group_ticketing_staff)
         user_ticketing_staff.is_staff = True
         user_ticketing_staff.save()

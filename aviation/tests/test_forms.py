@@ -7,6 +7,7 @@ from aviation.models import Aircraft, Airport, Flight, Passenger
 
 class BookingFormTest(TestCase):
     def setUp(self):
+        # Tạo dữ liệu mẫu cho test
         self.aircraft = Aircraft.objects.create(model="Boeing 737", capacity=180, code="ABC123")
         self.airport1 = Airport.objects.create(code="SGN", city="HCM", name="ABC123", latitude=1.1, longitude=1.2)
         self.airport2 = Airport.objects.create(code="HAN", city="HAN", name="ABC122", latitude=2.1, longitude=2.2)
@@ -37,34 +38,40 @@ class BookingFormTest(TestCase):
             "total_fare": 2_700_000,
         }
 
+    # Kiểm tra BookingForm hợp lệ
     def test_booking_form_valid(self):
         form = BookingForm(data=self.booking_data)
         self.assertTrue(form.is_valid())
 
+    # Kiểm tra BookingForm không hợp lệ với quantity = 0
     def test_booking_form_invalid_by_quantity(self):
         invalid_data = self.booking_data.copy()
         invalid_data["quantity"] = 0
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra BookingForm không hợp lệ với total_fare < 0
     def test_booking_form_invalid_by_total_fare(self):
         invalid_data = self.booking_data.copy()
         invalid_data["total_fare"] = -1
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra BookingForm không hợp lệ khi flight = None
     def test_booking_form_invalid_by_flight(self):
         invalid_data = self.booking_data.copy()
         invalid_data["flight"] = None
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra BookingForm không hợp lệ khi departure = None
     def test_booking_form_invalid_by_departure(self):
         invalid_data = self.booking_data.copy()
         invalid_data["departure"] = None
         form = BookingForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra BookingForm không hợp lệ khi arrival = None
     def test_booking_form_invalid_by_arrival(self):
         invalid_data = self.booking_data.copy()
         invalid_data["arrival"] = None
@@ -74,6 +81,7 @@ class BookingFormTest(TestCase):
 
 class FlightFormTestCase(TestCase):
     def setUp(self):
+        # Tạo dữ liệu mẫu cho test
         self.aircraft = Aircraft.objects.create(model="Boeing 737", capacity=180, code="ABC123")
         self.airport1 = Airport.objects.create(code="SGN", city="HCM", name="ABC123", latitude=1.1, longitude=1.2)
         self.airport2 = Airport.objects.create(code="HAN", city="HAN", name="ABC122", latitude=2.1, longitude=2.2)
@@ -93,22 +101,26 @@ class FlightFormTestCase(TestCase):
             "aircraft": self.aircraft,
         }
 
+    # Kiểm tra FlightForm hợp lệ
     def test_flight_form_valid(self):
         form = FlightForm(data=self.valid_flight_data)
         self.assertTrue(form.is_valid())
 
+    # Kiểm tra FlightForm không hợp lệ khi departure_airport = arrival_airport
     def test_flight_form_invalid_by_airport(self):
         invalid_data = self.invalid_flight_data.copy()
         invalid_data["departure_airport"] = self.airport2
         form = FlightForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra FlightForm không hợp lệ khi departure_time = None
     def test_flight_form_invalid_by_departure_time(self):
         invalid_data = self.invalid_flight_data.copy()
         invalid_data["departure_time"] = None
         form = FlightForm(data=invalid_data)
         self.assertFalse(form.is_valid())
 
+    # Kiểm tra FlightForm không hợp lệ khi arrival_time = None
     def test_flight_form_invalid_by_arrival_time(self):
         invalid_data = self.invalid_flight_data.copy()
         invalid_data["arrival_time"] = None
