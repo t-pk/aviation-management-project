@@ -38,9 +38,9 @@ class FlightAdmin(admin.ModelAdmin):
     def total_passenger(self, obj: Flight) -> int:
         """
         Tính tổng số hành khách đã đặt chỗ.
-        Args:
+        Input:
             obj (Flight): flight.
-        Returns:
+        Output:
             int: Tổng số hành khách.
         """
         return obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
@@ -48,9 +48,9 @@ class FlightAdmin(admin.ModelAdmin):
     def avaiable_seat(self, obj: Flight) -> int:
         """
         Tính số ghế còn trống.
-        Args:
+        Input:
             obj (Flight): chuyến bay.
-        Returns:
+        Output:
             int: Số ghế còn trống.
         """
         return (
@@ -60,9 +60,9 @@ class FlightAdmin(admin.ModelAdmin):
     def capacity(self, obj: Flight) -> int:
         """
         Lấy sức chứa của máy bay.
-        Args:
+        Input:
             obj (Flight): chuyến bay.
-        Returns:
+        Output:
             int: Sức chứa của máy bay.
         """
         return obj.aircraft.capacity
@@ -71,9 +71,9 @@ class FlightAdmin(admin.ModelAdmin):
     def aircraft_code(obj: Flight) -> str:
         """
         Lấy mã của máy bay.
-        Args:
+        Input:
             obj (Flight): chuyến bay.
-        Returns:
+        Output:
             str: Mã máy bay.
         """
         return obj.aircraft.code
@@ -82,9 +82,9 @@ class FlightAdmin(admin.ModelAdmin):
     def duration_time(obj: Flight) -> timezone.timedelta:
         """
         Tính thời gian của chuyến bay.
-        Args:
+        Input:
             obj (Flight): chuyến bay.
-        Returns:
+        Output:
             timezone.timedelta: Thời gian.
         """
         duration = obj.arrival_time - obj.departure_time
@@ -97,10 +97,10 @@ class FlightAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj: Union[Flight, None] = None) -> bool:
         """
         Xác định người dùng có quyền thay đổi chuyến bay hay không.
-        Args:
+        Input:
             request (HttpRequest): request.
             obj (Union[Flight, None]): chuyến bay (nếu có).
-        Returns:
+        Output:
             bool: True/False.
         """
         logger.debug(
@@ -116,10 +116,10 @@ class FlightAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj: Union[Flight, None] = None) -> bool:
         """
         Xác định người dùng có quyền xóa chuyến bay hay không.
-        Args:
+        Input:
             request (HttpRequest): request.
             obj (Union[Flight, None]): chuyến bay (nếu có).
-        Returns:
+        Output:
             bool: True/False.
         """
         logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
@@ -197,9 +197,9 @@ class BookingAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """
         queryset danh sách booking.
-        Args:
+        Input:
             request (HttpRequest): request.
-        Returns:
+        Output:
             QuerySet: booking.
         """
         queryset = super().get_queryset(request)
@@ -213,9 +213,9 @@ class BookingAdmin(admin.ModelAdmin):
     def departure_airport(obj: Booking) -> Airport:
         """
         sân bay khởi hành.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             Airport: Sân bay khởi hành.
         """
         return obj.flight.departure_airport
@@ -224,9 +224,9 @@ class BookingAdmin(admin.ModelAdmin):
     def arrival_airport(obj: Booking) -> Airport:
         """
         sân bay đến.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             Airport: Sân bay đến.
         """
         return obj.flight.arrival_airport
@@ -235,9 +235,9 @@ class BookingAdmin(admin.ModelAdmin):
     def passenger_names(obj: Booking) -> str:
         """
         ds tên của hành khách.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             str: ds tên hành khách.
         """
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
@@ -246,9 +246,9 @@ class BookingAdmin(admin.ModelAdmin):
     def aircraft_code(obj: Booking) -> str:
         """
         mã của máy bay.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             str: Mã máy bay.
         """
         return obj.flight.aircraft.code
@@ -257,9 +257,9 @@ class BookingAdmin(admin.ModelAdmin):
     def departure_time(obj: Booking) -> str:
         """
         Lấy thời gian khởi hành của chuyến bay.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             str: Thời gian khởi hành.
         """
         departure_time = obj.flight.departure_time.astimezone()
@@ -269,9 +269,9 @@ class BookingAdmin(admin.ModelAdmin):
     def arrival_time(obj: Booking) -> str:
         """
         Lấy thời gian đến của chuyến bay.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             str: Thời gian đến.
         """
         arrival_time = obj.flight.arrival_time.astimezone()
@@ -281,9 +281,9 @@ class BookingAdmin(admin.ModelAdmin):
     def quantity(obj: Booking) -> int:
         """
         số lượng hành khách.
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             int: Số lượng hành khách.
         """
         return obj.passengers.count()
@@ -292,9 +292,9 @@ class BookingAdmin(admin.ModelAdmin):
     def total_fare_with_vnd(obj: Booking) -> str:
         """
         Lấy tổng giá vé của booking (định dạng: VND).
-        Args:
+        Input:
             obj (Booking): booking.
-        Returns:
+        Output:
             str: Tổng giá vé.
         """
         formatted_amount = "{:,.0f}".format(obj.total_fare)  # Định dạng với dấu phẩy cho phân cách hàng nghìn
@@ -314,10 +314,10 @@ class BookingAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj: Union[Booking, None] = None) -> bool:
         """
         Xác định người dùng có quyền thay đổi booking hay không.
-        Args:
+        Input:
             request (HttpRequest): request hiện tại.
             obj (Union[Booking, None]): booking (nếu có).
-        Returns:
+        Output:
             bool: True/False.
         """
         logger.debug(
@@ -335,10 +335,10 @@ class BookingAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj: Union[Booking, None] = None) -> bool:
         """
         Xác định người dùng có quyền xóa booking hay không.
-        Args:
+        Input:
             request (HttpRequest): request hiện tại.
             obj (Union[Booking, None]): booking (nếu có).
-        Returns:
+        Output:
             bool: True/False.
         """
         logger.debug(

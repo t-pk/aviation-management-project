@@ -15,9 +15,9 @@ class BookingView(View):
     def get(self, request: HttpRequest):
         """
         lấy thông tin đặt chỗ.
-        Args:
+        Input:
             request (HttpRequest): các tham số 'departure', 'arrival', 'departure_time', và 'quantity'.
-        Returns:
+        Output:
             JsonResponse: thông tin giá vé và danh sách các chuyến bay phù hợp.
         """
         if not request.user.is_authenticated:
