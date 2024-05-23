@@ -13,6 +13,17 @@ logger = logging.getLogger(__name__)
 
 
 class BookingForm(forms.ModelForm):
+    """
+    Form tạo và chỉnh sửa Booking.
+
+    Thuộc tính:
+        departure (ChoiceField): Trường chọn sân bay khởi hành.
+        arrival (ChoiceField): Trường chọn sân bay đến.
+        departure_time (DateField): Trường chọn thời gian khởi hành.
+        quantity (IntegerField): Trường nhập số lượng hành khách.
+        total_fare (DecimalField): Trường hiển thị tổng giá vé.
+    """
+
     departure = forms.ChoiceField(
         label="Departure",
         widget=forms.Select(attrs={"onchange": "get_booking_information(this.id);"}),
@@ -60,6 +71,12 @@ class BookingForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
+        """
+        Khởi tạo form
+        Args:
+            args: args.
+            kwargs:  kwargs.
+        """
         super().__init__(*args, **kwargs)
         booking_instance: Union[None, Booking] = kwargs.pop("instance", None)
 
@@ -129,6 +146,11 @@ class BookingForm(forms.ModelForm):
         self.fields["flight"].queryset = matching_flights
 
     def clean(self) -> Dict[str, Union[str, int]]:
+        """
+        Xác thực và làm sạch dữ liệu của form.
+        Returns:
+            Dict[str, Union[str, int]]: Dữ liệu đã được làm sạch.
+        """
         cleaned_data: Dict[str, Union[str, int]] = super().clean()
         booking_instance: Union[Booking, None] = self.instance
         passengers = cleaned_data.get("passengers")
@@ -168,6 +190,13 @@ class BookingForm(forms.ModelForm):
         return cleaned_data
 
     def get_available_seats(self, flight: Union[str, Flight]) -> int:
+        """
+        Lấy số ghế còn trống của chuyến bay.
+        Args:
+            flight (Union[str, Flight]): chuyến bay hoặc mã chuyến bay.
+        Returns:
+            int: Số ghế còn trống.
+        """
         logger.debug(f"flight information {flight}")
         if type(flight) is str:
             bookings = Booking.objects.filter(flight_id=flight)
@@ -180,13 +209,30 @@ class BookingForm(forms.ModelForm):
 
 
 class FlightForm(forms.ModelForm):
+    """
+    Form dùng để tạo và chỉnh sửa Flight.
+    Thuộc tính:
+        request (HttpRequest): request hiện tại.
+    """
+
     request: Union[None, "HttpRequest"]
 
     def __init__(self, *args, **kwargs):
+        """
+        Khởi tạo form với request.
+        Args:
+            args: không bắt buộc.
+            kwargs: không bắt buộc, bao gồm request.
+        """
         self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
 
     def clean(self) -> Dict[str, Union[str, datetime]]:
+        """
+        Xác thực và làm sạch dữ liệu của form.
+        Returns:
+            Dict[str, Union[str, datetime]]: Dữ liệu đã được làm sạch.
+        """
         cleaned_data: Dict[str, Union[str, datetime]] = super().clean()
         departure_airport: Union[int, str] = cleaned_data.get("departure_airport")
         arrival_airport: Union[int, str] = cleaned_data.get("arrival_airport")

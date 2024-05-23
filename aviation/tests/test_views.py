@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 import json
 
-
 class BookingViewTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -24,6 +23,7 @@ class BookingViewTest(TestCase):
             aircraft=self.aircraft,
         )
 
+    # Kiểm tra lấy thông tin đặt chỗ không hợp lệ
     def test_booking_view_get_invalid(self):
         query_params = {
             "departure": self.airport1.pk,
@@ -33,8 +33,11 @@ class BookingViewTest(TestCase):
         }
         url = reverse("get_booking_information")
         response = self.client.get(url, query_params, content_type="application/json")
+        # Gửi yêu cầu GET đến endpoint thông tin đặt chỗ
         self.assertEqual(response.status_code, 401)
+        # Đảm bảo mã trạng thái phản hồi là 401 (Không được ủy quyền)
 
+    # Kiểm tra lấy thông tin đặt chỗ hợp lệ
     def test_booking_view_get_valid(self):
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.client.login(username="testuser", password="password123")
@@ -47,8 +50,9 @@ class BookingViewTest(TestCase):
         }
         url = reverse("get_booking_information")
         response = self.client.get(url, query_params, content_type="application/json")
-
+        # Gửi yêu cầu GET đến endpoint thông tin đặt chỗ khi đã đăng nhập
         self.assertEqual(response.status_code, 200)
+        # Đảm bảo mã trạng thái phản hồi là 200 (OK)
         response_data = json.loads(response.content)
         self.assertIn("flights", response_data)
         self.assertIn("fare", response_data)

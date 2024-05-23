@@ -11,6 +11,10 @@ logger = logging.getLogger(__name__)
 
 @admin.register(Flight)
 class FlightAdmin(admin.ModelAdmin):
+    """
+    Lớp admin cho Flight.
+    """
+
     form = FlightForm
 
     list_display: list[str] = [
@@ -32,22 +36,57 @@ class FlightAdmin(admin.ModelAdmin):
     list_per_page: int = 20
 
     def total_passenger(self, obj: Flight) -> int:
+        """
+        Tính tổng số hành khách đã đặt chỗ.
+        Args:
+            obj (Flight): flight.
+        Returns:
+            int: Tổng số hành khách.
+        """
         return obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
 
     def avaiable_seat(self, obj: Flight) -> int:
+        """
+        Tính số ghế còn trống.
+        Args:
+            obj (Flight): chuyến bay.
+        Returns:
+            int: Số ghế còn trống.
+        """
         return (
             obj.aircraft.capacity - obj.booking_set.aggregate(total_passengers=Count("passengers"))["total_passengers"]
         )
 
     def capacity(self, obj: Flight) -> int:
+        """
+        Lấy sức chứa của máy bay.
+        Args:
+            obj (Flight): chuyến bay.
+        Returns:
+            int: Sức chứa của máy bay.
+        """
         return obj.aircraft.capacity
 
     @staticmethod
     def aircraft_code(obj: Flight) -> str:
+        """
+        Lấy mã của máy bay.
+        Args:
+            obj (Flight): chuyến bay.
+        Returns:
+            str: Mã máy bay.
+        """
         return obj.aircraft.code
 
     @staticmethod
     def duration_time(obj: Flight) -> timezone.timedelta:
+        """
+        Tính thời gian của chuyến bay.
+        Args:
+            obj (Flight): chuyến bay.
+        Returns:
+            timezone.timedelta: Thời gian.
+        """
         duration = obj.arrival_time - obj.departure_time
         return duration
 
@@ -55,7 +94,15 @@ class FlightAdmin(admin.ModelAdmin):
     duration_time.short_description = "Duration"
     total_passenger.short_description = "Total Passenger Booked"
 
-    def has_change_permission(self, request, obj: Union[Flight, None] = None):
+    def has_change_permission(self, request, obj: Union[Flight, None] = None) -> bool:
+        """
+        Xác định người dùng có quyền thay đổi chuyến bay hay không.
+        Args:
+            request (HttpRequest): request.
+            obj (Union[Flight, None]): chuyến bay (nếu có).
+        Returns:
+            bool: True/False.
+        """
         logger.debug(
             f"has_change_permission request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}"
         )
@@ -66,8 +113,15 @@ class FlightAdmin(admin.ModelAdmin):
             return False
         return super().has_change_permission(request, obj)
 
-    def has_delete_permission(self, request, obj: Union[Flight, None] = None):
-
+    def has_delete_permission(self, request, obj: Union[Flight, None] = None) -> bool:
+        """
+        Xác định người dùng có quyền xóa chuyến bay hay không.
+        Args:
+            request (HttpRequest): request.
+            obj (Union[Flight, None]): chuyến bay (nếu có).
+        Returns:
+            bool: True/False.
+        """
         logger.debug(f"request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}")
 
         if obj and (obj.departure_time <= timezone.now() or obj.arrival_time <= timezone.now()):
@@ -79,6 +133,10 @@ class FlightAdmin(admin.ModelAdmin):
 
 @admin.register(Aircraft)
 class AircraftAdmin(admin.ModelAdmin):
+    """
+    Lớp admin cho Aircraft.
+    """
+
     list_display: list[str] = ["id", "model", "code", "capacity"]
     search_fields: list[str] = ["id", "model", "code", "capacity"]
     list_filter: list[str] = ["model"]
@@ -87,6 +145,10 @@ class AircraftAdmin(admin.ModelAdmin):
 
 @admin.register(Airport)
 class AirportAdmin(admin.ModelAdmin):
+    """
+    Lớp admin cho Airport.
+    """
+
     list_display: list[str] = ["id", "code", "city", "name", "latitude", "longitude"]
     search_fields: list[str] = ["id", "code", "city", "name"]
     list_filter: list[str] = ["code", "city"]
@@ -95,6 +157,10 @@ class AirportAdmin(admin.ModelAdmin):
 
 @admin.register(Passenger)
 class PassengerAdmin(admin.ModelAdmin):
+    """
+    Lớp admin cho Passenger.
+    """
+
     list_display: list[str] = ["id", "name", "date_of_birth", "sex", "email", "phone"]
     search_fields: list[str] = ["name", "email", "phone"]
     list_per_page: int = 20
@@ -102,6 +168,10 @@ class PassengerAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
+    """
+    Lớp admin cho Booking.
+    """
+
     form = BookingForm
     filter_horizontal = ["passengers"]
     search_fields = ["id", "passengers__name"]
@@ -125,6 +195,13 @@ class BookingAdmin(admin.ModelAdmin):
     ]
 
     def get_queryset(self, request):
+        """
+        queryset danh sách booking.
+        Args:
+            request (HttpRequest): request.
+        Returns:
+            QuerySet: booking.
+        """
         queryset = super().get_queryset(request)
         return queryset.prefetch_related("passengers")
 
@@ -134,37 +211,93 @@ class BookingAdmin(admin.ModelAdmin):
 
     @staticmethod
     def departure_airport(obj: Booking) -> Airport:
+        """
+        sân bay khởi hành.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            Airport: Sân bay khởi hành.
+        """
         return obj.flight.departure_airport
 
     @staticmethod
     def arrival_airport(obj: Booking) -> Airport:
+        """
+        sân bay đến.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            Airport: Sân bay đến.
+        """
         return obj.flight.arrival_airport
 
     @staticmethod
     def passenger_names(obj: Booking) -> str:
+        """
+        ds tên của hành khách.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            str: ds tên hành khách.
+        """
         return ", ".join([passenger.name for passenger in obj.passengers.all()])
 
     @staticmethod
     def aircraft_code(obj: Booking) -> str:
+        """
+        mã của máy bay.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            str: Mã máy bay.
+        """
         return obj.flight.aircraft.code
 
     @staticmethod
     def departure_time(obj: Booking) -> str:
+        """
+        Lấy thời gian khởi hành của chuyến bay.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            str: Thời gian khởi hành.
+        """
         departure_time = obj.flight.departure_time.astimezone()
         return departure_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
     def arrival_time(obj: Booking) -> str:
+        """
+        Lấy thời gian đến của chuyến bay.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            str: Thời gian đến.
+        """
         arrival_time = obj.flight.arrival_time.astimezone()
         return arrival_time.strftime("%Y-%m-%d %H:%M")
 
     @staticmethod
     def quantity(obj: Booking) -> int:
+        """
+        số lượng hành khách.
+        Args:
+            obj (Booking): booking.
+        Returns:
+            int: Số lượng hành khách.
+        """
         return obj.passengers.count()
 
     @staticmethod
     def total_fare_with_vnd(obj: Booking) -> str:
-        formatted_amount = "{:,.0f}".format(obj.total_fare)  # Format with commas for thousands separators
+        """
+        Lấy tổng giá vé của booking (định dạng: VND).
+        Args:
+            obj (Booking): booking.
+        Returns:
+            str: Tổng giá vé.
+        """
+        formatted_amount = "{:,.0f}".format(obj.total_fare)  # Định dạng với dấu phẩy cho phân cách hàng nghìn
         return f"{formatted_amount} VND"
 
     departure_airport.short_description = "Departure Airport"
@@ -178,8 +311,15 @@ class BookingAdmin(admin.ModelAdmin):
     class Media:
         js = ("aviation/booking.js",)
 
-    def has_change_permission(self, request, obj: Union[Booking, None] = None):
-
+    def has_change_permission(self, request, obj: Union[Booking, None] = None) -> bool:
+        """
+        Xác định người dùng có quyền thay đổi booking hay không.
+        Args:
+            request (HttpRequest): request hiện tại.
+            obj (Union[Booking, None]): booking (nếu có).
+        Returns:
+            bool: True/False.
+        """
         logger.debug(
             f"has_change_permission request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}"
         )
@@ -192,8 +332,15 @@ class BookingAdmin(admin.ModelAdmin):
 
         return super().has_change_permission(request, obj)
 
-    def has_delete_permission(self, request, obj: Union[Booking, None] = None):
-
+    def has_delete_permission(self, request, obj: Union[Booking, None] = None) -> bool:
+        """
+        Xác định người dùng có quyền xóa booking hay không.
+        Args:
+            request (HttpRequest): request hiện tại.
+            obj (Union[Booking, None]): booking (nếu có).
+        Returns:
+            bool: True/False.
+        """
         logger.debug(
             f"has_delete_permission request {request} obj {obj} user {request.user} is supper user {request.user.is_superuser}"
         )

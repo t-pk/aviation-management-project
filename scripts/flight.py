@@ -3,6 +3,7 @@ from django.utils import timezone
 import random
 
 
+# Hàm định dạng datetime với offset UTC
 def format_datetime_with_utc_offset(dt):
     rounded_minute = int(((dt.minute + 7.5) // 15) * 15)
     if rounded_minute >= 60:
@@ -12,23 +13,33 @@ def format_datetime_with_utc_offset(dt):
     return formatted_date
 
 
+# Đường dẫn đến file JSON chứa dữ liệu về sân bay
 input_file_path = "./aviation/fixtures/0002_Airport.json"
 
+# Đọc dữ liệu về sân bay từ file JSON
 with open(input_file_path, "r", encoding="utf-8", errors="ignore") as json_file:
     original_data = json.load(json_file)
 
+# Ngày hiện tại với offset UTC
 current_date_utc = timezone.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 transformed_data = []
 
+# Lặp qua từng sân bay
 for obj in original_data:
     start_date = current_date_utc - timezone.timedelta(days=7)
     end_date = current_date_utc + timezone.timedelta(days=14)
+
+    # Lặp qua từng ngày trong khoảng thời gian
     while start_date < end_date:
         number_of_flight = random.randint(1, 3)
         arrivals = [item for item in original_data if item["pk"] != obj["pk"]]
+
+        # Lặp qua từng sân bay đến
         for airport in arrivals:
             i = 0
             departure_time_min = 0.5
+
+            # Tạo số lượng chuyến bay ngẫu nhiên từ sân bay hiện tại đến sân bay đến
             while i < number_of_flight:
                 i += 1
                 departure_time_min += random.randint((i % 3) + 1, 4)
@@ -62,6 +73,7 @@ for obj in original_data:
 
         start_date += timezone.timedelta(days=1)
 
+# Lưu dữ liệu về chuyến bay vào file JSON
 output_file_path = "./aviation/fixtures/0004_Flight.json"
 with open(output_file_path, "w") as json_file:
     json.dump(transformed_data, json_file, indent=2)

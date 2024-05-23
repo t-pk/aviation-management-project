@@ -13,6 +13,13 @@ class BookingView(View):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest):
+        """
+        lấy thông tin đặt chỗ.
+        Args:
+            request (HttpRequest): các tham số 'departure', 'arrival', 'departure_time', và 'quantity'.
+        Returns:
+            JsonResponse: thông tin giá vé và danh sách các chuyến bay phù hợp.
+        """
         if not request.user.is_authenticated:
             return JsonResponse({"error": "Unauthorized"}, status=401)
 
