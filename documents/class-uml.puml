@@ -21,14 +21,14 @@ class Flight <<Model>> {
     + departure_time: DateTime
     + arrival_time: DateTime
     + aircraft: Aircraft
-    ~ __str__()
+    + __str__(): str
 }
 
 class Aircraft<<Model>> {
     + model: String
     + capacity: Integer
     + code: String
-    ~ __str__()
+    + __str__(): str
 }
 
 class Airport<<Model>> {
@@ -37,7 +37,7 @@ class Airport<<Model>> {
     + name: String
     + latitude: Float
     + longitude: Float
-    ~ __str__()
+    + __str__(): str
 }
 
 class Passenger<<Model>> {
@@ -48,7 +48,7 @@ class Passenger<<Model>> {
     + phone: String
     + citizen_identify_id: String
     + relation: Passenger
-    ~ __str__()
+    + __str__(): str
 }
 
 class Booking<<Model>> {
@@ -56,7 +56,7 @@ class Booking<<Model>> {
     + passengers: Passenger[]
     + booking_date: DateTime
     + total_fare: Decimal
-    ~ __str__()
+    + __str__(): str
 }
 
 class BookingView<<View>> {
@@ -66,50 +66,50 @@ class BookingView<<View>> {
 }
 
 class FlightAdmin<<View>> {
-    - form: FlightForm
-    - list_display: str[]
-    - search_fields: str[]
-    - ate_hierarchy: str
-    - list_filter: str[]
-    - list_per_page: int
-    - total_passenger()
-    - avaiable_seat()
-    - capacity()
-    - aircraft_code()
-    - duration_time()
-    - has_change_permission()
-    - has_delete_permission()
+    + form: FlightForm
+    + list_display: str[]
+    + search_fields: str[]
+    + date_hierarchy: str
+    + list_filter: str[]
+    + list_per_page: int
+    + total_passenger(): int
+    + available_seat(): int
+    + capacity(): int
+    + aircraft_code(): str
+    + duration_time(): str
+    + has_change_permission(): bool
+    + has_delete_permission(): bool
 }
 
 class AircraftAdmin<<View>> {
-    - list_display: str[]
-    - search_fields: str[]
-    - list_filter: str[]
-    - list_per_page: int
+    + list_display: str[]
+    + search_fields: str[]
+    + list_filter: str[]
+    + list_per_page: int
 }
 
 class AirportAdmin<<View>> {
-    - list_display: str[]
-    - search_fields: str[]
-    - list_filter: str[]
-    - list_per_page: int
+    + list_display: str[]
+    + search_fields: str[]
+    + list_filter: str[]
+    + list_per_page: int
 }
 
 class PassengerAdmin<<View>> {
-    - list_display: str[]
-    - search_fields: str[]
-    - list_per_page: int
+    + list_display: str[]
+    + search_fields: str[]
+    + list_per_page: int
 }
 
 class BookingAdmin<<View>> {
-    - form: BookingForm
-    - filter_horizontal: str[]
-    - search_fields: str[]
-    - list_display: str[]
-    - list_filter: str[]
-    - get_queryset()
-    - has_change_permission()
-    - has_delete_permission()
+    + form: BookingForm
+    + filter_horizontal: str[]
+    + search_fields: str[]
+    + list_display: str[]
+    + list_filter: str[]
+    + get_queryset(): QuerySet
+    + has_change_permission(): bool
+    + has_delete_permission(): bool
 }
 
 class BookingForm <<View>> {
@@ -141,12 +141,10 @@ BookingView --> Booking
 BookingForm --> BookingAdmin
 FlightForm --> FlightAdmin
 
-Passenger ..o Passenger: relation
-Flight --o Airport: departure_airport
-Flight --o Airport: arrival_airport
-Flight --o Aircraft
-Booking --o Flight
-Booking --o Passenger
-
-
+Flight "*" --o "1" Airport: departure_airport
+Flight "*" --o "1" Airport: arrival_airport
+Flight "*" --o "1" Aircraft
+Passenger "0,1" ..o "1" Passenger: relation
+Booking "*" --* "1" Flight
+Booking "1" o-- "*" Passenger
 @enduml
