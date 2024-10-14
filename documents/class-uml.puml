@@ -1,6 +1,7 @@
 @startuml "Class Diagram"
 
 skin rose
+left to right direction
 
 skinparam class {
     BackgroundColor<<Model>> #FFB2B2
