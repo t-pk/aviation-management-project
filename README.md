@@ -27,7 +27,7 @@ docker compose up
 cp .env.sample .env
 
 # Run setup script for migration and data import
-python scripts/setup.sh
+./scripts/setup.sh
 
 # Start the server
 python manage.py runserver
